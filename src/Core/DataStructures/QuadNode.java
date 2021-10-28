@@ -20,4 +20,13 @@ public class QuadNode
     public CaseColor getColor() {
         return color;
     }
+
+    public void setColor(CaseColor color) {
+        this.color = color;
+    }
+
+    public String toString() {
+        return "X = " + pos.getX() + " : Y = " + pos.getY() + " - Color = " + color;
+    }
+
 }

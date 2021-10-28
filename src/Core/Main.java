@@ -1,9 +1,9 @@
 package Core;
 
-import Core.DataStructures.QuadNode;
 import Core.DataStructures.QuadPoint;
 import Core.DataStructures.QuadTree;
 import Core.Enums.CaseColor;
+import Core.DataStructures.QuadNode;
 
 public class Main {
 

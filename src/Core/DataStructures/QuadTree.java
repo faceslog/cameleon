@@ -56,7 +56,7 @@ public class QuadTree
         if(!inBoundaries(node.getPos()))
             return;
 
-        // Ce quad tree est divisé au maximum on ne peu plus le diviser
+        // Ce quad tree est divisé au maximum on ne peut plus le diviser
         if (Math.abs(topLeft.getX() - bottomRight.getX()) <= 1 && Math.abs(topLeft.getY() - bottomRight.getY()) <= 1)
         {
             if(currentNode == null)
