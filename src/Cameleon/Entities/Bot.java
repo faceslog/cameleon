@@ -6,11 +6,11 @@ import Cameleon.Enums.CaseColor;
 public class Bot extends Player {
 
 	/**
-	 * @param c
-	 * @param name
+	 * @param _name
+	 * @param _colour
 	 */
-	public Bot(CaseColor c, String name) {
-		super(c, name);
+	public Bot(String _name, CaseColor _colour) {
+		super(_name, _colour);
 	}
 
 	public void jouerGloutonBrave() {

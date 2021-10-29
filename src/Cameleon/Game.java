@@ -17,8 +17,8 @@ public class Game {
 	}
 
 	public void init() {
-		J1 = new Human(CaseColor.Red, "J1");
-		J2 = new Human(CaseColor.Blue, "J2");
+		J1 = new Human("J1", CaseColor.Red);
+		J2 = new Human("J2", CaseColor.Blue);
 		current = J1;
 
 		Scanner scanner = new Scanner(System.in);

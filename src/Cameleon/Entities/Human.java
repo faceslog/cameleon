@@ -9,11 +9,11 @@ import Cameleon.Movement;
 
 public class Human extends Player {
     /**
-     * @param c
-     * @param name
+     * @param _name
+     * @param _colour
      */
-    public Human(CaseColor c, String name) {
-        super(c, name);
+    public Human(String _name, CaseColor _colour) {
+        super(_name, _colour);
     }
 
     @Override
