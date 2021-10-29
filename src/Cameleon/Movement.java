@@ -27,6 +27,11 @@ public class Movement {
 				this.x = x;
 				this.y = y;
 				this.color = color;
+				if(color == Color.BLUE) {
+					tmp = Enums.CaseColor.Blue;
+				} else if(color == Color.RED) {
+					tmp = Enums.CaseColor.Red;
+				}
 				this.board = board;
 				this.quadTree = board.getQuadTree();
 				getCurrentNode(x,y);
@@ -44,8 +49,13 @@ public class Movement {
 	public void getCurrentNode(int x, int y) { //get le noeud de la position pour changer sa couleur
 		if(quadTree != null) {
 			QuadPoint pos = new QuadPoint(x,y);
-			current = quadTree.search(pos);
-			if(current.getColor() == null) {
+			current = quadTree.search(pos); //recherche le point s'il n'existe pas on l'insert
+			if(current == null) {
+				quadTree.insert(new QuadNode(pos, tmp));
+				updateColor();
+			}
+			board.showGrid();
+			/*if(current.getColor() == null) {
 
 				//temporaire on changera quand on aura une structure du src fixe la je test des trucs
 				if(color == Color.BLUE) {
@@ -54,12 +64,12 @@ public class Movement {
 					tmp = Enums.CaseColor.Red;
 				} //fin tmp
 
-				//quadTree.insert(new QuadNode(pos, tmp));
+				quadTree.insert(new QuadNode(pos, tmp));
 				System.out.println(color);
-				current.setColor(tmp);
+				//current.setColor(tmp);
 				updateColor();
 				board.showGrid();
-			}
+			}*/
 		}
 	}
 
@@ -70,8 +80,10 @@ public class Movement {
 			for (int j = y - 1; j <= y + 1; j++) {
 				QuadPoint pos = new QuadPoint(i, j);
 				QuadNode node = quadTree.search(pos);
-				if(!(node.getColor() == null)) {
-					node.setColor(tmp);
+				if(node != null) {
+					if (!(node.getColor() == null)) {
+						node.setColor(tmp);
+					}
 				}
 			}
 		}

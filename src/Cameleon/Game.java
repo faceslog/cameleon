@@ -27,6 +27,7 @@ public class Game {
 
 	public void play() {
 		init();
+		board.showGrid();
 		while (!board.isFull()) {
 			System.out.println(current.getName());
 			current.move(board);

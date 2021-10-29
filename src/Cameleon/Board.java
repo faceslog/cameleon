@@ -17,7 +17,7 @@ public class Board {
 	public Board(int n) {
 		this.size = (int) (3 * Math.pow(2, n));
 		this.quadTree = new QuadTree(new QuadPoint(0,0), new QuadPoint(size-1, size-1));
-		initEmpty();
+		//initEmpty();
 	}
 
 	public void initEmpty() { //juste pour test
@@ -61,10 +61,13 @@ public class Board {
 	public void showGrid() { //test
 		for(int i = 0; i < size; i++) {
 			for(int j= 0; j < size; j++) {
-				if(quadTree.search(new QuadPoint(j,i)).getColor() == Enums.CaseColor.Blue) {
-					System.out.print(" B ");
-				} else if(quadTree.search(new QuadPoint(j,i)).getColor() == Enums.CaseColor.Red) {
-					System.out.print(" R ");
+				QuadNode node = quadTree.search(new QuadPoint(j,i));
+				if(node != null) {
+					if (node.getColor() == Enums.CaseColor.Blue) {
+						System.out.print(" B ");
+					} else if (node.getColor() == Enums.CaseColor.Red) {
+						System.out.print(" R ");
+					}
 				} else {
 					System.out.print(" ⊡ ");
 				}
