@@ -1,6 +1,5 @@
 package Cameleon;
 
-import Cameleon.Board;
 import Cameleon.Enums.CaseColor;
 
 public class Player {

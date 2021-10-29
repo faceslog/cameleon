@@ -12,15 +12,15 @@ public class Movement {
 	private int y;
 	private Board board;
 	private CaseColor color;
-	private QuadNode current;
-	private QuadTree quadTree;
+	private QuadNode<CaseColor> current;
+	private QuadTree<CaseColor> quadTree;
 	private CaseColor tmp;
 
 	/**
 	 * 
-	 * @param x
-	 * @param y
-	 * @param board
+	 * @param x position x
+	 * @param y position y
+	 * @param board board
 	 */
 	public Movement(int x, int y, CaseColor color, Board board) {
 		if(board != null) {
@@ -46,15 +46,15 @@ public class Movement {
 
 	/**
 	 *
-	 * @param x
-	 * @param y
+	 * @param x position x of the node
+	 * @param y position y of the node
 	 */
 	public void getCurrentNode(int x, int y) { //get le noeud de la position pour changer sa couleur
 		if(quadTree != null) {
 			QuadPoint pos = new QuadPoint(x,y);
 			current = quadTree.search(pos); //recherche le point s'il n'existe pas on l'insert
 			if(current == null) {
-				quadTree.insert(new QuadNode(pos, tmp));
+				quadTree.insert(new QuadNode<>(pos, tmp));
 				updateColor();
 			}
 			board.showGrid();
@@ -82,10 +82,10 @@ public class Movement {
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
 				QuadPoint pos = new QuadPoint(i, j);
-				QuadNode node = quadTree.search(pos);
+				QuadNode<CaseColor> node = quadTree.search(pos);
 				if(node != null) {
-					if (!(node.getColor() == null)) {
-						node.setColor(tmp);
+					if (!(node.getData() == null)) {
+						node.setData(tmp);
 					}
 				}
 			}

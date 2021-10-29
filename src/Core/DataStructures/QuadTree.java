@@ -1,6 +1,6 @@
 package Core.DataStructures;
 
-public class QuadTree
+public class QuadTree<T>
 {
     /** ici topLeft Point(0.0)
      *    0  1  2    3  4  5    6  7  8    9  10 11  x/y
@@ -22,13 +22,13 @@ public class QuadTree
     private final QuadPoint bottomRight;
 
     // Details du node courant
-    private QuadNode currentNode;
+    private QuadNode<T> currentNode;
 
     // Enfants de cet arbre
-    private QuadTree topLeftTree;
-    private QuadTree topRightTree;
-    private QuadTree bottomLeftTree;
-    private QuadTree bottomRightTree;
+    private QuadTree<T> topLeftTree;
+    private QuadTree<T> topRightTree;
+    private QuadTree<T> bottomLeftTree;
+    private QuadTree<T> bottomRightTree;
 
     public QuadTree(QuadPoint _topLeft, QuadPoint _bottomRight)
     {
@@ -50,7 +50,7 @@ public class QuadTree
                     p.getY() >= topLeft.getY() && p.getY() <= bottomRight.getY());
     }
 
-    public void insert(QuadNode node)
+    public void insert(QuadNode<T> node)
     {
         if(node == null)
             return;
@@ -76,7 +76,7 @@ public class QuadTree
             {
                 if(topLeftTree == null)
                 {
-                    topLeftTree = new QuadTree(
+                    topLeftTree = new QuadTree<>(
                             new QuadPoint(topLeft.getX(), topLeft.getY()),
                             new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, (topLeft.getY() + bottomRight.getY()) / 2)
                     );
@@ -87,7 +87,7 @@ public class QuadTree
             {
                 if(bottomLeftTree == null)
                 {
-                    bottomLeftTree = new QuadTree(
+                    bottomLeftTree = new QuadTree<>(
                             new QuadPoint(topLeft.getX(), (topLeft.getY() + bottomRight.getY()) / 2),
                             new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, bottomRight.getY())
                     );
@@ -102,7 +102,7 @@ public class QuadTree
             {
                 if(topRightTree == null)
                 {
-                    topRightTree = new QuadTree(
+                    topRightTree = new QuadTree<>(
                             new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, topLeft.getY()),
                             new QuadPoint(bottomRight.getX(), (topLeft.getY() + bottomRight.getY()) / 2)
                     );
@@ -113,7 +113,7 @@ public class QuadTree
             {
                 if(bottomRightTree == null)
                 {
-                    bottomRightTree = new QuadTree(
+                    bottomRightTree = new QuadTree<>(
                             new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, (topLeft.getY() + bottomRight.getY()) / 2),
                             new QuadPoint(bottomRight.getX(), bottomRight.getY())
                     );
@@ -123,7 +123,7 @@ public class QuadTree
         }
     }
 
-    public QuadNode search(QuadPoint p)
+    public QuadNode<T> search(QuadPoint p)
     {
         // Le quadtree courant ne peux le contenir
         if (!inBoundaries(p))

@@ -8,15 +8,15 @@ import Core.DataStructures.QuadTree;
 public class Board {
 
 	private int size;
-	private QuadTree quadTree;
+	private QuadTree<CaseColor> quadTree;
 
 	/**
 	 * 
 	 * @param n
 	 */
 	public Board(int n) {
-		this.size = (int) (3 * Math.pow(2, n));
-		this.quadTree = new QuadTree(new QuadPoint(0,0), new QuadPoint(size-1, size-1));
+		size = (int) (3 * Math.pow(2, n));
+		quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
 		//initEmpty();
 	}
 
@@ -61,11 +61,11 @@ public class Board {
 	public void showGrid() { //test
 		for(int i = 0; i < size; i++) {
 			for(int j= 0; j < size; j++) {
-				QuadNode node = quadTree.search(new QuadPoint(j,i));
+				QuadNode<CaseColor> node = quadTree.search(new QuadPoint(j,i));
 				if(node != null) {
-					if (node.getColor() == CaseColor.Blue) {
+					if (node.getData() == CaseColor.Blue) {
 						System.out.print(" B ");
-					} else if (node.getColor() == CaseColor.Red) {
+					} else if (node.getData() == CaseColor.Red) {
 						System.out.print(" R ");
 					}
 				} else {
@@ -80,7 +80,7 @@ public class Board {
 		return size;
 	}
 
-	public QuadTree getQuadTree() {
+	public QuadTree<CaseColor> getQuadTree() {
 		return quadTree;
 	}
 

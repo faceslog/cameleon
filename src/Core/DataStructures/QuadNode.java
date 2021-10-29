@@ -1,32 +1,30 @@
 package Core.DataStructures;
 
-import Cameleon.Enums.CaseColor;
-
-public class QuadNode
+public class QuadNode<T>
 {
     private QuadPoint pos;
-    private CaseColor color; // la donnée stockée ici la couleur
+    private T data; // la donnée stockée ici la couleur
 
-    public QuadNode(QuadPoint _pos, CaseColor _color)
+    public QuadNode(QuadPoint _pos, T _data)
     {
         pos = _pos;
-        color= _color;
+        data = _data;
     }
 
     public QuadPoint getPos() {
         return pos;
     }
 
-    public CaseColor getColor() {
-        return color;
+    public T getData() {
+        return data;
     }
 
-    public void setColor(CaseColor _color) {
-        color = _color;
+    public void setData(T _data) {
+        data = _data;
     }
 
     public String toString() {
-        return "X = " + pos.getX() + " : Y = " + pos.getY() + " - Color = " + color;
+        return "X = " + pos.getX() + " : Y = " + pos.getY() + " - Data = " + data;
     }
 
 }
