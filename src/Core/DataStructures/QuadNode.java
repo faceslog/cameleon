@@ -1,6 +1,6 @@
 package Core.DataStructures;
 
-import Core.Enums.CaseColor;
+import Cameleon.Enums.CaseColor;
 
 public class QuadNode
 {
@@ -21,8 +21,8 @@ public class QuadNode
         return color;
     }
 
-    public void setColor(CaseColor color) {
-        this.color = color;
+    public void setColor(CaseColor _color) {
+        color = _color;
     }
 
     public String toString() {

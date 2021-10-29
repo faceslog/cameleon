@@ -43,8 +43,11 @@ public class QuadTree
 
     public boolean inBoundaries(QuadPoint p)
     {
-        return (p.getX() >= topLeft.getX() && p.getX() <= bottomRight.getX() &&
-                p.getY() >= topLeft.getY() && p.getY() <= bottomRight.getY());
+        if(p == null)
+            return false;
+        else
+            return (p.getX() >= topLeft.getX() && p.getX() <= bottomRight.getX() &&
+                    p.getY() >= topLeft.getY() && p.getY() <= bottomRight.getY());
     }
 
     public void insert(QuadNode node)

@@ -1,5 +1,8 @@
 package Cameleon;
 
+import Cameleon.Entities.Human;
+import Cameleon.Enums.CaseColor;
+
 import java.util.Scanner;
 
 public class Game {
@@ -14,8 +17,8 @@ public class Game {
 	}
 
 	public void init() {
-		J1 = new Human(Color.RED, "J1");
-		J2 = new Human(Color.BLUE, "J2");
+		J1 = new Human(CaseColor.Red, "J1");
+		J2 = new Human(CaseColor.Blue, "J2");
 		current = J1;
 
 		Scanner scanner = new Scanner(System.in);
@@ -42,9 +45,9 @@ public class Game {
 	}
 
 	public void changeCurrent() {
-		if(current.getColor() == Color.BLUE) {
+		if(current.getColor() == CaseColor.Blue) {
 			current = J1;
-		} else if(current.getColor() == Color.RED) {
+		} else if(current.getColor() == CaseColor.Red) {
 			current = J2;
 		}
 	}

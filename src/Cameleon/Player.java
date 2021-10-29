@@ -1,17 +1,20 @@
 package Cameleon;
 
+import Cameleon.Board;
+import Cameleon.Enums.CaseColor;
+
 public class Player {
 
 	private int score;
 	private String name;
-	private Color color;
+	private CaseColor color;
 
 	/**
 	 * 
 	 * @param c
 	 * @param name
 	 */
-	public Player(Color c, String name) {
+	public Player(CaseColor c, String name) {
 		this.score = 0;
 		this.color = c;
 		this.name = name;
@@ -26,7 +29,7 @@ public class Player {
 		return score;
 	}
 
-	public Color getColor() {
+	public CaseColor getColor() {
 		return color;
 	}
 

@@ -1,9 +1,9 @@
 package Cameleon;
 
+import Cameleon.Enums.CaseColor;
 import Core.DataStructures.QuadNode;
 import Core.DataStructures.QuadPoint;
 import Core.DataStructures.QuadTree;
-import Core.Enums;
 
 public class Board {
 
@@ -48,7 +48,7 @@ public class Board {
 	 * 
 	 * @param c
 	 */
-	public int nbCellColor(Color c) {
+	public int nbCellColor(CaseColor c) {
 		// TODO - implement Board.nbCell
 		throw new UnsupportedOperationException();
 	}
@@ -63,9 +63,9 @@ public class Board {
 			for(int j= 0; j < size; j++) {
 				QuadNode node = quadTree.search(new QuadPoint(j,i));
 				if(node != null) {
-					if (node.getColor() == Enums.CaseColor.Blue) {
+					if (node.getColor() == CaseColor.Blue) {
 						System.out.print(" B ");
-					} else if (node.getColor() == Enums.CaseColor.Red) {
+					} else if (node.getColor() == CaseColor.Red) {
 						System.out.print(" R ");
 					}
 				} else {

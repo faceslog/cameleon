@@ -1,8 +1,9 @@
 package Core;
 
+import Cameleon.Game;
 import Core.DataStructures.QuadPoint;
 import Core.DataStructures.QuadTree;
-import Core.Enums.CaseColor;
+import Cameleon.Enums.CaseColor;
 import Core.DataStructures.QuadNode;
 
 public class Main {
@@ -23,5 +24,7 @@ public class Main {
         System.out.println("Node 2:" + quad.search(new QuadPoint(8,10)).getColor());
         System.out.println("Node 3:" + quad.search(new QuadPoint(11,11)).getColor());
         System.out.println("Is in boundaries (no): " + quad.inBoundaries(new QuadPoint(12,12)));
+
+        new Game();
     }
 }

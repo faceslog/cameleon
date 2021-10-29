@@ -1,19 +1,20 @@
 package Cameleon;
 
+import Cameleon.Enums.Rules;
 import Core.DataStructures.QuadNode;
 import Core.DataStructures.QuadPoint;
 import Core.DataStructures.QuadTree;
-import Core.Enums;
+import Cameleon.Enums.CaseColor;
 
 public class Movement {
 
 	private int x;
 	private int y;
 	private Board board;
-	private Color color;
+	private CaseColor color;
 	private QuadNode current;
 	private QuadTree quadTree;
-	private Enums.CaseColor tmp;
+	private CaseColor tmp;
 
 	/**
 	 * 
@@ -21,16 +22,18 @@ public class Movement {
 	 * @param y
 	 * @param board
 	 */
-	public Movement(int x, int y, Color color, Board board) {
+	public Movement(int x, int y, CaseColor color, Board board) {
 		if(board != null) {
 			if (x >= 0 && x < board.getSize() && y >= 0 && y < board.getSize()) {
 				this.x = x;
 				this.y = y;
 				this.color = color;
-				if(color == Color.BLUE) {
-					tmp = Enums.CaseColor.Blue;
-				} else if(color == Color.RED) {
-					tmp = Enums.CaseColor.Red;
+
+				if(color == CaseColor.Blue)
+				{
+					tmp = CaseColor.Blue;
+				} else if(color == CaseColor.Red) {
+					tmp = CaseColor.Red;
 				}
 				this.board = board;
 				this.quadTree = board.getQuadTree();
@@ -89,7 +92,7 @@ public class Movement {
 		}
 	}
 
-	public boolean verifRules(Rule rule) {
+	public boolean verifRules(Rules rule) {
 		// TODO - implement Movement.verifRules
 		throw new UnsupportedOperationException();
 	}

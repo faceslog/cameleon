@@ -1,13 +1,18 @@
-package Cameleon;
+package Cameleon.Entities;
 
 import java.util.Scanner;
+
+import Cameleon.Board;
+import Cameleon.Player;
+import Cameleon.Enums.CaseColor;
+import Cameleon.Movement;
 
 public class Human extends Player {
     /**
      * @param c
      * @param name
      */
-    public Human(Color c, String name) {
+    public Human(CaseColor c, String name) {
         super(c, name);
     }
 

@@ -1,4 +1,7 @@
-package Cameleon;
+package Cameleon.Entities;
+
+import Cameleon.Player;
+import Cameleon.Enums.CaseColor;
 
 public class Bot extends Player {
 
@@ -6,7 +9,7 @@ public class Bot extends Player {
 	 * @param c
 	 * @param name
 	 */
-	public Bot(Color c, String name) {
+	public Bot(CaseColor c, String name) {
 		super(c, name);
 	}
 
