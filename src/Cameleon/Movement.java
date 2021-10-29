@@ -18,27 +18,32 @@ public class Movement {
 
 	/**
 	 * 
-	 * @param x position x
-	 * @param y position y
-	 * @param board board
+	 * @param _x position x
+	 * @param _y position y
+	 * @param _board board
 	 */
-	public Movement(int x, int y, CaseColor color, Board board) {
-		if(board != null) {
-			if (x >= 0 && x < board.getSize() && y >= 0 && y < board.getSize()) {
-				this.x = x;
-				this.y = y;
-				this.color = color;
+	public Movement(int _x, int _y, CaseColor _color, Board _board) {
+		if(_board != null)
+		{
+			if (_x >= 0 && _x < _board.getSize() && _y >= 0 && _y < board.getSize())
+			{
+				x = _x;
+				y = _y;
+				color = _color;
 
-				if(color == CaseColor.Blue)
+				switch (color)
 				{
-					tmp = CaseColor.Blue;
-				} else if(color == CaseColor.Red) {
-					tmp = CaseColor.Red;
+					case Blue -> tmp = CaseColor.Blue;
+					case Red -> tmp = CaseColor.Red;
+					default -> tmp = null;
 				}
-				this.board = board;
-				this.quadTree = board.getQuadTree();
+
+				board = _board;
+				quadTree = _board.getQuadTree();
 				getCurrentNode(x,y);
-			} else {
+			}
+			else
+			{
 				System.out.println("ERREUR MOVEMENT");
 			}
 		}

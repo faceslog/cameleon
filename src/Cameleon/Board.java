@@ -46,9 +46,9 @@ public class Board {
 
 	/**
 	 * 
-	 * @param c
+	 * @param colour
 	 */
-	public int nbCellColor(CaseColor c) {
+	public int nbCellColor(CaseColor colour) {
 		// TODO - implement Board.nbCell
 		throw new UnsupportedOperationException();
 	}

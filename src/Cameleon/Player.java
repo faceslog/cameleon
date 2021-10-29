@@ -9,14 +9,14 @@ public class Player {
 	private CaseColor color;
 
 	/**
-	 * 
-	 * @param c
-	 * @param name
+	 *
+	 * @param _name
+	 * @param _color
 	 */
-	public Player(CaseColor c, String name) {
-		this.score = 0;
-		this.color = c;
-		this.name = name;
+	public Player(String _name, CaseColor _color) {
+		score = 0;
+		name = _name;
+		color = _color;
 	}
 
 	public void move(Board board) {
