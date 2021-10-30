@@ -22,7 +22,7 @@ public class Game {
 		current = J1;
 
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Taille de la grid : ");
+		System.out.println("Taille de la grid (n) : ");
 		int size = scanner.nextInt();
 
 		board = new Board(size);
@@ -31,17 +31,18 @@ public class Game {
 	public void play() {
 		init();
 		board.showGrid();
-		while (!board.isFull()) {
+		while (!board.isFull(board.getQuadTree())) {
 			System.out.println(current.getName());
 			current.move(board);
 			changeCurrent();
 			System.out.println();
 		}
+		System.out.println("STOP");
 		end();
 	}
 
 	public void end() {
-		//affichage gagnat + score
+		//affichage gagnant + score
 	}
 
 	public void changeCurrent() {

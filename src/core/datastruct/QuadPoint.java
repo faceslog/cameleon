@@ -18,4 +18,12 @@ public class QuadPoint
     public int getY() {
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "QuadPoint{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

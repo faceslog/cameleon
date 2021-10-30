@@ -171,4 +171,24 @@ public class QuadTree<T>
             }
         }
     }
+
+    public QuadTree<T> getTopLeftTree() {
+        return topLeftTree;
+    }
+
+    public QuadTree<T> getTopRightTree() {
+        return topRightTree;
+    }
+
+    public QuadTree<T> getBottomLeftTree() {
+        return bottomLeftTree;
+    }
+
+    public QuadTree<T> getBottomRightTree() {
+        return bottomRightTree;
+    }
+
+    public QuadNode<T> getCurrentNode() {
+        return currentNode;
+    }
 }

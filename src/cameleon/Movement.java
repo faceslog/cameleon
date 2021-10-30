@@ -14,7 +14,6 @@ public class Movement {
 	private CaseColor color;
 	private QuadNode<CaseColor> current;
 	private QuadTree<CaseColor> quadTree;
-	private CaseColor tmp;
 
 	/**
 	 * 
@@ -23,27 +22,15 @@ public class Movement {
 	 * @param _board board
 	 */
 	public Movement(int _x, int _y, CaseColor _color, Board _board) {
-		if(_board != null)
-		{
-			if (_x >= 0 && _x < _board.getSize() && _y >= 0 && _y < board.getSize())
-			{
+		if(_board != null) {
+			if (_x >= 0 && _x < _board.getSize() && _y >= 0 && _y < _board.getSize()) {
 				x = _x;
 				y = _y;
 				color = _color;
-
-				switch (color)
-				{
-					case BLUE -> tmp = CaseColor.BLUE;
-					case RED -> tmp = CaseColor.RED;
-					default -> tmp = null;
-				}
-
 				board = _board;
 				quadTree = _board.getQuadTree();
 				getCurrentNode(x,y);
-			}
-			else
-			{
+			} else {
 				System.out.println("ERREUR MOVEMENT");
 			}
 		}
@@ -59,25 +46,11 @@ public class Movement {
 			QuadPoint pos = new QuadPoint(x,y);
 			current = quadTree.search(pos); //recherche le point s'il n'existe pas on l'insert
 			if(current == null) {
-				quadTree.insert(new QuadNode<>(pos, tmp));
+				System.out.println("HOP");
+				quadTree.insert(new QuadNode<>(pos, color));
 				updateColor();
 			}
 			board.showGrid();
-			/*if(current.getColor() == null) {
-
-				//temporaire on changera quand on aura une structure du src fixe la je test des trucs
-				if(color == Color.BLUE) {
-					tmp = enums.CaseColor.Blue;
-				} else if(color == Color.RED) {
-					tmp = enums.CaseColor.Red;
-				} //fin tmp
-
-				quadTree.insert(new QuadNode(pos, tmp));
-				System.out.println(color);
-				//current.setColor(tmp);
-				updateColor();
-				board.showGrid();
-			}*/
 		}
 	}
 
@@ -87,10 +60,14 @@ public class Movement {
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
 				QuadPoint pos = new QuadPoint(i, j);
+				System.out.println();
+				System.out.println(pos);
 				QuadNode<CaseColor> node = quadTree.search(pos);
+				System.out.println(node);
 				if(node != null) {
 					if (!(node.getData() == null)) {
-						node.setData(tmp);
+						System.out.println("I - " + i + " : J - " + j + " -- " + node);
+						node.setData(color);
 					}
 				}
 			}

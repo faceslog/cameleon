@@ -30,6 +30,15 @@ public class Board {
 		}
 	}
 
+	public void initFull() { //juste pour test bis
+		for(int i = 0; i < size; i++) {
+			for(int j= 0; j < size-2; j++) {
+					quadTree.insert(new QuadNode(new QuadPoint(j, i), CaseColor.RED));
+
+			}
+		}
+	}
+
 	public void initColor() {
 		// TODO - implement Board.initColor
 		throw new UnsupportedOperationException();
@@ -40,7 +49,7 @@ public class Board {
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean isFull() {
+	public boolean isFull(QuadTree qt) {
 		return false;
 	}
 
