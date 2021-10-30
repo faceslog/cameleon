@@ -1,4 +1,4 @@
-package Core.DataStructures;
+package core.datastruct;
 
 public class QuadPoint
 {

@@ -1,10 +1,10 @@
-package Cameleon;
+package cameleon;
 
-import Cameleon.Enums.Rules;
-import Core.DataStructures.QuadNode;
-import Core.DataStructures.QuadPoint;
-import Core.DataStructures.QuadTree;
-import Cameleon.Enums.CaseColor;
+import cameleon.enums.Rules;
+import core.datastruct.QuadNode;
+import core.datastruct.QuadPoint;
+import core.datastruct.QuadTree;
+import cameleon.enums.CaseColor;
 
 public class Movement {
 
@@ -33,8 +33,8 @@ public class Movement {
 
 				switch (color)
 				{
-					case Blue -> tmp = CaseColor.Blue;
-					case Red -> tmp = CaseColor.Red;
+					case BLUE -> tmp = CaseColor.BLUE;
+					case RED -> tmp = CaseColor.RED;
 					default -> tmp = null;
 				}
 
@@ -67,9 +67,9 @@ public class Movement {
 
 				//temporaire on changera quand on aura une structure du src fixe la je test des trucs
 				if(color == Color.BLUE) {
-					tmp = Enums.CaseColor.Blue;
+					tmp = enums.CaseColor.Blue;
 				} else if(color == Color.RED) {
-					tmp = Enums.CaseColor.Red;
+					tmp = enums.CaseColor.Red;
 				} //fin tmp
 
 				quadTree.insert(new QuadNode(pos, tmp));

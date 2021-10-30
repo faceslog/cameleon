@@ -1,6 +1,6 @@
-package Cameleon;
+package cameleon;
 
-import Cameleon.Enums.CaseColor;
+import cameleon.enums.CaseColor;
 
 public class Player {
 

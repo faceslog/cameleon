@@ -1,16 +1,16 @@
-package Cameleon.Entities;
+package cameleon.entities;
 
-import Cameleon.Player;
-import Cameleon.Enums.CaseColor;
+import cameleon.Player;
+import cameleon.enums.CaseColor;
 
 public class Bot extends Player {
 
 	/**
 	 * @param _name
-	 * @param _colour
+	 * @param _color
 	 */
-	public Bot(String _name, CaseColor _colour) {
-		super(_name, _colour);
+	public Bot(String _name, CaseColor _color) {
+		super(_name, _color);
 	}
 
 	public void jouerGloutonBrave() {

@@ -1,7 +1,7 @@
-package Cameleon;
+package cameleon;
 
-import Cameleon.Entities.Human;
-import Cameleon.Enums.CaseColor;
+import cameleon.entities.Human;
+import cameleon.enums.CaseColor;
 
 import java.util.Scanner;
 
@@ -17,8 +17,8 @@ public class Game {
 	}
 
 	public void init() {
-		J1 = new Human("J1", CaseColor.Red);
-		J2 = new Human("J2", CaseColor.Blue);
+		J1 = new Human("J1", CaseColor.RED);
+		J2 = new Human("J2", CaseColor.BLUE);
 		current = J1;
 
 		Scanner scanner = new Scanner(System.in);
@@ -45,9 +45,9 @@ public class Game {
 	}
 
 	public void changeCurrent() {
-		if(current.getColor() == CaseColor.Blue) {
+		if(current.getColor() == CaseColor.BLUE) {
 			current = J1;
-		} else if(current.getColor() == CaseColor.Red) {
+		} else if(current.getColor() == CaseColor.RED) {
 			current = J2;
 		}
 	}
