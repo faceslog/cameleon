@@ -31,9 +31,13 @@ public class Game {
 	public void play() {
 		init();
 		board.showGrid();
-		while (!board.isFull(board.getQuadTree())) {
+		System.out.println(board.nbCellColor(CaseColor.RED, board.getQuadTree()));
+		while (!board.isFull()) {
 			System.out.println(current.getName());
 			current.move(board);
+			board.showGrid();
+			System.out.println("COULEUR : "  + board.nbCellColor(current.getColor(), board.getQuadTree()));
+			System.out.println("TOTAL : "  + board.nbCell(board.getQuadTree()));
 			changeCurrent();
 			System.out.println();
 		}

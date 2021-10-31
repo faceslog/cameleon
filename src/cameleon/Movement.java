@@ -46,11 +46,10 @@ public class Movement {
 			QuadPoint pos = new QuadPoint(x,y);
 			current = quadTree.search(pos); //recherche le point s'il n'existe pas on l'insert
 			if(current == null) {
-				System.out.println("HOP");
+				//System.out.println("HOP");
 				quadTree.insert(new QuadNode<>(pos, color));
 				updateColor();
 			}
-			board.showGrid();
 		}
 	}
 
@@ -60,13 +59,13 @@ public class Movement {
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
 				QuadPoint pos = new QuadPoint(i, j);
-				System.out.println();
-				System.out.println(pos);
+				//System.out.println();
+				//System.out.println(pos);
 				QuadNode<CaseColor> node = quadTree.search(pos);
-				System.out.println(node);
+				//System.out.println(node);
 				if(node != null) {
 					if (!(node.getData() == null)) {
-						System.out.println("I - " + i + " : J - " + j + " -- " + node);
+						//System.out.println("I - " + i + " : J - " + j + " -- " + node);
 						node.setData(color);
 					}
 				}
