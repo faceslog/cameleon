@@ -21,6 +21,9 @@ public class QuadPoint
 
     public boolean compare(QuadPoint point)
     {
+        if(point == null)
+            return  false;
+
         return (x == point.getX() && y == point.getY());
     }
 

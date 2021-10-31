@@ -2,7 +2,7 @@ package core.datastruct;
 
 public class QuadNode<T>
 {
-    private QuadPoint pos;
+    private final QuadPoint pos;
     private T data; // la donnée stockée ici la couleur
 
     public QuadNode(QuadPoint _pos, T _data)

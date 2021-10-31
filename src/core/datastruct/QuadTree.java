@@ -50,6 +50,7 @@ public class QuadTree<T>
                     p.getY() >= topLeft.getY() && p.getY() <= bottomRight.getY());
     }
 
+    // O(log n)
     public void insert(QuadNode<T> node)
     {
         if(node == null)
@@ -123,7 +124,22 @@ public class QuadTree<T>
         }
     }
 
+    // O(log n)
     public QuadNode<T> search(QuadPoint p)
+    {
+        QuadNode<T> temp = searchClosest(p);
+
+        if(temp != null)
+        {
+            if(p.compare(temp.getPos()))
+                return temp;
+        }
+
+        return null;
+    }
+
+    // O(log n)
+    public QuadNode<T> searchClosest(QuadPoint p)
     {
         // Le quadtree courant ne peux le contenir
         if (!inBoundaries(p))

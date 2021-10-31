@@ -6,8 +6,6 @@ import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 import cameleon.enums.CaseColor;
 
-import javax.management.RuntimeErrorException;
-
 public class Movement {
 
 	QuadPoint point;
@@ -31,7 +29,7 @@ public class Movement {
 				color = _color;
 				board = _board;
 				quadTree = _board.getQuadTree();
-				getCurrentNode(point.getX(),point.getY());
+				getCurrentNode();
 			}
 			else
 			{
@@ -40,18 +38,14 @@ public class Movement {
 		}
 	}
 
-	/**
-	 *
-	 * @param x position x of the node
-	 * @param y position y of the node
-	 */
-	public void getCurrentNode(int x, int y) { //get le noeud de la position pour changer sa couleur
-		if(quadTree != null) {
-			QuadPoint pos = new QuadPoint(x,y);
-			current = quadTree.search(pos); //recherche le point s'il n'existe pas on l'insert
-			if(current == null) {
-				//System.out.println("HOP");
-				quadTree.insert(new QuadNode<>(pos, color));
+
+	public void getCurrentNode() { //get le noeud de la position pour changer sa couleur
+		if(quadTree != null)
+		{
+			current = quadTree.search(point); //recherche le point s'il n'existe pas on l'insert
+			if(current == null)
+			{
+				quadTree.insert(new QuadNode<>(point, color));
 				updateColor();
 			}
 		}
@@ -62,23 +56,21 @@ public class Movement {
 		//check 8 cases autour
 		for (int i = point.getX() - 1; i <= point.getX() + 1; i++)
 		{
+			if(i < 0) continue;
 			for (int j = point.getY() - 1; j <= point.getY()+ 1; j++)
 			{
+				if(j < 0) continue;
 				QuadPoint pos = new QuadPoint(i, j);
 				QuadNode<CaseColor> node = quadTree.search(pos);
 
-				if(node == null)
-					continue;
-
-				if(!point.compare(node.getPos()))
-					continue;
-
-				if (!(node.getData() == null))
+				if(node != null)
 				{
-					//System.out.println("I - " + i + " : J - " + j + " -- " + node);
-					node.setData(color);
+					if (!(node.getData() == null))
+					{
+						//System.out.println("I - " + i + " : J - " + j + " -- " + node);
+						node.setData(color);
+					}
 				}
-
 			}
 		}
 	}
