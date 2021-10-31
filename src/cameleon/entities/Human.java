@@ -6,6 +6,7 @@ import cameleon.Board;
 import cameleon.Player;
 import cameleon.enums.CaseColor;
 import cameleon.Movement;
+import core.datastruct.QuadPoint;
 
 public class Human extends Player {
     /**
@@ -26,6 +27,6 @@ public class Human extends Player {
         System.out.println("Coord y : ");
         y = scanner.nextInt();
 
-        new Movement(x,y, this.getColor(),board);
+        new Movement(new QuadPoint(x,y), this.getColor(),board);
     }
 }

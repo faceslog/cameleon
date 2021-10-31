@@ -141,12 +141,18 @@ public class Board {
 			System.out.print("\t" + i + "\t");
 			for(int j= 0; j < size; j++) {
 				QuadNode<CaseColor> node = quadTree.search(new QuadPoint(j,i));
-				if(node != null) {
-					if (node.getData() == CaseColor.BLUE) {
-						System.out.print("\tB\t");
-					} else if (node.getData() == CaseColor.RED) {
-						System.out.print("\tR\t");
+				if(node != null)
+				{
+					if(node.getPos().compare(new QuadPoint(j, i)))
+					{
+						switch (node.getData())
+						{
+							case BLUE -> System.out.print("\tB\t");
+							case RED -> System.out.print("\tR\t");
+							default -> System.out.print("\t⊡\t");
+						}
 					}
+
 				} else {
 					System.out.print("\t⊡\t");
 				}

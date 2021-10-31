@@ -19,6 +19,11 @@ public class QuadPoint
         return y;
     }
 
+    public boolean compare(QuadPoint point)
+    {
+        return (x == point.getX() && y == point.getY());
+    }
+
     @Override
     public String toString() {
         return "QuadPoint{" +

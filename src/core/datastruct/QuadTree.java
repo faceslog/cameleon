@@ -159,8 +159,7 @@ public class QuadTree<T>
             {
                 if (topRightTree == null)
                     return null;
-                else
-                    return topRightTree.search(p);
+                return topRightTree.search(p);
             }
             // En bas à droite
             else
