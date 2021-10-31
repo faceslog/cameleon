@@ -1,28 +1,15 @@
 package core.datastruct;
 
+import java.util.ArrayList;
+
 public class QuadTree<T>
 {
-    /** ici topLeft Point(0.0)
-     *    0  1  2    3  4  5    6  7  8    9  10 11  x/y
-     *  | X  -- -- | -- -- -- | -- -- -- | -- -- -- | 0   Ce QuadTree Représente le plateau de jeu de l'ennoncé.
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 1   Nos points seront donc modifiés dans ces limites et on
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 2   devra diviser ce plateau en utilisant des PR-QuadTrees.
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 3
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 4
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 5
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 6
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 7
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 8
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 9
-     *  | -- -- -- | -- -- -- | -- -- -- | -- -- -- | 10
-     *  | -- -- -- | -- -- -- | -- -- -- | -- --  X | 11
-     *                              ici bottomRight Point(11.11)
-     */
-    private final QuadPoint topLeft;
-    private final QuadPoint bottomRight;
+    final int MAX_CAPACITY = 4;
+    ArrayList<QuadNode<T>> nodes;
 
-    // Details du node courant
-    private QuadNode<T> currentNode;
+    // Boundaries
+    private final QuadPoint topLeft; // xMin, yMin
+    private final QuadPoint bottomRight; // xMax, yMax
 
     // Enfants de cet arbre
     private QuadTree<T> topLeftTree;
@@ -34,119 +21,73 @@ public class QuadTree<T>
     {
         topLeft = _topLeft;
         bottomRight = _bottomRight;
-        currentNode = null;
+        nodes = new ArrayList<>();
         topLeftTree = null;
         topRightTree = null;
         bottomLeftTree = null;
         bottomRightTree = null;
     }
 
-    public boolean inBoundaries(QuadPoint p)
+    public boolean inBoundaries(QuadPoint point)
     {
-        if(p == null)
+        if(point == null)
             return false;
         else
-            return (p.getX() >= topLeft.getX() && p.getX() <= bottomRight.getX() &&
-                    p.getY() >= topLeft.getY() && p.getY() <= bottomRight.getY());
+            return (point.getX() >= topLeft.getX() && point.getX() <= bottomRight.getX() &&
+                    point.getY() >= topLeft.getY() && point.getY() <= bottomRight.getY());
     }
 
-    // O(log n)
+    private void divide()
+    {
+        int xOffset = topLeft.getX() + (bottomRight.getX() - topLeft.getX()) / 2;
+        int yOffset = topLeft.getY() + (bottomRight.getY() - topLeft.getY()) / 2;
+
+        topLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), topLeft.getY()), new QuadPoint(xOffset, yOffset));
+        bottomLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), yOffset), new QuadPoint(xOffset, bottomRight.getY()));
+        topRightTree = new QuadTree<>(new QuadPoint(xOffset, topLeft.getY()), new QuadPoint(xOffset, yOffset));
+        bottomRightTree = new QuadTree<>(new QuadPoint(xOffset, yOffset), new QuadPoint(bottomRight.getX(), bottomRight.getY()));
+    }
+
     public void insert(QuadNode<T> node)
     {
-        if(node == null)
-            return;
+       if(!inBoundaries(node.getPos()))
+           return;
 
-        // Le quadtree ne peut contenir ce point
-        if(!inBoundaries(node.getPos()))
-            return;
+       if(nodes.size() < MAX_CAPACITY)
+       {
+           nodes.add(node);
+           return;
+       }
 
-        // Ce quad tree est divisé au maximum on ne peut plus le diviser
-        if (Math.abs(topLeft.getX() - bottomRight.getX()) <= 1 && Math.abs(topLeft.getY() - bottomRight.getY()) <= 1)
-        {
-            if(currentNode == null)
-                currentNode = node;
-            return;
-        }
+       if(topLeftTree == null)
+           divide();
 
-        // On cherche à déterminer si l'on va à gauche grâce à x:
-        if((topLeft.getX() + bottomRight.getX()) / 2 >= node.getPos().getX())
-        {
-            // On détermine selon y si l'on est en haut ou en bas
-            // Arbre Top Gauche
-            if((topLeft.getY() + bottomRight.getY()) / 2 >= node.getPos().getY())
-            {
-                if(topLeftTree == null)
-                {
-                    topLeftTree = new QuadTree<>(
-                            new QuadPoint(topLeft.getX(), topLeft.getY()),
-                            new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, (topLeft.getY() + bottomRight.getY()) / 2)
-                    );
-                }
-                topLeftTree.insert(node);
-            }
-            else // Arbre Bottom Gauche
-            {
-                if(bottomLeftTree == null)
-                {
-                    bottomLeftTree = new QuadTree<>(
-                            new QuadPoint(topLeft.getX(), (topLeft.getY() + bottomRight.getY()) / 2),
-                            new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, bottomRight.getY())
-                    );
-                }
-                bottomLeftTree.insert(node);
-            }
-        }
-        else // On va à droite
-        {
-            // Arbre Top Right
-            if((topLeft.getY() + bottomRight.getY()) / 2 >= node.getPos().getY())
-            {
-                if(topRightTree == null)
-                {
-                    topRightTree = new QuadTree<>(
-                            new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, topLeft.getY()),
-                            new QuadPoint(bottomRight.getX(), (topLeft.getY() + bottomRight.getY()) / 2)
-                    );
-                }
-                topRightTree.insert(node);
-            }
-            else // Arbre Bottom Right
-            {
-                if(bottomRightTree == null)
-                {
-                    bottomRightTree = new QuadTree<>(
-                            new QuadPoint((topLeft.getX() + bottomRight.getX()) / 2, (topLeft.getY() + bottomRight.getY()) / 2),
-                            new QuadPoint(bottomRight.getX(), bottomRight.getY())
-                    );
-                }
-                bottomRightTree.insert(node);
-            }
-        }
+       if(topLeftTree.inBoundaries(node.getPos()))
+           topLeftTree.insert(node);
+       else if(topRightTree.inBoundaries(node.getPos()))
+           topRightTree.insert(node);
+       else if(bottomLeftTree.inBoundaries(node.getPos()))
+           bottomLeftTree.insert(node);
+       else if(bottomRightTree.inBoundaries(node.getPos()))
+           bottomRightTree.insert(node);
+       // else ERROR Unhandled Partition
     }
 
     // O(log n)
     public QuadNode<T> search(QuadPoint p)
     {
-        QuadNode<T> temp = searchClosest(p);
-
-        if(temp != null)
-        {
-            if(p.compare(temp.getPos()))
-                return temp;
-        }
-
-        return null;
-    }
-
-    // O(log n)
-    public QuadNode<T> searchClosest(QuadPoint p)
-    {
         // Le quadtree courant ne peux le contenir
         if (!inBoundaries(p))
             return null;
 
-        if (currentNode != null)
-            return currentNode;
+        for(QuadNode<T> node : nodes)
+        {
+            if(p.compare(node.getPos()))
+                return node;
+        }
+
+        if(topLeftTree == null)
+            return null;
 
         // Va t'on à gauche ou à droite ?
         // A gauche:
@@ -204,6 +145,6 @@ public class QuadTree<T>
     }
 
     public QuadNode<T> getCurrentNode() {
-        return currentNode;
+        return null;
     }
 }
