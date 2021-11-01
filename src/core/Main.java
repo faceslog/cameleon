@@ -25,6 +25,6 @@ public class Main {
         System.out.println("Node 3:" + quad.search(new QuadPoint(11,11)).getData());
         System.out.println("Is in boundaries (no): " + quad.inBoundaries(new QuadPoint(12,12)));
 
-       // new Game();
+       new Game();
     }
 }

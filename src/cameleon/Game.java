@@ -31,22 +31,18 @@ public class Game {
 	public void play() {
 		init();
 		board.showGrid();
-		System.out.println(board.nbCellColor(CaseColor.RED, board.getQuadTree()));
+		System.out.println(Board.countCellColor(board.getQuadTree(), CaseColor.RED));
 		while (!board.isFull()) {
 			System.out.println(current.getName());
 			current.move(board);
 			board.showGrid();
-			System.out.println("COULEUR : "  + board.nbCellColor(current.getColor(), board.getQuadTree()));
-			System.out.println("TOTAL : "  + board.nbCell(board.getQuadTree()));
+			System.out.println("COULEUR : "  + Board.countCellColor(board.getQuadTree(), current.getColor()));
+			System.out.println("TOTAL : "  + Board.countCellAmount(board.getQuadTree()));
 			changeCurrent();
 			System.out.println();
 		}
 		System.out.println("STOP");
 		end();
-	}
-
-	public void end() {
-		//affichage gagnant + score
 	}
 
 	public void changeCurrent() {
@@ -55,6 +51,10 @@ public class Game {
 		} else if(current.getColor() == CaseColor.RED) {
 			current = J2;
 		}
+	}
+
+	public void end() {
+		//affichage gagnant + score
 	}
 
 }

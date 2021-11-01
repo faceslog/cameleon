@@ -7,128 +7,97 @@ import core.datastruct.QuadTree;
 
 public class Board {
 
-	private int size;
-	private QuadTree<CaseColor> quadTree;
+	private final int size;
+	private final QuadTree<CaseColor> quadTree;
 
 	/**
-	 * 
-	 * @param n
+	 * Count the nodes containing a given color in the quad tree
+	 * We are traveling the tree using Depth First Search
+	 * @param tree QuadTree we are searching in recursively
+	 * @param color the color we are counting
+	 * @return the number of nodes / cells containing this color
 	 */
-	public Board(int n) {
+	static public int countCellColor(QuadTree<CaseColor> tree, CaseColor color)
+	{
+		int count = 0;
+
+		if(tree == null)
+			return 0;
+
+		for(QuadNode<CaseColor> node : tree.getNodes())
+		{
+			if(node.getData() == color)
+				count++;
+		}
+
+		count += countCellColor(tree.getTopLeftTree(), color);
+		count += countCellColor(tree.getTopRightTree(), color);
+		count += countCellColor(tree.getBottomLeftTree(), color);
+		count += countCellColor(tree.getBottomRightTree(), color);
+
+		return count;
+	}
+
+	/**
+	 * Count the amount of node in this quadtree
+	 * We are traveling the tree using Depth First Search
+	 * @param tree QuadTree we are searching in recursively
+	 * @return the number of nodes in the quadtree
+	 */
+	static public int countCellAmount(QuadTree<CaseColor> tree)
+	{
+		int count = 0;
+
+		if(tree == null)
+			return 0;
+
+		count += tree.getNodes().size();
+
+		count += countCellAmount(tree.getTopLeftTree());
+		count += countCellAmount(tree.getTopRightTree());
+		count += countCellAmount(tree.getBottomLeftTree());
+		count += countCellAmount(tree.getBottomRightTree());
+
+		return count;
+	}
+
+	/**
+	 * Créer un board selon la formule du cours
+	 * @param n taille du board 3 * 2^n
+	 */
+	public Board(int n)
+	{
 		size = (int) (3 * Math.pow(2, n));
 		quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
-		//initFull();
 	}
 
-	public void initEmpty() { //juste pour test
-		for(int i = 0; i < size; i++) {
-			for(int j= 0; j < size; j++) {
-				quadTree.insert(new QuadNode(new QuadPoint(j,i),null));
-			}
-		}
+
+	public int getSize() {
+		return size;
 	}
 
-	public void initFull() { //juste pour test bis
-		for(int i = 0; i < size-3; i++) {
-			for(int j= 0; j < size-3; j++) {
-					quadTree.insert(new QuadNode(new QuadPoint(j, i), CaseColor.RED));
-
-			}
-		}
-	}
-
-	public void initColor() {
-		// TODO - implement Board.initColor
-		throw new UnsupportedOperationException();
-	}
-
-	public void readFile() {
-		// TODO - implement Board.readFile
-		throw new UnsupportedOperationException();
+	public QuadTree<CaseColor> getQuadTree() {
+		return quadTree;
 	}
 
 	public boolean isFull() { //on va dire que pour le moment ça passe mais pas sur que ce soit la meilleure méthode niveau efficacité
-		return nbCell(quadTree) == (size * size);
+		return countCellAmount(quadTree) == (size * size);
 	}
 
-	/**
-	 * 
-	 * @param color
-	 */
-	public int nbCellColor(CaseColor color, QuadTree qt) { //du coup erreur -> cause update des cases qui en ajoute une de trop
-		int ret = 0;
-		if (qt.getTopLeftTree() != null) {
-			if (qt.getTopLeftTree().getCurrentNode() != null &&
-					qt.getTopLeftTree().getCurrentNode().getData() == color) {
-				ret++;
-			}
-			ret = ret + nbCellColor(color, qt.getTopLeftTree());
-		}
-		if (qt.getTopRightTree() != null) {
-			if (qt.getTopRightTree().getCurrentNode() != null &&
-					qt.getTopRightTree().getCurrentNode().getData() == color) {
-				ret++;
-			}
-			ret = ret + nbCellColor(color, qt.getTopRightTree());
-		}
-		if(qt.getBottomRightTree() != null){
-			if (qt.getBottomRightTree().getCurrentNode() != null &&
-					qt.getBottomRightTree().getCurrentNode().getData() == color) {
-				ret++;
-			}
-			ret = ret + nbCellColor(color, qt.getBottomRightTree());
-		}
-		if(qt.getBottomLeftTree() != null){
-			if (qt.getBottomLeftTree().getCurrentNode() != null &&
-					qt.getBottomLeftTree().getCurrentNode().getData() == color) {
-				ret++;
-			}
-			ret = ret + nbCellColor(color, qt.getBottomLeftTree());
-		}
-		return ret;
-	}
 
-	public int nbCell(QuadTree qt) { //idem erreur
-		int ret = 0;
-		if (qt.getTopLeftTree() != null) {
-			if (qt.getTopLeftTree().getCurrentNode() != null) {
-				ret++;
-			}
-			ret = ret + nbCell(qt.getTopLeftTree());
-		}
-		if (qt.getTopRightTree() != null) {
-			if (qt.getTopRightTree().getCurrentNode() != null) {
-				ret++;
-			}
-			ret = ret + nbCell(qt.getTopRightTree());
-		}
-		if(qt.getBottomRightTree() != null){
-			if (qt.getBottomRightTree().getCurrentNode() != null) {
-				ret++;
-			}
-			ret = ret + nbCell(qt.getBottomRightTree());
-		}
-		if(qt.getBottomLeftTree() != null){
-			if (qt.getBottomLeftTree().getCurrentNode() != null) {
-				ret++;
-			}
-			ret = ret + nbCell(qt.getBottomLeftTree());
-		}
-		return ret;
-	}
+	//score(J2) = nombre de cases bleues - nombre de cases rouges.
+	public void computeScore(Player player)
+	{
+		if(player == null)
+			throw new NullPointerException("Player cannot be NULL");
 
-	public void calculScore(Player player) { //score(J2) = nombre de cases bleues - nombre de cases rouges.
-		CaseColor color;
-		switch (player.getColor()) {
-			case RED -> color = CaseColor.BLUE;
-			case BLUE -> color = CaseColor.RED;
-			default -> color = null;
-		}
+		// Opposite color of the current player
+		CaseColor color = player.getColor() == CaseColor.RED ? CaseColor.BLUE : CaseColor.RED;
 
-		int nbPlayerColor = nbCellColor(player.getColor(), quadTree);
-		int nbOtherColor = nbCellColor(color, quadTree);
+		int nbPlayerColor = countCellColor(quadTree, player.getColor());
+		int nbOtherColor = countCellColor(quadTree, color);
 
-		player.setScore(nbPlayerColor - nbOtherColor); //peut etre pas besoin de le mettre en attribut de player mais juste retourner le int ??
+		player.setScore(nbPlayerColor - nbOtherColor);
 	}
 
 	public void showGrid() {
@@ -162,12 +131,13 @@ public class Board {
 		}
 	}
 
-	public int getSize() {
-		return size;
+	public void initColor() {
+		// TODO - implement Board.initColor
+		throw new UnsupportedOperationException();
 	}
 
-	public QuadTree<CaseColor> getQuadTree() {
-		return quadTree;
+	public void readFile() {
+		// TODO - implement Board.readFile
+		throw new UnsupportedOperationException();
 	}
-
 }

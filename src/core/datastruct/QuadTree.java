@@ -28,6 +28,27 @@ public class QuadTree<T>
         bottomRightTree = null;
     }
 
+    public QuadTree<T> getTopLeftTree() {
+        return topLeftTree;
+    }
+
+    public QuadTree<T> getTopRightTree() {
+        return topRightTree;
+    }
+
+    public QuadTree<T> getBottomLeftTree() {
+        return bottomLeftTree;
+    }
+
+    public QuadTree<T> getBottomRightTree() {
+        return bottomRightTree;
+    }
+
+    public ArrayList<QuadNode<T>> getNodes() {
+        return nodes;
+    }
+
+    // Theta(1)
     public boolean inBoundaries(QuadPoint point)
     {
         if(point == null)
@@ -37,19 +58,12 @@ public class QuadTree<T>
                     point.getY() >= topLeft.getY() && point.getY() <= bottomRight.getY());
     }
 
-    private void divide()
-    {
-        int xOffset = topLeft.getX() + (bottomRight.getX() - topLeft.getX()) / 2;
-        int yOffset = topLeft.getY() + (bottomRight.getY() - topLeft.getY()) / 2;
-
-        topLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), topLeft.getY()), new QuadPoint(xOffset, yOffset));
-        bottomLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), yOffset), new QuadPoint(xOffset, bottomRight.getY()));
-        topRightTree = new QuadTree<>(new QuadPoint(xOffset, topLeft.getY()), new QuadPoint(xOffset, yOffset));
-        bottomRightTree = new QuadTree<>(new QuadPoint(xOffset, yOffset), new QuadPoint(bottomRight.getX(), bottomRight.getY()));
-    }
-
+    // O(log n)
     public void insert(QuadNode<T> node)
     {
+        if(node == null)
+            return;
+
        if(!inBoundaries(node.getPos()))
            return;
 
@@ -128,23 +142,15 @@ public class QuadTree<T>
         }
     }
 
-    public QuadTree<T> getTopLeftTree() {
-        return topLeftTree;
-    }
+    // Theta(1)
+    private void divide()
+    {
+        int xOffset = topLeft.getX() + (bottomRight.getX() - topLeft.getX()) / 2;
+        int yOffset = topLeft.getY() + (bottomRight.getY() - topLeft.getY()) / 2;
 
-    public QuadTree<T> getTopRightTree() {
-        return topRightTree;
-    }
-
-    public QuadTree<T> getBottomLeftTree() {
-        return bottomLeftTree;
-    }
-
-    public QuadTree<T> getBottomRightTree() {
-        return bottomRightTree;
-    }
-
-    public QuadNode<T> getCurrentNode() {
-        return null;
+        topLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), topLeft.getY()), new QuadPoint(xOffset, yOffset));
+        bottomLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), yOffset), new QuadPoint(xOffset, bottomRight.getY()));
+        topRightTree = new QuadTree<>(new QuadPoint(xOffset, topLeft.getY()), new QuadPoint(xOffset, yOffset));
+        bottomRightTree = new QuadTree<>(new QuadPoint(xOffset, yOffset), new QuadPoint(bottomRight.getX(), bottomRight.getY()));
     }
 }
