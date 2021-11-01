@@ -103,43 +103,16 @@ public class QuadTree<T>
         if(topLeftTree == null)
             return null;
 
-        // Va t'on à gauche ou à droite ?
-        // A gauche:
-        if ((topLeft.getX() + bottomRight.getX()) / 2 >= p.getX())
-        {
-            // Top Gauche
-            if ((topLeft.getY() + bottomRight.getY()) / 2 >= p.getY())
-            {
-                if (topLeftTree == null)
-                    return null;
-                else
-                    return topLeftTree.search(p);
-            }
-            // Bottom Gauche
-            else
-            {
-                if (bottomLeftTree == null)
-                    return null;
-                return bottomLeftTree.search(p);
-            }
-        }
-        else // A droite:
-        {
-            // En haut à droite
-            if ((topLeft.getY() + bottomRight.getY()) / 2 >= p.getY())
-            {
-                if (topRightTree == null)
-                    return null;
-                return topRightTree.search(p);
-            }
-            // En bas à droite
-            else
-            {
-                if (bottomRightTree == null)
-                    return null;
-                return bottomRightTree.search(p);
-            }
-        }
+        if(topLeftTree.inBoundaries(p))
+            topLeftTree.search(p);
+        else if(topRightTree.inBoundaries(p))
+            topRightTree.search(p);
+        else if(bottomLeftTree.inBoundaries(p))
+            bottomLeftTree.search(p);
+        else if(bottomRightTree.inBoundaries(p))
+            bottomRightTree.search(p);
+        //else ERROR Unhandled Partition
+        return null;
     }
 
     // Theta(1)
