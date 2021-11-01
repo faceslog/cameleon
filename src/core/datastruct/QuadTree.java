@@ -62,10 +62,10 @@ public class QuadTree<T>
     public void insert(QuadNode<T> node)
     {
         if(node == null)
-            return;
+            throw new NullPointerException("ERROR: node cannot be NULL");
 
        if(!inBoundaries(node.getPos()))
-           return;
+           throw new IndexOutOfBoundsException("ERROR: Node position not in the quadtree boundaries !");
 
        if(nodes.size() < MAX_CAPACITY)
        {
@@ -85,7 +85,7 @@ public class QuadTree<T>
        else if(bottomRightTree.inBoundaries(node.getPos()))
            bottomRightTree.insert(node);
        else
-           System.out.println("Unhandled Partition ...");
+           throw new RuntimeException("ERROR: Unhandled Partition !");
     }
 
     // O(log n)
@@ -112,8 +112,8 @@ public class QuadTree<T>
             return bottomLeftTree.search(p);
         else if(bottomRightTree.inBoundaries(p))
             return bottomRightTree.search(p);
-        //else ERROR Unhandled Partition
-        return null;
+        else
+            throw new RuntimeException("ERROR: Unhandled Partition !");
     }
 
     // Theta(1)
