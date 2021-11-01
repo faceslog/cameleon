@@ -22,11 +22,18 @@ public class Human extends Player {
         //super.move();
         int x,y;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Coord x : ");
-        x = scanner.nextInt();
-        System.out.println("Coord y : ");
-        y = scanner.nextInt();
-
+        do {
+            System.out.println("Coord x : ");
+            x = scanner.nextInt();
+            System.out.println("Coord y : ");
+            y = scanner.nextInt();
+        } while (!verifMove(x,y,board));
         new Movement(new QuadPoint(x,y), this.getColor(),board);
+    }
+
+    public boolean verifMove(int x, int y, Board board) {
+        return x >= 0 && x < board.getSize() &&
+                y >= 0 && y < board.getSize() &&
+                board.getQuadTree().search(new QuadPoint(x,y)) == null;
     }
 }

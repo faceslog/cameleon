@@ -5,10 +5,44 @@ import core.datastruct.QuadNode;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Board {
 
-	private final int size;
-	private final QuadTree<CaseColor> quadTree;
+	private int size;
+	private QuadTree<CaseColor> quadTree;
+
+
+	/**
+	 * Créer un board selon la formule du cours
+	 * @param n taille du board 3 * 2^n
+	 */
+	public Board(int n)
+	{
+		size = (int) (3 * Math.pow(2, n));
+		quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
+	}
+
+	public Board()
+	{
+		readFile();
+	}
+
+
+	public int getSize() {
+		return size;
+	}
+
+	public QuadTree<CaseColor> getQuadTree() {
+		return quadTree;
+	}
+
+	public boolean isFull() { //on va dire que pour le moment ça passe mais pas sur que ce soit la meilleure méthode niveau efficacité
+		return countCellAmount(quadTree) == (size * size);
+	}
+
 
 	/**
 	 * Count the nodes containing a given color in the quad tree
@@ -61,30 +95,6 @@ public class Board {
 		return count;
 	}
 
-	/**
-	 * Créer un board selon la formule du cours
-	 * @param n taille du board 3 * 2^n
-	 */
-	public Board(int n)
-	{
-		size = (int) (3 * Math.pow(2, n));
-		quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
-	}
-
-
-	public int getSize() {
-		return size;
-	}
-
-	public QuadTree<CaseColor> getQuadTree() {
-		return quadTree;
-	}
-
-	public boolean isFull() { //on va dire que pour le moment ça passe mais pas sur que ce soit la meilleure méthode niveau efficacité
-		return countCellAmount(quadTree) == (size * size);
-	}
-
-
 	//score(J2) = nombre de cases bleues - nombre de cases rouges.
 	public void computeScore(Player player)
 	{
@@ -131,13 +141,31 @@ public class Board {
 		}
 	}
 
-	public void initColor() {
-		// TODO - implement Board.initColor
-		throw new UnsupportedOperationException();
-	}
+	public void readFile()  {
+		try {
+			File file = new File("./docs/test.txt");
+			Scanner sc = new Scanner(file);
 
-	public void readFile() {
-		// TODO - implement Board.readFile
-		throw new UnsupportedOperationException();
+			size = Integer.parseInt(sc.nextLine());
+			quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
+
+			int i = 0;
+			while (sc.hasNextLine()) {
+				String str = sc.nextLine();
+				char[] ch = str.toCharArray();
+
+				for(int j = 0; j < size; j++) {
+					if (ch[j] == 'B') {
+						quadTree.insert(new QuadNode<>(new QuadPoint(j,i), CaseColor.BLUE));
+					} else if (ch[j] == 'R') {
+						quadTree.insert(new QuadNode<>(new QuadPoint(j,i), CaseColor.RED));
+					}
+				}
+				i++;
+			}
+
+		}catch (FileNotFoundException f) {
+			f.printStackTrace();
+		}
 	}
 }

@@ -8,7 +8,7 @@ import cameleon.enums.CaseColor;
 
 public class Movement {
 
-	QuadPoint point;
+	private QuadPoint point;
 	private Board board;
 	private CaseColor color;
 	private QuadNode<CaseColor> current;
@@ -75,9 +75,8 @@ public class Movement {
 		}
 	}
 
-	public boolean verifRules(Rules rule) {
-		// TODO - implement Movement.verifRules
-		throw new UnsupportedOperationException();
+	public boolean verifRules() {
+		return false;
 	}
 
 }
