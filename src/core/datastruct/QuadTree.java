@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class QuadTree<T>
 {
-    final int MAX_CAPACITY = 4;
+    static private final int MAX_CAPACITY = 4;
     ArrayList<QuadNode<T>> nodes;
 
     // Boundaries
-    private final QuadPoint topLeft; // xMin, yMin
-    private final QuadPoint bottomRight; // xMax, yMax
+    private final QuadPoint minTopLeftCorner; // xMin, yMin
+    private final QuadPoint maxBottomRightCorner; // xMax, yMax
 
     // Enfants de cet arbre
     private QuadTree<T> topLeftTree;
@@ -19,8 +19,8 @@ public class QuadTree<T>
 
     public QuadTree(QuadPoint _topLeft, QuadPoint _bottomRight)
     {
-        topLeft = _topLeft;
-        bottomRight = _bottomRight;
+        minTopLeftCorner = _topLeft;
+        maxBottomRightCorner = _bottomRight;
         nodes = new ArrayList<>();
         topLeftTree = null;
         topRightTree = null;
@@ -54,8 +54,8 @@ public class QuadTree<T>
         if(point == null)
             return false;
         else
-            return (point.getX() >= topLeft.getX() && point.getX() <= bottomRight.getX() &&
-                    point.getY() >= topLeft.getY() && point.getY() <= bottomRight.getY());
+            return (point.getX() >= minTopLeftCorner.getX() && point.getX() <= maxBottomRightCorner.getX() &&
+                    point.getY() >= minTopLeftCorner.getY() && point.getY() <= maxBottomRightCorner.getY());
     }
 
     // O(log n)
@@ -84,7 +84,8 @@ public class QuadTree<T>
            bottomLeftTree.insert(node);
        else if(bottomRightTree.inBoundaries(node.getPos()))
            bottomRightTree.insert(node);
-       // else ERROR Unhandled Partition
+       else
+           System.out.println("Unhandled Partition ...");
     }
 
     // O(log n)
@@ -104,13 +105,13 @@ public class QuadTree<T>
             return null;
 
         if(topLeftTree.inBoundaries(p))
-            topLeftTree.search(p);
+           return topLeftTree.search(p);
         else if(topRightTree.inBoundaries(p))
-            topRightTree.search(p);
+            return topRightTree.search(p);
         else if(bottomLeftTree.inBoundaries(p))
-            bottomLeftTree.search(p);
+            return bottomLeftTree.search(p);
         else if(bottomRightTree.inBoundaries(p))
-            bottomRightTree.search(p);
+            return bottomRightTree.search(p);
         //else ERROR Unhandled Partition
         return null;
     }
@@ -118,12 +119,12 @@ public class QuadTree<T>
     // Theta(1)
     private void divide()
     {
-        int xOffset = topLeft.getX() + (bottomRight.getX() - topLeft.getX()) / 2;
-        int yOffset = topLeft.getY() + (bottomRight.getY() - topLeft.getY()) / 2;
+        int xOffset = minTopLeftCorner.getX() + (maxBottomRightCorner.getX() - minTopLeftCorner.getX()) / 2;
+        int yOffset = minTopLeftCorner.getY() + (maxBottomRightCorner.getY() - minTopLeftCorner.getY()) / 2;
 
-        topLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), topLeft.getY()), new QuadPoint(xOffset, yOffset));
-        bottomLeftTree = new QuadTree<>(new QuadPoint(topLeft.getX(), yOffset), new QuadPoint(xOffset, bottomRight.getY()));
-        topRightTree = new QuadTree<>(new QuadPoint(xOffset, topLeft.getY()), new QuadPoint(xOffset, yOffset));
-        bottomRightTree = new QuadTree<>(new QuadPoint(xOffset, yOffset), new QuadPoint(bottomRight.getX(), bottomRight.getY()));
+        topLeftTree = new QuadTree<>(new QuadPoint(minTopLeftCorner.getX(), minTopLeftCorner.getY()), new QuadPoint(xOffset, yOffset));
+        bottomLeftTree = new QuadTree<>(new QuadPoint(minTopLeftCorner.getX(), yOffset), new QuadPoint(xOffset, maxBottomRightCorner.getY()));
+        topRightTree = new QuadTree<>(new QuadPoint(xOffset, minTopLeftCorner.getY()), new QuadPoint(maxBottomRightCorner.getX(), yOffset));
+        bottomRightTree = new QuadTree<>(new QuadPoint(xOffset, yOffset), new QuadPoint(maxBottomRightCorner.getX(), maxBottomRightCorner.getY()));
     }
 }
