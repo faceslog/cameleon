@@ -54,10 +54,10 @@ public class Movement {
 		//check 8 cases autour
 		for (int i = point.getX() - 1; i <= point.getX() + 1; i++)
 		{
-			if(i < 0) continue;
+			if(i < 0 || i >= board.getSize()) continue;
 			for (int j = point.getY() - 1; j <= point.getY()+ 1; j++)
 			{
-				if(j < 0) continue;
+				if(j < 0 || j >= board.getSize()) continue;
 				QuadPoint pos = new QuadPoint(i, j);
 				QuadTree<CaseColor> node = quadTree.search(pos);
 
