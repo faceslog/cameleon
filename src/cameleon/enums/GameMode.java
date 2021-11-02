@@ -1,6 +1,6 @@
 package cameleon.enums;
 
-public enum Rules
+public enum GameMode
 {
 	BRAVE,
 	RECKLESS;

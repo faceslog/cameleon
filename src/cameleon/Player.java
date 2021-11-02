@@ -1,28 +1,29 @@
 package cameleon;
 
 import cameleon.enums.CaseColor;
+import cameleon.enums.GameMode;
 
-public class Player {
+public abstract class Player {
 
 	private int score;
 	private String name;
 	private CaseColor color;
+	private GameMode gameMode;
 
 	/**
 	 *
 	 * @param _name
 	 * @param _color
 	 */
-	public Player(String _name, CaseColor _color) {
+	public Player(String _name, CaseColor _color, GameMode _gameMode)
+	{
 		score = 0;
 		name = _name;
 		color = _color;
+		gameMode = _gameMode;
 	}
 
-	public void move(Board board) {
-		// TODO - implement Player.move
-		throw new UnsupportedOperationException();
-	}
+	public abstract void move(Board board);
 
 	public void setScore(int score) {
 		this.score = score;

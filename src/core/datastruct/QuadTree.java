@@ -119,8 +119,9 @@ public class QuadTree<T>
     // Theta(1)
     private void divide()
     {
-        int xOffset = minTopLeftCorner.getX() + (maxBottomRightCorner.getX() - minTopLeftCorner.getX()) / 2;
-        int yOffset = minTopLeftCorner.getY() + (maxBottomRightCorner.getY() - minTopLeftCorner.getY()) / 2;
+        // minTopLeftCorner.getX() + (maxBottomRightCorner.getX() - minTopLeftCorner.getX()) / 2
+        int xOffset = (maxBottomRightCorner.getX() - minTopLeftCorner.getX()) >> 1;
+        int yOffset = (maxBottomRightCorner.getY() - minTopLeftCorner.getY()) >> 1;
 
         topLeftTree = new QuadTree<>(new QuadPoint(minTopLeftCorner.getX(), minTopLeftCorner.getY()), new QuadPoint(xOffset, yOffset));
         bottomLeftTree = new QuadTree<>(new QuadPoint(minTopLeftCorner.getX(), yOffset), new QuadPoint(xOffset, maxBottomRightCorner.getY()));

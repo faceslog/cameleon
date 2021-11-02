@@ -1,6 +1,5 @@
 package cameleon;
 
-import cameleon.enums.Rules;
 import core.datastruct.QuadNode;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;

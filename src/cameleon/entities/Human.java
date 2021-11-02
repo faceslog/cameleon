@@ -6,6 +6,7 @@ import cameleon.Board;
 import cameleon.Player;
 import cameleon.enums.CaseColor;
 import cameleon.Movement;
+import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 
 public class Human extends Player {
@@ -13,8 +14,8 @@ public class Human extends Player {
      * @param _name
      * @param _color
      */
-    public Human(String _name, CaseColor _color) {
-        super(_name, _color);
+    public Human(String _name, CaseColor _color, GameMode _gameMode) {
+        super(_name, _color, _gameMode);
     }
 
     @Override

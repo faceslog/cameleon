@@ -2,6 +2,7 @@ package cameleon;
 
 import cameleon.entities.Human;
 import cameleon.enums.CaseColor;
+import cameleon.enums.GameMode;
 
 import java.util.Scanner;
 
@@ -17,8 +18,8 @@ public class Game {
 	}
 
 	public void init() {
-		J1 = new Human("J1", CaseColor.RED);
-		J2 = new Human("J2", CaseColor.BLUE);
+		J1 = new Human("J1", CaseColor.RED, GameMode.BRAVE);
+		J2 = new Human("J2", CaseColor.BLUE, GameMode.BRAVE);
 		current = J1;
 
 		Scanner scanner = new Scanner(System.in);
