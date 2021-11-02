@@ -1,6 +1,5 @@
 package cameleon;
 
-import core.datastruct.QuadNode;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 import cameleon.enums.CaseColor;
@@ -10,7 +9,7 @@ public class Movement {
 	private QuadPoint point;
 	private Board board;
 	private CaseColor color;
-	private QuadNode<CaseColor> current;
+	private QuadTree<CaseColor> current;
 	private QuadTree<CaseColor> quadTree;
 
 	/**
@@ -44,7 +43,7 @@ public class Movement {
 			current = quadTree.search(point); //recherche le point s'il n'existe pas on l'insert
 			if(current == null)
 			{
-				quadTree.insert(new QuadNode<>(point, color));
+				quadTree.insert(point, color);
 				updateColor();
 			}
 		}
@@ -60,7 +59,7 @@ public class Movement {
 			{
 				if(j < 0) continue;
 				QuadPoint pos = new QuadPoint(i, j);
-				QuadNode<CaseColor> node = quadTree.search(pos);
+				QuadTree<CaseColor> node = quadTree.search(pos);
 
 				if(node != null)
 				{

@@ -4,49 +4,34 @@ import java.util.ArrayList;
 
 public class QuadTree<T>
 {
-    static private final int MAX_CAPACITY = 4;
-    ArrayList<QuadNode<T>> nodes;
-
-    // Boundaries
-    private final QuadPoint minTopLeftCorner; // xMin, yMin
-    private final QuadPoint maxBottomRightCorner; // xMax, yMax
-
-    // Enfants de cet arbre
-    private QuadTree<T> topLeftTree;
-    private QuadTree<T> topRightTree;
-    private QuadTree<T> bottomLeftTree;
-    private QuadTree<T> bottomRightTree;
-
+    // Region Tree
     public QuadTree(QuadPoint _topLeft, QuadPoint _bottomRight)
     {
-        minTopLeftCorner = _topLeft;
-        maxBottomRightCorner = _bottomRight;
+        if(_topLeft == null || _bottomRight == null)
+            throw new NullPointerException("[ERROR] : QuadPoint _topLeft, _bottomRegion cannot be null");
+
+        if(_topLeft.getX() > _bottomRight.getX() || _topLeft.getY() > _bottomRight.getY())
+            throw new ArithmeticException("[ERROR] : Cannot create a negative quad tree");
+
         nodes = new ArrayList<>();
-        topLeftTree = null;
-        topRightTree = null;
-        bottomLeftTree = null;
-        bottomRightTree = null;
+        for(int i = 0; i < MAX_CAPACITY; i++)
+        {
+            nodes.add(i, new QuadTree<>());
+        }
+
+        topLeft = _topLeft;
+        bottomRight = _bottomRight;
+        pos = null;
+        data = null;
     }
 
-    public QuadTree<T> getTopLeftTree() {
-        return topLeftTree;
+    public QuadPoint getPos() {
+        return pos;
     }
 
-    public QuadTree<T> getTopRightTree() {
-        return topRightTree;
-    }
+    public T getData() { return data; }
 
-    public QuadTree<T> getBottomLeftTree() {
-        return bottomLeftTree;
-    }
-
-    public QuadTree<T> getBottomRightTree() {
-        return bottomRightTree;
-    }
-
-    public ArrayList<QuadNode<T>> getNodes() {
-        return nodes;
-    }
+    public void setData(T _data) {  data = _data;  }
 
     // Theta(1)
     public boolean inBoundaries(QuadPoint point)
@@ -54,78 +39,142 @@ public class QuadTree<T>
         if(point == null)
             return false;
         else
-            return (point.getX() >= minTopLeftCorner.getX() && point.getX() <= maxBottomRightCorner.getX() &&
-                    point.getY() >= minTopLeftCorner.getY() && point.getY() <= maxBottomRightCorner.getY());
+            return (point.getX() >= topLeft.getX() && point.getX() <= bottomRight.getX() &&
+                    point.getY() >= topLeft.getY() && point.getY() <= bottomRight.getY());
     }
 
-    // O(log n)
-    public void insert(QuadNode<T> node)
+    public void insert(QuadPoint _pos, T _data)
     {
-        if(node == null)
-            throw new NullPointerException("ERROR: node cannot be NULL");
+        if(_data == null)
+            throw new NullPointerException("[ERROR] : insert(_pos, _data) args cannot be null !");
 
-       if(!inBoundaries(node.getPos()))
-           throw new IndexOutOfBoundsException("ERROR: Node position not in the quadtree boundaries !");
+        if(!inBoundaries(_pos))
+            throw new IndexOutOfBoundsException("[ERROR] : Leaf position not in the quadtree boundaries !");
 
-       if(nodes.size() < MAX_CAPACITY)
-       {
-           nodes.add(node);
-           return;
-       }
+        // Shift bits by 1 to the right >> easier than writing the redundant division
+        int xOffset = (topLeft.getX() + bottomRight.getX()) >> 1;
+        int yOffset = (topLeft.getY() + bottomRight.getY()) >> 1;
 
-       if(topLeftTree == null)
-           divide();
+        short index = getRegionIndex(_pos, new QuadPoint(xOffset, yOffset));
 
-       if(topLeftTree.inBoundaries(node.getPos()))
-           topLeftTree.insert(node);
-       else if(topRightTree.inBoundaries(node.getPos()))
-           topRightTree.insert(node);
-       else if(bottomLeftTree.inBoundaries(node.getPos()))
-           bottomLeftTree.insert(node);
-       else if(bottomRightTree.inBoundaries(node.getPos()))
-           bottomRightTree.insert(node);
-       else
-           throw new RuntimeException("ERROR: Unhandled Partition !");
-    }
-
-    // O(log n)
-    public QuadNode<T> search(QuadPoint p)
-    {
-        // Le quadtree courant ne peux le contenir
-        if (!inBoundaries(p))
-            return null;
-
-        for(QuadNode<T> node : nodes)
+        // If it's a region node
+        if(nodes.get(index).topLeft != null)
         {
-            if(p.compare(node.getPos()))
-                return node;
+            nodes.get(index).insert(_pos, _data);
+            return;
         }
 
-        if(topLeftTree == null)
-            return null;
+        // If it's en empty node there is no data and no topLeft corner
+        if(nodes.get(index).topLeft == null && nodes.get(index).getData() == null)
+        {
+            nodes.set(index, new QuadTree<>(_pos, _data));
+            return;
+        }
 
-        if(topLeftTree.inBoundaries(p))
-           return topLeftTree.search(p);
-        else if(topRightTree.inBoundaries(p))
-            return topRightTree.search(p);
-        else if(bottomLeftTree.inBoundaries(p))
-            return bottomLeftTree.search(p);
-        else if(bottomRightTree.inBoundaries(p))
-            return bottomRightTree.search(p);
-        else
-            throw new RuntimeException("ERROR: Unhandled Partition !");
+        QuadPoint posToRelocate =  nodes.get(index).getPos();
+        T dataToRelocate = nodes.get(index).getData();
+
+        // Divide the QuadTree
+        switch (index)
+        {
+            case TOP_LEFT -> nodes.set(index, new QuadTree<>(topLeft, new QuadPoint(xOffset, yOffset)));
+            case TOP_RIGHT -> nodes.set(index, new QuadTree<>(
+                    new QuadPoint(xOffset + 1, topLeft.getY()),
+                    new QuadPoint(bottomRight.getX(), yOffset))
+            );
+            case BOTTOM_RIGHT -> nodes.set(index, new QuadTree<>(new QuadPoint(xOffset + 1, yOffset +1), bottomRight));
+            case BOTTOM_LEFT -> nodes.set(index, new QuadTree<>(
+                    new QuadPoint(topLeft.getX(), yOffset + 1),
+                    new QuadPoint(xOffset, bottomRight.getY()))
+            );
+            default -> throw new IndexOutOfBoundsException("Unhandled Partition during Insertion");
+        }
+
+        nodes.get(index).insert(posToRelocate, dataToRelocate);
+        nodes.get(index).insert(_pos, _data);
     }
 
-    // Theta(1)
-    private void divide()
+    public QuadTree<T> search(QuadPoint point)
     {
-        // minTopLeftCorner.getX() + (maxBottomRightCorner.getX() - minTopLeftCorner.getX()) / 2
-        int xOffset = (maxBottomRightCorner.getX() - minTopLeftCorner.getX()) >> 1;
-        int yOffset = (maxBottomRightCorner.getY() - minTopLeftCorner.getY()) >> 1;
+        if(!inBoundaries(point))
+            throw new IndexOutOfBoundsException("Point " + point + " is not in the QuadTree boundaries ...");
 
-        topLeftTree = new QuadTree<>(new QuadPoint(minTopLeftCorner.getX(), minTopLeftCorner.getY()), new QuadPoint(xOffset, yOffset));
-        bottomLeftTree = new QuadTree<>(new QuadPoint(minTopLeftCorner.getX(), yOffset), new QuadPoint(xOffset, maxBottomRightCorner.getY()));
-        topRightTree = new QuadTree<>(new QuadPoint(xOffset, minTopLeftCorner.getY()), new QuadPoint(maxBottomRightCorner.getX(), yOffset));
-        bottomRightTree = new QuadTree<>(new QuadPoint(xOffset, yOffset), new QuadPoint(maxBottomRightCorner.getX(), maxBottomRightCorner.getY()));
+        int xOffset = (topLeft.getX() + bottomRight.getX()) >> 1;
+        int yOffset = (topLeft.getY() + bottomRight.getY()) >> 1;
+        short index = getRegionIndex(point, new QuadPoint(xOffset, yOffset));
+
+        // If Region Node
+        if(nodes.get(index).topLeft != null)
+            return nodes.get(index).search(point);
+
+        // If Empty Node
+        if(nodes.get(index).topLeft == null && nodes.get(index).getData() == null)
+            return null;
+
+        if(point.compare(nodes.get(index).getPos()))
+            return nodes.get(index);
+
+        return null;
+    }
+
+    public ArrayList<QuadTree<T>> getNodes() { return nodes; }
+
+    ////////////// PRIVATE MEMBERS //////////////
+
+    static private final short TOP_LEFT = 0;
+    static private final short TOP_RIGHT = 1;
+    static private final short BOTTOM_RIGHT = 2;
+    static private final short BOTTOM_LEFT = 3;
+    static private final short MAX_CAPACITY = 4;
+
+    private final ArrayList<QuadTree<T>> nodes;
+
+    // Region
+    private final QuadPoint topLeft; // xMin, yMin
+    private final QuadPoint bottomRight; // xMax, yMax
+
+    // Leaf
+    private final QuadPoint pos;
+    private T data;
+
+    // Empty Node
+    private QuadTree()
+    {
+        nodes = null;
+        topLeft = null;
+        bottomRight = null;
+        pos = null;
+        data = null;
+    }
+
+    // Point Tree (Represented by a leaf)
+    private QuadTree(QuadPoint _pos, T _data)
+    {
+        nodes = null;
+        topLeft = null;
+        bottomRight = null;
+        pos = _pos;
+        data = _data;
+    }
+
+    private short getRegionIndex(QuadPoint pos, QuadPoint offsets)
+    {
+        if(pos == null)
+            throw new NullPointerException("[ERROR] : point cannot be null");
+
+        if(pos.getX() <= offsets.getX())
+        {
+            if(pos.getY() <= offsets.getY())
+                return TOP_LEFT; // Top Left
+            else
+                return BOTTOM_LEFT; // Bottom Left
+        }
+        else
+        {
+            if(pos.getY() <= offsets.getY())
+                return TOP_RIGHT; // Top Right
+            else
+                return BOTTOM_RIGHT; // Bottom Right
+        }
     }
 }

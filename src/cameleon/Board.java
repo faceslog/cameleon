@@ -1,7 +1,6 @@
 package cameleon;
 
 import cameleon.enums.CaseColor;
-import core.datastruct.QuadNode;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 
@@ -58,16 +57,17 @@ public class Board {
 		if(tree == null)
 			return 0;
 
-		for(QuadNode<CaseColor> node : tree.getNodes())
+		// Empty Node or LeafNode
+		if(tree.getNodes() == null)
+			return 0;
+
+		for(QuadTree<CaseColor> node : tree.getNodes())
 		{
 			if(node.getData() == color)
 				count++;
+			// On compte pour chaque sous arbre de manière récursive
+			count += countCellColor(node, color);
 		}
-
-		count += countCellColor(tree.getTopLeftTree(), color);
-		count += countCellColor(tree.getTopRightTree(), color);
-		count += countCellColor(tree.getBottomLeftTree(), color);
-		count += countCellColor(tree.getBottomRightTree(), color);
 
 		return count;
 	}
@@ -85,12 +85,18 @@ public class Board {
 		if(tree == null)
 			return 0;
 
-		count += tree.getNodes().size();
+		// Empty Node or LeafNode
+		if(tree.getNodes() == null)
+			return 0;
 
-		count += countCellAmount(tree.getTopLeftTree());
-		count += countCellAmount(tree.getTopRightTree());
-		count += countCellAmount(tree.getBottomLeftTree());
-		count += countCellAmount(tree.getBottomRightTree());
+		for(QuadTree<CaseColor> node : tree.getNodes())
+		{
+			if(node.getData() != null)
+				count++;
+
+			// On compte pour chaque sous arbre de manière récursive
+			count += countCellAmount(node);
+		}
 
 		return count;
 	}
@@ -122,7 +128,7 @@ public class Board {
 
 			for(int j= 0; j < size; j++)
 			{
-				QuadNode<CaseColor> node = quadTree.search(new QuadPoint(j,i));
+				QuadTree<CaseColor> node = quadTree.search(new QuadPoint(j,i));
 				if(node != null)
 				{
 						switch (node.getData())
@@ -156,9 +162,9 @@ public class Board {
 
 				for(int j = 0; j < size; j++) {
 					if (ch[j] == 'B') {
-						quadTree.insert(new QuadNode<>(new QuadPoint(j,i), CaseColor.BLUE));
+						quadTree.insert(new QuadPoint(j,i), CaseColor.BLUE);
 					} else if (ch[j] == 'R') {
-						quadTree.insert(new QuadNode<>(new QuadPoint(j,i), CaseColor.RED));
+						quadTree.insert(new QuadPoint(j,i), CaseColor.RED);
 					}
 				}
 				i++;
