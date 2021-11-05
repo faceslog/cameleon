@@ -2,39 +2,32 @@ package cameleon.entities;
 
 import java.util.Scanner;
 
-import cameleon.Board;
-import cameleon.Player;
-import cameleon.enums.CaseColor;
-import cameleon.Movement;
-import cameleon.enums.GameMode;
-import core.datastruct.QuadPoint;
+import cameleon.*;
 
 public class Human extends Player {
-    /**
-     * @param _name
-     * @param _color
-     */
-    public Human(String _name, CaseColor _color, GameMode _gameMode) {
-        super(_name, _color, _gameMode);
+
+    public Human(int _playerId, Game _game) {
+        super(_playerId, _game);
     }
 
     @Override
-    public void move(Board board) {
-        //super.move();
+    public void move()
+    {
         int x,y;
         Scanner scanner = new Scanner(System.in);
         do {
-            System.out.println("Coord x : ");
+            System.out.println("Coords x : ");
             x = scanner.nextInt();
-            System.out.println("Coord y : ");
+            System.out.println("Coords y : ");
             y = scanner.nextInt();
-        } while (!verifMove(x,y,board));
-        new Movement(new QuadPoint(x,y), this.getColor(),board);
+        } while (!checkMove(x,y, getGameRef().getBoard()));
+
+        System.out.println("X : " + x + " - Y : " + y);
+        getGameRef().getBoard().nextMove(x,y);
     }
 
-    public boolean verifMove(int x, int y, Board board) {
-        return x >= 0 && x < board.getSize() &&
-                y >= 0 && y < board.getSize() &&
-                board.getQuadTree().search(new QuadPoint(x,y)) == null;
+    private boolean checkMove(int x, int y, Board board)
+    {
+        return board.doesSquareExist(x, y) && board.getSquares()[x][y] == Globals.FREE_SQUARE;
     }
 }

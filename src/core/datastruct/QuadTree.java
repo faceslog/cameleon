@@ -64,8 +64,7 @@ public class QuadTree<T>
             return;
         }
 
-        // If it's en empty node there is no data and no topLeft corner
-        if(nodes.get(index).topLeft == null && nodes.get(index).getData() == null)
+        if(nodes.get(index).isEmpty())
         {
             nodes.set(index, new QuadTree<>(_pos, _data));
             return;
@@ -107,17 +106,34 @@ public class QuadTree<T>
         if(nodes.get(index).topLeft != null)
             return nodes.get(index).search(point);
 
-        // If Empty Node
-        if(nodes.get(index).topLeft == null && nodes.get(index).getData() == null)
-            return null;
+        if(nodes.get(index).isEmpty())
+            return new QuadTree<>(); // empty node
 
         if(point.compare(nodes.get(index).getPos()))
             return nodes.get(index);
 
-        return null;
+        return new QuadTree<>(); // empty node
     }
 
     public ArrayList<QuadTree<T>> getNodes() { return nodes; }
+
+    // Query all points tree in the given range recursively
+    public ArrayList<QuadTree<T>> queryRange(QuadPoint min, QuadPoint max)
+    {
+        if(!inBoundaries(min) || !inBoundaries(max))
+            return new ArrayList<>();
+
+        ArrayList<QuadTree<T>> ret = new ArrayList<>();
+        queryRange(min, max, ret);
+
+        return ret;
+    }
+
+    // Return true if it's an empty node
+    public boolean isEmpty()
+    {
+        return topLeft == null && pos == null;
+    }
 
     ////////////// PRIVATE MEMBERS //////////////
 
@@ -157,6 +173,25 @@ public class QuadTree<T>
         data = _data;
     }
 
+    // Query all points in the given range recursively
+    private void queryRange(QuadPoint min, QuadPoint max, ArrayList<QuadTree<T>> ret)
+    {
+        // If we are in a region tree recursively get to the leaf
+        if(topLeft != null)
+        {
+            for(QuadTree<T> node : nodes)
+                node.queryRange(min, max, ret);
+            return;
+        }
+        // If we are in a leaf
+        if(data != null)
+        {
+            // Check if the point is in the given range
+            if(pos.getX() >= min.getX() && pos.getY() >= min.getY() && pos.getX() <= max.getX() && pos.getY() <= max.getY())
+                ret.add(this);
+        }
+    }
+
     private short getRegionIndex(QuadPoint pos, QuadPoint offsets)
     {
         if(pos == null)
@@ -165,16 +200,16 @@ public class QuadTree<T>
         if(pos.getX() <= offsets.getX())
         {
             if(pos.getY() <= offsets.getY())
-                return TOP_LEFT; // Top Left
+                return TOP_LEFT;
             else
-                return BOTTOM_LEFT; // Bottom Left
+                return BOTTOM_LEFT;
         }
         else
         {
             if(pos.getY() <= offsets.getY())
-                return TOP_RIGHT; // Top Right
+                return TOP_RIGHT;
             else
-                return BOTTOM_RIGHT; // Bottom Right
+                return BOTTOM_RIGHT;
         }
     }
 }
