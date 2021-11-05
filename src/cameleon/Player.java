@@ -1,44 +1,38 @@
 package cameleon;
 
-import cameleon.enums.CaseColor;
-import cameleon.enums.GameMode;
-
 public abstract class Player {
 
-	private int score;
-	private String name;
-	private CaseColor color;
-	private GameMode gameMode;
+	private final Integer playerId;
+	private final Game gameRef;
+	private int numberSquare;
 
-	/**
-	 *
-	 * @param _name
-	 * @param _color
-	 */
-	public Player(String _name, CaseColor _color, GameMode _gameMode)
+	public Player(int _playerId, Game _game)
 	{
-		score = 0;
-		name = _name;
-		color = _color;
-		gameMode = _gameMode;
+		playerId = _playerId;
+		gameRef = _game;
+		numberSquare = 0;
 	}
 
-	public abstract void move(Board board);
+	public abstract void move();
 
-	public void setScore(int score) {
-		this.score = score;
+	public int getNumberSquare() {
+		return numberSquare;
 	}
 
-	public int getScore() {
-		return score;
+	public void setNumberSquare(int numberSquare) {
+		this.numberSquare = numberSquare;
 	}
 
-	public CaseColor getColor() {
-		return color;
+	public Integer getPlayerId() {
+		return playerId;
 	}
 
-	public String getName() {
-		return name;
+	public Game getGameRef() {
+		return gameRef;
 	}
 
+	public boolean equals(Player player)
+	{
+		return playerId.equals(player.getPlayerId());
+	}
 }

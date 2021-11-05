@@ -1,177 +1,98 @@
 package cameleon;
 
-import cameleon.enums.CaseColor;
-import core.datastruct.QuadPoint;
-import core.datastruct.QuadTree;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 public class Board {
 
-	private int size;
-	private QuadTree<CaseColor> quadTree;
+	private final int size;
+	private final Integer[][] squares;
+	private final Game gameRef;
 
-
-	/**
-	 * Créer un board selon la formule du cours
-	 * @param n taille du board 3 * 2^n
-	 */
-	public Board(int n)
+	public Board(int n, Game _gameRef)
 	{
 		size = (int) (3 * Math.pow(2, n));
-		quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
+		squares = new Integer[size][size];
+		gameRef = _gameRef;
 	}
 
-	public Board()
+	public Board(int _size, Integer[][] _squares, Game _gameRef)
 	{
-		readFile();
+		size = _size;
+		squares = _squares;
+		gameRef = _gameRef;
 	}
 
-
-	public int getSize() {
-		return size;
-	}
-
-	public QuadTree<CaseColor> getQuadTree() {
-		return quadTree;
-	}
-
-	public boolean isFull() { //on va dire que pour le moment ça passe mais pas sur que ce soit la meilleure méthode niveau efficacité
-		return countCellAmount(quadTree) == (size * size);
-	}
-
-
-	/**
-	 * Count the nodes containing a given color in the quad tree
-	 * We are traveling the tree using Depth First Search
-	 * @param tree QuadTree we are searching in recursively
-	 * @param color the color we are counting
-	 * @return the number of nodes / cells containing this color
-	 */
-	static public int countCellColor(QuadTree<CaseColor> tree, CaseColor color)
+	public boolean isFull()
 	{
-		int count = 0;
-
-		if(tree == null)
-			return 0;
-
-		// Empty Node or LeafNode
-		if(tree.getNodes() == null)
-			return 0;
-
-		for(QuadTree<CaseColor> node : tree.getNodes())
-		{
-			if(node.getData() == color)
-				count++;
-			// On compte pour chaque sous arbre de manière récursive
-			count += countCellColor(node, color);
-		}
-
-		return count;
+		return (gameRef.getPlayer1().getNumberSquare() + gameRef.getPlayer2().getNumberSquare()) == (size * size);
 	}
 
-	/**
-	 * Count the amount of node in this quadtree
-	 * We are traveling the tree using Depth First Search
-	 * @param tree QuadTree we are searching in recursively
-	 * @return the number of nodes in the quadtree
-	 */
-	static public int countCellAmount(QuadTree<CaseColor> tree)
+	public void showGrid()
 	{
-		int count = 0;
-
-		if(tree == null)
-			return 0;
-
-		// Empty Node or LeafNode
-		if(tree.getNodes() == null)
-			return 0;
-
-		for(QuadTree<CaseColor> node : tree.getNodes())
-		{
-			if(node.getData() != null)
-				count++;
-
-			// On compte pour chaque sous arbre de manière récursive
-			count += countCellAmount(node);
-		}
-
-		return count;
-	}
-
-	//score(J2) = nombre de cases bleues - nombre de cases rouges.
-	public void computeScore(Player player)
-	{
-		if(player == null)
-			throw new NullPointerException("Player cannot be NULL");
-
-		// Opposite color of the current player
-		CaseColor color = player.getColor() == CaseColor.RED ? CaseColor.BLUE : CaseColor.RED;
-
-		int nbPlayerColor = countCellColor(quadTree, player.getColor());
-		int nbOtherColor = countCellColor(quadTree, color);
-
-		player.setScore(nbPlayerColor - nbOtherColor);
-	}
-
-	public void showGrid() {
 		System.out.print("\t\t");
-		for(int k = 0; k < size; k++) {
+		for(int k = 0; k < size; k++)
 			System.out.print("\t" + k + "\t");
-		}
+
 		System.out.println();
-		for(int i = 0; i < size; i++)
+		for(int i = 0; i < size; i++) //y
 		{
 			System.out.print("\t" + i + "\t");
 
-			for(int j= 0; j < size; j++)
+			for(int j = 0; j < size; j++) //x
 			{
-				QuadTree<CaseColor> node = quadTree.search(new QuadPoint(j,i));
-				if(node != null)
-				{
-						switch (node.getData())
-						{
-							case BLUE -> System.out.print("\tB\t");
-							case RED -> System.out.print("\tR\t");
-							default -> System.out.print("\t⊡\t");
-						}
-				}
+				Integer squareId = squares[j][i];
+
+				if(gameRef.getPlayer1().getPlayerId() == squareId)
+					System.out.print(Globals.ANSI_RED +"\tR\t" + Globals.ANSI_RESET);
+				else if(gameRef.getPlayer2().getPlayerId() == squareId)
+					System.out.print(Globals.ANSI_BLUE + "\tB\t" + Globals.ANSI_RESET);
 				else
-				{
 					System.out.print("\t⊡\t");
-				}
 			}
 			System.out.println();
 		}
 	}
 
-	public void readFile()  {
-		try {
-			File file = new File("./docs/test.txt");
-			Scanner sc = new Scanner(file);
+	public int getSize() {
+		return size;
+	}
 
-			size = Integer.parseInt(sc.nextLine());
-			quadTree = new QuadTree<>(new QuadPoint(0, 0), new QuadPoint(size - 1, size - 1));
+	public Integer[][] getSquares() {	return squares;	}
 
-			int i = 0;
-			while (sc.hasNextLine()) {
-				String str = sc.nextLine();
-				char[] ch = str.toCharArray();
+	public boolean doesSquareExist(int x, int y)
+	{
+		return ((x >= 0) && (x < size) && (y >= 0) && (y < size));
+	}
 
-				for(int j = 0; j < size; j++) {
-					if (ch[j] == 'B') {
-						quadTree.insert(new QuadPoint(j,i), CaseColor.BLUE);
-					} else if (ch[j] == 'R') {
-						quadTree.insert(new QuadPoint(j,i), CaseColor.RED);
+	// TO FIX: Maybe move it to another class ?? We'll decide later
+	public void nextMove(int x, int y)//update color si la case est deja d'une couleur - check 8 cases autour
+	{
+		if (squares[x][y] == Globals.FREE_SQUARE)
+		{
+			squares[x][y] = gameRef.getCurrent().getPlayerId();
+			gameRef.getCurrent().setNumberSquare(gameRef.getCurrent().getNumberSquare() + 1);
+			updateColorBrave(x, y);
+		}
+	}
+
+	private void updateColorBrave(int x, int y)
+	{
+		for (int i = x - 1; i <= y + 1; i++)
+		{
+			if(i < 0 || i >= size) continue;
+
+			for (int j = y - 1; j <= y+ 1; j++)
+			{
+				if(j < 0 || j >= size) continue;
+
+				if(squares[i][j] != Globals.FREE_SQUARE)
+				{
+					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
+					{
+						gameRef.getNotCurrent().setNumberSquare(gameRef.getNotCurrent().getNumberSquare() - 1);
+						gameRef.getCurrent().setNumberSquare(gameRef.getCurrent().getNumberSquare() + 1);
+						squares[i][j] = gameRef.getCurrent().getPlayerId();
 					}
 				}
-				i++;
 			}
-
-		}catch (FileNotFoundException f) {
-			f.printStackTrace();
 		}
 	}
 }
