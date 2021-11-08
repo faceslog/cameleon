@@ -34,7 +34,7 @@ public class Bot extends Player {
 					{
 						point = quadPoint;
 						max = evalCase;
-						if(max == Globals.BRAVE_MAX_CASE_EARN) break;
+						if(max == getGameRef().getNotCurrent().getNumberSquare() || max == Globals.BRAVE_MAX_CASE_EARN) break;
 					}
 				}
 			}

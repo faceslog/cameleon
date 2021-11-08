@@ -17,6 +17,8 @@ public class Board {
 		size = (int) (Globals.ZONE_SIZE * Math.pow(2, n));
 		squares = new int[size][size];
 		gameRef = _gameRef;
+		if(gameRef.getGameMode() == GameMode.RECKLESS)
+			initQuadTree();
 	}
 
 	public Board(int _size, int[][] _squares, Game _gameRef)
@@ -24,6 +26,8 @@ public class Board {
 		size = _size;
 		squares = _squares;
 		gameRef = _gameRef;
+		if(gameRef.getGameMode() == GameMode.RECKLESS)
+			initQuadTree();
 	}
 
 	public boolean isFull()
@@ -82,19 +86,7 @@ public class Board {
 		}
 	}
 
-	private void initQuadTree()
-	{
-		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
-		for(int i = 0; i <= regionAmount; i++)
-		{
-			for(int j = 0; j <= regionAmount; j++)
-			{
-				QuadPoint pos = new QuadPoint(i, j);
-				regionQuadTree.insert(pos, new Region(new QuadPoint(i*Globals.ZONE_SIZE, j*Globals.ZONE_SIZE),this));
-			}
-		}
-	}
-
+	// ----------------- BRAVE -----------------
 	private void updateColorBrave(int x, int y)
 	{
 		for (int i = x - 1; i <= x + 1; i++)
@@ -104,7 +96,7 @@ public class Board {
 			for (int j = y - 1; j <= y+ 1; j++)
 			{
 				if(j < 0 || j >= size) continue;
-				
+
 				if(squares[i][j] != Globals.FREE_SQUARE)
 				{
 					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
@@ -118,8 +110,33 @@ public class Board {
 		}
 	}
 
+	// ----------------- RECKLESS -----------------
+
+	private void initQuadTree()
+	{
+		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
+		for(int i = 0; i <= regionAmount; i++)
+		{
+			for(int j = 0; j <= regionAmount; j++)
+			{
+				QuadPoint pos = new QuadPoint(i, j);
+				regionQuadTree.insert(pos, createRegion(i, j));
+			}
+		}
+	}
+
+	private Region createRegion(int i, int j)
+	{
+		int minX = i*Globals.ZONE_SIZE;
+		int minY = j*Globals.ZONE_SIZE;
+		return new Region(new QuadPoint(minX,minY),
+				new QuadPoint(minX + Globals.ZONE_SIZE, minY + Globals.ZONE_SIZE), this);
+	}
+
+
 	private void updateColorReckless(int x, int y)
 	{
-		// TO DO
+
 	}
+
 }

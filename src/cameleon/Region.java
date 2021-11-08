@@ -5,12 +5,16 @@ import core.datastruct.QuadPoint;
 public class Region
 {
     private int squareTaken;
+    private QuadPoint topLeft;
+    private QuadPoint bottomRight;
+
+    // En a t'on réellement besoin ???
     private Board boardRef;
 
-    private QuadPoint topLeft;
-
-    public Region(QuadPoint topLeft, Board _boardRef)
+    public Region(QuadPoint _topLeft, QuadPoint _bottomRight, Board _boardRef)
     {
+        topLeft = _topLeft;
+        bottomRight = _bottomRight;
         squareTaken = 0;
         boardRef = _boardRef;
     }
