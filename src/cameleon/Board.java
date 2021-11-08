@@ -75,14 +75,14 @@ public class Board {
 
 	private void updateColorBrave(int x, int y)
 	{
-		for (int i = x - 1; i <= y + 1; i++)
+		for (int i = x - 1; i <= x + 1; i++)
 		{
 			if(i < 0 || i >= size) continue;
 
 			for (int j = y - 1; j <= y+ 1; j++)
 			{
 				if(j < 0 || j >= size) continue;
-
+				
 				if(squares[i][j] != Globals.FREE_SQUARE)
 				{
 					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
