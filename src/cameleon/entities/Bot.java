@@ -50,7 +50,7 @@ public class Bot extends Player {
 	{
 
 		int ret = 1;
-		Integer[][] tmp = getGameRef().getBoard().getSquares();
+		int[][] tmp = getGameRef().getBoard().getSquares();
 
 		//parcours les cases autour
 		for (int i = point.getX() - 1; i <= point.getX() + 1; i++)

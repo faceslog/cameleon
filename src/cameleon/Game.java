@@ -118,7 +118,7 @@ public class Game {
 		}
 
 		int size = Integer.parseInt(sc.nextLine());
-		Integer[][] squares = new Integer[size][size];
+		int[][] squares = new int[size][size];
 
 		int i = 0;
 		while (sc.hasNextLine())

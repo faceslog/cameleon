@@ -2,10 +2,11 @@ package cameleon;
 
 public abstract class Player {
 
-	private final Integer playerId;
+	private final int playerId;
 	private final Game gameRef;
 	private int numberSquare;
 
+	// TO DO: throw if id = Globals.FREE_SQUARE
 	public Player(int _playerId, Game _game)
 	{
 		playerId = _playerId;
@@ -23,7 +24,7 @@ public abstract class Player {
 		this.numberSquare = numberSquare;
 	}
 
-	public Integer getPlayerId() {
+	public int getPlayerId() {
 		return playerId;
 	}
 
@@ -33,6 +34,6 @@ public abstract class Player {
 
 	public boolean equals(Player player)
 	{
-		return playerId.equals(player.getPlayerId());
+		return playerId == player.getPlayerId();
 	}
 }

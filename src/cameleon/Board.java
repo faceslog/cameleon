@@ -3,17 +3,17 @@ package cameleon;
 public class Board {
 
 	private final int size;
-	private final Integer[][] squares;
+	private final int[][] squares;
 	private final Game gameRef;
 
 	public Board(int n, Game _gameRef)
 	{
 		size = (int) (3 * Math.pow(2, n));
-		squares = new Integer[size][size];
+		squares = new int[size][size];
 		gameRef = _gameRef;
 	}
 
-	public Board(int _size, Integer[][] _squares, Game _gameRef)
+	public Board(int _size, int[][] _squares, Game _gameRef)
 	{
 		size = _size;
 		squares = _squares;
@@ -38,7 +38,7 @@ public class Board {
 
 			for(int j = 0; j < size; j++) //x
 			{
-				Integer squareId = squares[j][i];
+				int squareId = squares[j][i];
 
 				if(gameRef.getPlayer1().getPlayerId() == squareId)
 					System.out.print(Globals.ANSI_RED +"\tR\t" + Globals.ANSI_RESET);
@@ -55,7 +55,7 @@ public class Board {
 		return size;
 	}
 
-	public Integer[][] getSquares() {	return squares;	}
+	public int[][] getSquares() {	return squares;	}
 
 	public boolean doesSquareExist(int x, int y)
 	{

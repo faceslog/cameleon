@@ -22,6 +22,6 @@ public class Globals
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
 
-    public static final Integer FREE_SQUARE = null;
+    public static final int FREE_SQUARE = 0;
     public static final int BRAVE_MAX_CASE_EARN = 8;
 }
