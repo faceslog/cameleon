@@ -111,7 +111,6 @@ public class Board {
 	}
 
 	// ----------------- RECKLESS -----------------
-
 	private void initQuadTree()
 	{
 		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
@@ -134,9 +133,15 @@ public class Board {
 	}
 
 
+	// x et y correspondent à la position du point pour lequel on veut savoir la région
+	private QuadPoint getRegionPos(int x, int y)
+	{
+		return new QuadPoint(x / Globals.ZONE_SIZE, y / Globals.ZONE_SIZE);
+	}
+
 	private void updateColorReckless(int x, int y)
 	{
-
+		Region test = regionQuadTree.search(getRegionPos(x, y)).getData();
 	}
 
 }
