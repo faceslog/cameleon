@@ -80,6 +80,7 @@ public class Game {
 	// Private methods
 	private void init()
 	{
+		gameMode = GameMode.BRAVE;
 		Player1 = new Human(1, this);
 		Player2 = new Bot(2, this);
 		current = Player1;

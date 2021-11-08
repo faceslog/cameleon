@@ -1,14 +1,20 @@
 package cameleon;
 
+import cameleon.enums.GameMode;
+import core.datastruct.QuadPoint;
+import core.datastruct.QuadTree;
+
 public class Board {
 
 	private final int size;
 	private final int[][] squares;
 	private final Game gameRef;
 
+	private QuadTree<Region> regionQuadTree;
+
 	public Board(int n, Game _gameRef)
 	{
-		size = (int) (3 * Math.pow(2, n));
+		size = (int) (Globals.ZONE_SIZE * Math.pow(2, n));
 		squares = new int[size][size];
 		gameRef = _gameRef;
 	}
@@ -68,8 +74,24 @@ public class Board {
 		if (squares[x][y] == Globals.FREE_SQUARE)
 		{
 			squares[x][y] = gameRef.getCurrent().getPlayerId();
-			gameRef.getCurrent().setNumberSquare(gameRef.getCurrent().getNumberSquare() + 1);
-			updateColorBrave(x, y);
+			gameRef.getCurrent().increaseNbSquare();
+			if(gameRef.getGameMode() == GameMode.RECKLESS)
+				updateColorReckless(x, y);
+			else
+				updateColorBrave(x, y);
+		}
+	}
+
+	private void initQuadTree()
+	{
+		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
+		for(int i = 0; i <= regionAmount; i++)
+		{
+			for(int j = 0; j <= regionAmount; j++)
+			{
+				QuadPoint pos = new QuadPoint(i, j);
+				regionQuadTree.insert(pos, new Region(new QuadPoint(i*Globals.ZONE_SIZE, j*Globals.ZONE_SIZE),this));
+			}
 		}
 	}
 
@@ -87,12 +109,17 @@ public class Board {
 				{
 					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
 					{
-						gameRef.getNotCurrent().setNumberSquare(gameRef.getNotCurrent().getNumberSquare() - 1);
-						gameRef.getCurrent().setNumberSquare(gameRef.getCurrent().getNumberSquare() + 1);
+						gameRef.getNotCurrent().decreaseNbSquare();
+						gameRef.getCurrent().increaseNbSquare();
 						squares[i][j] = gameRef.getCurrent().getPlayerId();
 					}
 				}
 			}
 		}
+	}
+
+	private void updateColorReckless(int x, int y)
+	{
+		// TO DO
 	}
 }
