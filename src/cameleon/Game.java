@@ -130,8 +130,14 @@ public class Game {
 			for(int j = 0; j < size; j++) {
 				switch (ch[j])
 				{
-					case 'R'-> squares[j][i] = Player1.getPlayerId();
-					case 'B'-> squares[j][i] = Player2.getPlayerId();
+					case 'R' -> {
+						squares[j][i] = Player1.getPlayerId();
+						Player1.increaseNbSquare();
+					}
+					case 'B' -> {
+						squares[j][i] = Player2.getPlayerId();
+						Player2.increaseNbSquare();
+					}
 					default -> squares[j][i] = Globals.FREE_SQUARE;
 				}
 			}
