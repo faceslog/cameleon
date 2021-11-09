@@ -70,9 +70,9 @@ public class Game {
 	public void stop()
 	{
 		if(Player1.getNumberSquare() > Player2.getNumberSquare())
-			System.out.printf(Globals.GetANSI(Player1.getPlayerId()) + "Player %d wins! ", Player1.getPlayerId() + Globals.ANSI_RESET);
+			System.out.printf(Globals.GetANSI(Player1.getPlayerId()) + "Player %s wins! ", Player1.getPlayerId() + Globals.ANSI_RESET);
 		else if (Player1.getNumberSquare() < Player2.getNumberSquare())
-			System.out.printf(Globals.GetANSI(Player2.getPlayerId())+ "Player %d wins! ", Player2.getPlayerId() + Globals.ANSI_RESET);
+			System.out.printf(Globals.GetANSI(Player2.getPlayerId())+ "Player %s wins! ", Player2.getPlayerId() + Globals.ANSI_RESET);
 		else
 			System.out.println("NO WINNER");
 	}

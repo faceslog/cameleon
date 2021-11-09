@@ -116,6 +116,8 @@ public class QuadTree<T>
     }
 
     public ArrayList<QuadTree<T>> getNodes() { return nodes; }
+    public QuadPoint getTopLeft() { return topLeft; }
+    public QuadPoint getBottomRight() { return bottomRight; }
 
     // Query all points tree in the given range recursively
     public ArrayList<QuadTree<T>> queryRange(QuadPoint min, QuadPoint max)
@@ -127,6 +129,27 @@ public class QuadTree<T>
         queryRange(min, max, ret);
 
         return ret;
+    }
+
+    public short getRegionIndex(QuadPoint pos, QuadPoint offsets)
+    {
+        if(pos == null)
+            throw new NullPointerException("[ERROR] : point cannot be null");
+
+        if(pos.getX() <= offsets.getX())
+        {
+            if(pos.getY() <= offsets.getY())
+                return TOP_LEFT;
+            else
+                return BOTTOM_LEFT;
+        }
+        else
+        {
+            if(pos.getY() <= offsets.getY())
+                return TOP_RIGHT;
+            else
+                return BOTTOM_RIGHT;
+        }
     }
 
     // Return true if it's an empty node
@@ -189,27 +212,6 @@ public class QuadTree<T>
             // Check if the point is in the given range
             if(pos.getX() >= min.getX() && pos.getY() >= min.getY() && pos.getX() <= max.getX() && pos.getY() <= max.getY())
                 ret.add(this);
-        }
-    }
-
-    private short getRegionIndex(QuadPoint pos, QuadPoint offsets)
-    {
-        if(pos == null)
-            throw new NullPointerException("[ERROR] : point cannot be null");
-
-        if(pos.getX() <= offsets.getX())
-        {
-            if(pos.getY() <= offsets.getY())
-                return TOP_LEFT;
-            else
-                return BOTTOM_LEFT;
-        }
-        else
-        {
-            if(pos.getY() <= offsets.getY())
-                return TOP_RIGHT;
-            else
-                return BOTTOM_RIGHT;
         }
     }
 }

@@ -19,6 +19,10 @@ public class Region
         boardRef = _boardRef;
     }
 
+    public QuadPoint getTopLeft() { return topLeft; }
+
+    public QuadPoint getBottomRight() { return bottomRight; }
+
     public void setSquareTaken(int _squareTaken)
     {
         squareTaken = _squareTaken;
@@ -33,13 +37,4 @@ public class Region
     public boolean isIn(int x, int y) {
         return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
     }
-
-    public void changeRegionColor(int color) {
-        for(int i = topLeft.getX(); i < bottomRight.getX(); i++) {
-            for(int j = topLeft.getY(); j < bottomRight.getY(); j++) {
-                boardRef.getSquares()[i][j] = color;
-            }
-        }
-    }
-
 }

@@ -113,7 +113,7 @@ public class Board {
 	// ----------------- RECKLESS -----------------
 	private void initQuadTree()
 	{
-		regionQuadTree  = new QuadTree<Region>( new QuadPoint(0,0), new QuadPoint(size-1,size-1));
+		regionQuadTree = new QuadTree<Region>( new QuadPoint(0,0), new QuadPoint(size-1,size-1));
 		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
 		for(int i = 0; i <= regionAmount; i++)
 		{
@@ -133,13 +133,14 @@ public class Board {
 				new QuadPoint(minX + Globals.ZONE_SIZE, minY + Globals.ZONE_SIZE), this);
 	}
 
-
 	// x et y correspondent à la position du point pour lequel on veut savoir la région
 	private QuadPoint getRegionPos(int x, int y)
 	{
 		return new QuadPoint(x / Globals.ZONE_SIZE, y / Globals.ZONE_SIZE);
 	}
 
+
+	// Non Recursive Version
 	private void updateColor(int x, int y, Region region)
 	{
 		for (int i = x - 1; i <= x + 1; i++)
@@ -180,14 +181,67 @@ public class Board {
 		updateColor(x,y, region);
 		
 		//si derniere case zone == acquise
-		if(region.isFull()) {
-			System.out.println("ALLO");
-			region.changeRegionColor(gameRef.getCurrent().getPlayerId());
+		if(region.isFull())
+		{
+			changeRegionColor(region);
+			colorRegionAcquired(getRegionPos(x, y), regionQuadTree);
 		}
 		//verif région proches ??? savoir quelle zone a selectionner (toutes les zones de 4 ou que en fonction des quadtree?)
 			//si Joueur déjà 2 acquise => 4 régions acquise total
 			//si adversaire 2 région acquise => recolor la zone qui vient d'etre acquise + obtient la derniere zone
 
+	}
+
+	public void changeRegionColor(Region region) {
+		for(int i = region.getTopLeft().getX(); i < region.getBottomRight().getX(); i++)
+		{
+			for(int j = region.getTopLeft().getY(); j < region.getBottomRight().getY(); j++)
+			{
+				squares[i][j] = gameRef.getCurrent().getPlayerId();
+				gameRef.getNotCurrent().decreaseNbSquare();
+				gameRef.getCurrent().increaseNbSquare();
+			}
+		}
+	}
+
+	// Si le point a modifier est nul alors on remonte sinon on doit chercher dans un niveau précédent
+	private void colorRegionAcquired(QuadPoint point, QuadTree<Region> qt)
+	{
+		if(!qt.inBoundaries(point))
+			return;
+
+		int xOffset = (qt.getTopLeft().getX() + qt.getBottomRight().getX()) >> 1;
+		int yOffset = (qt.getTopLeft().getY() + qt.getBottomRight().getY()) >> 1;
+		short index = regionQuadTree.getRegionIndex(point, new QuadPoint(xOffset, yOffset));
+
+		// If Region Node
+		if(qt.getNodes().get(index).getTopLeft() != null)
+		{
+			colorRegionAcquired(point, qt.getNodes().get(index));
+			return;
+		}
+
+		if(qt.getNodes().get(index).isEmpty())
+			return;
+
+		if(point.compare(qt.getNodes().get(index).getPos()))
+		{
+			int count = 0;
+			int regionNotFullIndex = 0;
+
+			for(int i = 0; i < qt.getNodes().size(); i++)
+			{
+				Region tmp = qt.getNodes().get(i).getData();
+				if(tmp.isFull() && squares[tmp.getTopLeft().getX()][tmp.getTopLeft().getY()] == gameRef.getCurrent().getPlayerId())
+					count++;
+				else
+					regionNotFullIndex = i;
+			}
+
+			// Si 3 zone coloriées alors la 4e prend la couleur du current player
+			if(count == 3)
+				changeRegionColor(qt.getNodes().get(regionNotFullIndex).getData());
+		}
 	}
 
 }
