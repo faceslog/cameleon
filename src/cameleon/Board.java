@@ -113,6 +113,7 @@ public class Board {
 	// ----------------- RECKLESS -----------------
 	private void initQuadTree()
 	{
+		regionQuadTree  = new QuadTree<Region>( new QuadPoint(0,0), new QuadPoint(size-1,size-1));
 		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
 		for(int i = 0; i <= regionAmount; i++)
 		{
@@ -139,9 +140,54 @@ public class Board {
 		return new QuadPoint(x / Globals.ZONE_SIZE, y / Globals.ZONE_SIZE);
 	}
 
+	private void updateColor(int x, int y, Region region)
+	{
+		for (int i = x - 1; i <= x + 1; i++)
+		{
+			if(i < 0 || i >= size) continue;
+
+			for (int j = y - 1; j <= y+ 1; j++)
+			{
+				if(j < 0 || j >= size) continue;
+
+				if(squares[i][j] != Globals.FREE_SQUARE)
+				{
+					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
+					{
+						if(region.isIn(i,j)) {
+							gameRef.getNotCurrent().decreaseNbSquare();
+							gameRef.getCurrent().increaseNbSquare();
+							squares[i][j] = gameRef.getCurrent().getPlayerId();
+						} else {
+							Region region1 = regionQuadTree.search(getRegionPos(i, j)).getData();
+							if(!region1.isFull()) {
+								gameRef.getNotCurrent().decreaseNbSquare();
+								gameRef.getCurrent().increaseNbSquare();
+								squares[i][j] = gameRef.getCurrent().getPlayerId();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private void updateColorReckless(int x, int y)
 	{
-		Region test = regionQuadTree.search(getRegionPos(x, y)).getData();
+		Region region = regionQuadTree.search(getRegionPos(x, y)).getData();
+		region.increaseSquareTaken();
+
+		updateColor(x,y, region);
+		
+		//si derniere case zone == acquise
+		if(region.isFull()) {
+			System.out.println("ALLO");
+			region.changeRegionColor(gameRef.getCurrent().getPlayerId());
+		}
+		//verif région proches ??? savoir quelle zone a selectionner (toutes les zones de 4 ou que en fonction des quadtree?)
+			//si Joueur déjà 2 acquise => 4 régions acquise total
+			//si adversaire 2 région acquise => recolor la zone qui vient d'etre acquise + obtient la derniere zone
+
 	}
 
 }

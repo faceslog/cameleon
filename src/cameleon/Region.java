@@ -23,6 +23,23 @@ public class Region
     {
         squareTaken = _squareTaken;
     }
+
+    public void increaseSquareTaken() {
+        this.squareTaken++;
+    }
+
     public boolean isFull() { return squareTaken == Globals.ZONE_SIZE * Globals.ZONE_SIZE; }
+
+    public boolean isIn(int x, int y) {
+        return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
+    }
+
+    public void changeRegionColor(int color) {
+        for(int i = topLeft.getX(); i < bottomRight.getX(); i++) {
+            for(int j = topLeft.getY(); j < bottomRight.getY(); j++) {
+                boardRef.getSquares()[i][j] = color;
+            }
+        }
+    }
 
 }
