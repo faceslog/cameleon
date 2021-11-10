@@ -197,9 +197,12 @@ public class Board {
 		{
 			for(int j = region.getTopLeft().getY(); j < region.getBottomRight().getY(); j++)
 			{
-				squares[i][j] = gameRef.getCurrent().getPlayerId();
-				gameRef.getNotCurrent().decreaseNbSquare();
-				gameRef.getCurrent().increaseNbSquare();
+				//verif en fonction de la case a recolo
+				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId()) {
+					squares[i][j] = gameRef.getCurrent().getPlayerId();
+					gameRef.getNotCurrent().decreaseNbSquare();
+					gameRef.getCurrent().increaseNbSquare();
+				}
 			}
 		}
 	}

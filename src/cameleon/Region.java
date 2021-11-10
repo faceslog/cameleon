@@ -35,6 +35,16 @@ public class Region
     public boolean isFull() { return squareTaken == Globals.ZONE_SIZE * Globals.ZONE_SIZE; }
 
     public boolean isIn(int x, int y) {
-        return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
+        return x >= topLeft.getX() && x < bottomRight.getX() && y >= topLeft.getY() && y < bottomRight.getY();
+    }
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "squareTaken=" + squareTaken +
+                ", topLeft=" + topLeft +
+                ", bottomRight=" + bottomRight +
+                ", boardRef=" + boardRef +
+                '}';
     }
 }
