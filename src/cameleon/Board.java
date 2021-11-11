@@ -38,7 +38,7 @@ public class Board {
 	public void showGrid()
 	{
 		System.out.print("\t\t");
-		for(int k = 0; k < size; k++)
+		for (int k = 0; k < size; k++)
 			System.out.print("\t" + k + "\t");
 
 		System.out.println();
@@ -130,7 +130,7 @@ public class Board {
 		int minX = i*Globals.ZONE_SIZE;
 		int minY = j*Globals.ZONE_SIZE;
 		return new Region(new QuadPoint(minX,minY),
-				new QuadPoint(minX + Globals.ZONE_SIZE, minY + Globals.ZONE_SIZE), this);
+				new QuadPoint(minX + Globals.ZONE_SIZE - 1, minY + Globals.ZONE_SIZE - 1), this);
 	}
 
 	// x et y correspondent à la position du point pour lequel on veut savoir la région
@@ -193,9 +193,9 @@ public class Board {
 	}
 
 	public void changeRegionColor(Region region) {
-		for(int i = region.getTopLeft().getX(); i < region.getBottomRight().getX(); i++)
+		for(int i = region.getTopLeft().getX(); i <= region.getBottomRight().getX(); i++)
 		{
-			for(int j = region.getTopLeft().getY(); j < region.getBottomRight().getY(); j++)
+			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
 			{
 				//verif en fonction de la case a recolo
 				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId()) {
