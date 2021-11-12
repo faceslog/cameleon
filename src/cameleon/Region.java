@@ -9,6 +9,7 @@ public class Region
     private final QuadPoint bottomRight;
     private final Board boardRef;
 
+
     public Region(QuadPoint _topLeft, QuadPoint _bottomRight, Board _boardRef)
     {
         topLeft = _topLeft;
@@ -30,7 +31,7 @@ public class Region
         this.squareTaken++;
     }
 
-    public boolean isFull() { return squareTaken == Globals.ZONE_SIZE * Globals.ZONE_SIZE; }
+    public boolean isFull() { return squareTaken >= Globals.ZONE_SIZE * Globals.ZONE_SIZE; }
 
     public boolean isIn(int x, int y) {
         return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
@@ -42,6 +43,25 @@ public class Region
             return Globals.FREE_SQUARE; // Possédez par personne
         else
             return boardRef.getSquares()[topLeft.getX()][topLeft.getY()];
+    }
+
+    public void changeRegionColor()
+    {
+        squareTaken = 0;
+        for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
+        {
+            for(int j = topLeft.getY(); j <= bottomRight.getY(); j++)
+            {
+                squareTaken++;
+                //verif en fonction de la case a recolo
+                if(boardRef.getSquares()[i][j] == boardRef.getNotCurrentPlayer().getPlayerId() || boardRef.getSquares()[i][j] == Globals.FREE_SQUARE)
+                {
+                    boardRef.getSquares()[i][j] = boardRef.getCurrentPlayer().getPlayerId();
+                    boardRef.getNotCurrentPlayer().decreaseNbSquare();
+                    boardRef.getCurrentPlayer().increaseNbSquare();
+                }
+            }
+        }
     }
 
     @Override

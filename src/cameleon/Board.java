@@ -183,31 +183,61 @@ public class Board {
 		//si derniere case zone == acquise
 		if(region.isFull())
 		{
-			changeRegionColor(region);
+			region.changeRegionColor();
 			colorRegionAcquired(getRegionPos(x, y), regionQuadTree);
 		}
 	}
 
-	public void changeRegionColor(Region region) {
-		for(int i = region.getTopLeft().getX(); i <= region.getBottomRight().getX(); i++)
+
+	public Player getCurrentPlayer()
+	{
+		return gameRef.getCurrent();
+	}
+
+	public Player getNotCurrentPlayer()
+	{
+		return gameRef.getNotCurrent();
+	}
+
+	private boolean CA_REND_FOU(QuadTree<Region> qt)
+	{
+		if(qt.isEmpty())
+			return false;
+
+		int countAcquired = 0;
+		int countAcquiredByPlayer = 0;
+
+		for(QuadTree<Region> nodes : qt.getNodes())
 		{
-			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
+			if(nodes.getData() != null)
 			{
-				//verif en fonction de la case a recolo
-				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId() || squares[i][j] == Globals.FREE_SQUARE) {
-					squares[i][j] = gameRef.getCurrent().getPlayerId();
-					gameRef.getNotCurrent().decreaseNbSquare();
-					gameRef.getCurrent().increaseNbSquare();
-				}
+				if(nodes.getData().isFull())
+					countAcquired++;
+				if(nodes.getData().isOwnedBy() == gameRef.getCurrent().getPlayerId())
+					countAcquiredByPlayer++;
 			}
 		}
+
+		System.out.printf("Acquired: %d Acquired By The Player: %d\n", countAcquired, countAcquiredByPlayer);
+		// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
+		if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
+		{
+			for(QuadTree<Region> nodes : qt.getNodes())
+				nodes.getData().changeRegionColor();
+
+			qt.setData(new Region(qt.getNodes().get(QuadTree.TOP_LEFT).getData().getTopLeft(), qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData().getBottomRight(), this));
+			qt.getData().setSquareTaken(1000);
+			return true;
+		}
+
+		return false;
 	}
 
 	// Si le point a modifier est nul alors on remonte sinon on doit chercher dans un niveau précédent
-	private void colorRegionAcquired(QuadPoint point, QuadTree<Region> qt)
+	private boolean colorRegionAcquired(QuadPoint point, QuadTree<Region> qt)
 	{
 		if(!qt.inBoundaries(point))
-			return;
+			return false;
 
 		int xOffset = (qt.getTopLeft().getX() + qt.getBottomRight().getX()) >> 1;
 		int yOffset = (qt.getTopLeft().getY() + qt.getBottomRight().getY()) >> 1;
@@ -216,33 +246,18 @@ public class Board {
 		// If Region Node
 		if(qt.getNodes().get(index).getTopLeft() != null)
 		{
-			colorRegionAcquired(point, qt.getNodes().get(index));
-			return;
+			if(colorRegionAcquired(point, qt.getNodes().get(index)))
+			{
+				 return CA_REND_FOU(qt);
+			}
+
+			return false;
 		}
 
 		if(qt.getNodes().get(index).isEmpty())
-			return;
+			return false;
 
-		if(point.compare(qt.getNodes().get(index).getPos()))
-		{
-			int countAcquired = 0;
-			int countAcquiredByPlayer = 0;
-
-			for(QuadTree<Region> nodes : qt.getNodes())
-			{
-				if(nodes.getData().isFull())
-					countAcquired++;
-				if(nodes.getData().isOwnedBy() == gameRef.getCurrent().getPlayerId())
-					countAcquiredByPlayer++;
-			}
-
-			// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
-			if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
-			{
-				for(QuadTree<Region> nodes : qt.getNodes())
-					changeRegionColor(nodes.getData());
-			}
-		}
+		return CA_REND_FOU(qt);
 	}
 
 }
