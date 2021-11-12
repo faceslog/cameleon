@@ -113,8 +113,9 @@ public class Board {
 	// ----------------- RECKLESS -----------------
 	private void initQuadTree()
 	{
-		regionQuadTree = new QuadTree<Region>( new QuadPoint(0,0), new QuadPoint(size-1,size-1));
 		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
+		regionQuadTree = new QuadTree<>( new QuadPoint(0,0), new QuadPoint(regionAmount,regionAmount));
+
 		for(int i = 0; i <= regionAmount; i++)
 		{
 			for(int j = 0; j <= regionAmount; j++)
@@ -193,11 +194,16 @@ public class Board {
 		{
 			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
 			{
-				//verif en fonction de la case a recolo
-				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId() || squares[i][j] == Globals.FREE_SQUARE) {
+				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
+				{
 					squares[i][j] = gameRef.getCurrent().getPlayerId();
 					gameRef.getNotCurrent().decreaseNbSquare();
 					gameRef.getCurrent().increaseNbSquare();
+				} else if (squares[i][j] == Globals.FREE_SQUARE)
+				{
+					squares[i][j] = gameRef.getCurrent().getPlayerId();
+					gameRef.getCurrent().increaseNbSquare();
+					region.increaseSquareTaken();
 				}
 			}
 		}
@@ -223,25 +229,25 @@ public class Board {
 		if(qt.getNodes().get(index).isEmpty())
 			return;
 
-		if(point.compare(qt.getNodes().get(index).getPos()))
-		{
-			int countAcquired = 0;
-			int countAcquiredByPlayer = 0;
+		int countAcquired = 0;
+		int countAcquiredByPlayer = 0;
 
-			for(QuadTree<Region> nodes : qt.getNodes())
+		for(QuadTree<Region> nodes : qt.getNodes())
+		{
+			if(nodes.getData() != null)
 			{
 				if(nodes.getData().isFull())
 					countAcquired++;
 				if(nodes.getData().isOwnedBy() == gameRef.getCurrent().getPlayerId())
 					countAcquiredByPlayer++;
 			}
+		}
 
-			// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
-			if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
-			{
-				for(QuadTree<Region> nodes : qt.getNodes())
-					changeRegionColor(nodes.getData());
-			}
+		// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
+		if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
+		{
+			for(QuadTree<Region> nodes : qt.getNodes())
+				changeRegionColor(nodes.getData());
 		}
 	}
 
