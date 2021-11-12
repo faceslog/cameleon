@@ -45,25 +45,6 @@ public class Region
             return boardRef.getSquares()[topLeft.getX()][topLeft.getY()];
     }
 
-    public void changeRegionColor()
-    {
-        for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
-        {
-            for(int j = topLeft.getY(); j <= bottomRight.getY(); j++)
-            {
-                if(boardRef.getSquares()[i][j] == boardRef.getNotCurrentPlayer().getPlayerId()) {
-                    boardRef.getSquares()[i][j] = boardRef.getCurrentPlayer().getPlayerId();
-                    boardRef.getNotCurrentPlayer().decreaseNbSquare();
-                    boardRef.getCurrentPlayer().increaseNbSquare();
-                } else if (boardRef.getSquares()[i][j] == Globals.FREE_SQUARE) {
-                    boardRef.getSquares()[i][j] = boardRef.getCurrentPlayer().getPlayerId();
-                    boardRef.getCurrentPlayer().increaseNbSquare();
-                    increaseSquareTaken();
-                }
-            }
-        }
-    }
-
     @Override
     public String toString() {
         return "Region{" +

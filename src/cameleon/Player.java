@@ -20,10 +20,6 @@ public abstract class Player {
 		return numberSquare;
 	}
 
-	public void setNumberSquare(int _numberSquare) {
-		numberSquare = _numberSquare;
-	}
-
 	public void increaseNbSquare() { numberSquare++; }
 	public void decreaseNbSquare() { numberSquare--; }
 

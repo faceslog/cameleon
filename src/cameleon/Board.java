@@ -183,20 +183,48 @@ public class Board {
 		//si derniere case zone == acquise
 		if(region.isFull())
 		{
-			region.changeRegionColor();
-			colorRegionAcquired(getRegionPos(x, y), regionQuadTree);
+			changeRegionColor(region);
+
+			// on atteint la racine
+			if(colorRegionAcquired(getRegionPos(x, y), regionQuadTree))
+				CA_REND_FOU(regionQuadTree);
 		}
 	}
 
-
-	public Player getCurrentPlayer()
+	public void changeRegionColor(Region region)
 	{
-		return gameRef.getCurrent();
+		if(region == null) return;
+
+		for(int i = region.getTopLeft().getX(); i <= region.getBottomRight().getX(); i++)
+		{
+			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
+			{
+				//verif en fonction de la case a recolo
+				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId()) {
+					squares[i][j] = gameRef.getCurrent().getPlayerId();
+					gameRef.getNotCurrent().decreaseNbSquare();
+					gameRef.getCurrent().increaseNbSquare();
+				} else if (squares[i][j] == Globals.FREE_SQUARE) {
+					squares[i][j] = gameRef.getCurrent().getPlayerId();
+					gameRef.getCurrent().increaseNbSquare();
+					region.increaseSquareTaken();
+				}
+			}
+		}
 	}
 
-	public Player getNotCurrentPlayer()
+	private Region CA_REND_FOU_REGION_CREATOR(QuadTree<Region> qt)
 	{
-		return gameRef.getNotCurrent();
+		if(qt.getNodes().get(QuadTree.TOP_LEFT).getData() == null || qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData() == null)
+		{
+			Region tL = CA_REND_FOU_REGION_CREATOR(qt.getNodes().get(QuadTree.TOP_LEFT));
+			Region bR = CA_REND_FOU_REGION_CREATOR(qt.getNodes().get(QuadTree.BOTTOM_RIGHT));
+			return new Region(tL.getTopLeft(), bR.getBottomRight(), this);
+		}
+		else
+		{
+			return new Region(qt.getNodes().get(QuadTree.TOP_LEFT).getData().getTopLeft(), qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData().getBottomRight(), this);
+		}
 	}
 
 	private boolean CA_REND_FOU(QuadTree<Region> qt)
@@ -222,11 +250,12 @@ public class Board {
 		// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
 		if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
 		{
-			for(QuadTree<Region> nodes : qt.getNodes())
-				nodes.getData().changeRegionColor();
-
-			qt.setData(new Region(qt.getNodes().get(QuadTree.TOP_LEFT).getData().getTopLeft(), qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData().getBottomRight(), this));
+			qt.setData(CA_REND_FOU_REGION_CREATOR(qt));
 			qt.getData().setSquareTaken(1000);
+			System.out.printf("BIG REGION TL: %s BR: %s\n", qt.getData().getTopLeft(), qt.getData().getBottomRight());
+
+			changeRegionColor(qt.getData());
+
 			return true;
 		}
 
