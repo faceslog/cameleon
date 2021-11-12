@@ -186,10 +186,6 @@ public class Board {
 			changeRegionColor(region);
 			colorRegionAcquired(getRegionPos(x, y), regionQuadTree);
 		}
-		//verif région proches ??? savoir quelle zone a selectionner (toutes les zones de 4 ou que en fonction des quadtree?)
-			//si Joueur déjà 2 acquise => 4 régions acquise total
-			//si adversaire 2 région acquise => recolor la zone qui vient d'etre acquise + obtient la derniere zone
-
 	}
 
 	public void changeRegionColor(Region region) {
@@ -198,7 +194,7 @@ public class Board {
 			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
 			{
 				//verif en fonction de la case a recolo
-				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId()) {
+				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId() || squares[i][j] == Globals.FREE_SQUARE) {
 					squares[i][j] = gameRef.getCurrent().getPlayerId();
 					gameRef.getNotCurrent().decreaseNbSquare();
 					gameRef.getCurrent().increaseNbSquare();
@@ -229,21 +225,23 @@ public class Board {
 
 		if(point.compare(qt.getNodes().get(index).getPos()))
 		{
-			int count = 0;
-			int regionNotFullIndex = 0;
+			int countAcquired = 0;
+			int countAcquiredByPlayer = 0;
 
-			for(int i = 0; i < qt.getNodes().size(); i++)
+			for(QuadTree<Region> nodes : qt.getNodes())
 			{
-				Region tmp = qt.getNodes().get(i).getData();
-				if(tmp.isFull() && squares[tmp.getTopLeft().getX()][tmp.getTopLeft().getY()] == gameRef.getCurrent().getPlayerId())
-					count++;
-				else
-					regionNotFullIndex = i;
+				if(nodes.getData().isFull())
+					countAcquired++;
+				if(nodes.getData().isOwnedBy() == gameRef.getCurrent().getPlayerId())
+					countAcquiredByPlayer++;
 			}
 
-			// Si 3 zone coloriées alors la 4e prend la couleur du current player
-			if(count == 3)
-				changeRegionColor(qt.getNodes().get(regionNotFullIndex).getData());
+			// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
+			if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
+			{
+				for(QuadTree<Region> nodes : qt.getNodes())
+					changeRegionColor(nodes.getData());
+			}
 		}
 	}
 

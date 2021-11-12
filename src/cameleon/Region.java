@@ -5,11 +5,9 @@ import core.datastruct.QuadPoint;
 public class Region
 {
     private int squareTaken;
-    private QuadPoint topLeft;
-    private QuadPoint bottomRight;
-
-    // En a t'on réellement besoin ???
-    private Board boardRef;
+    private final QuadPoint topLeft;
+    private final QuadPoint bottomRight;
+    private final Board boardRef;
 
     public Region(QuadPoint _topLeft, QuadPoint _bottomRight, Board _boardRef)
     {
@@ -38,13 +36,20 @@ public class Region
         return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
     }
 
+    public int isOwnedBy()
+    {
+        if(!isFull())
+            return Globals.FREE_SQUARE; // Possédez par personne
+        else
+            return boardRef.getSquares()[topLeft.getX()][topLeft.getY()];
+    }
+
     @Override
     public String toString() {
         return "Region{" +
                 "squareTaken=" + squareTaken +
                 ", topLeft=" + topLeft +
                 ", bottomRight=" + bottomRight +
-                ", boardRef=" + boardRef +
                 '}';
     }
 }
