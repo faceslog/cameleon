@@ -47,18 +47,18 @@ public class Region
 
     public void changeRegionColor()
     {
-        squareTaken = 0;
         for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
         {
             for(int j = topLeft.getY(); j <= bottomRight.getY(); j++)
             {
-                squareTaken++;
-                //verif en fonction de la case a recolo
-                if(boardRef.getSquares()[i][j] == boardRef.getNotCurrentPlayer().getPlayerId() || boardRef.getSquares()[i][j] == Globals.FREE_SQUARE)
-                {
+                if(boardRef.getSquares()[i][j] == boardRef.getNotCurrentPlayer().getPlayerId()) {
                     boardRef.getSquares()[i][j] = boardRef.getCurrentPlayer().getPlayerId();
                     boardRef.getNotCurrentPlayer().decreaseNbSquare();
                     boardRef.getCurrentPlayer().increaseNbSquare();
+                } else if (boardRef.getSquares()[i][j] == Globals.FREE_SQUARE) {
+                    boardRef.getSquares()[i][j] = boardRef.getCurrentPlayer().getPlayerId();
+                    boardRef.getCurrentPlayer().increaseNbSquare();
+                    increaseSquareTaken();
                 }
             }
         }

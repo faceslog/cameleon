@@ -113,8 +113,8 @@ public class Board {
 	// ----------------- RECKLESS -----------------
 	private void initQuadTree()
 	{
-		regionQuadTree = new QuadTree<Region>( new QuadPoint(0,0), new QuadPoint(size-1,size-1));
 		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
+		regionQuadTree = new QuadTree<>( new QuadPoint(0,0), new QuadPoint(regionAmount,regionAmount));
 		for(int i = 0; i <= regionAmount; i++)
 		{
 			for(int j = 0; j <= regionAmount; j++)
