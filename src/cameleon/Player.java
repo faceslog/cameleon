@@ -6,7 +6,7 @@ public abstract class Player {
 	private final Game gameRef;
 	private int numberSquare;
 
-	// TO DO: throw if id = Globals.FREE_SQUARE
+	// TO DO: throw if id = Config.FREE_SQUARE
 	public Player(int _playerId, Game _game)
 	{
 		playerId = _playerId;

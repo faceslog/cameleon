@@ -1,7 +1,7 @@
 package cameleon.entities;
 
+import cameleon.Config;
 import cameleon.Game;
-import cameleon.Globals;
 import cameleon.Player;
 import core.datastruct.QuadPoint;
 
@@ -27,14 +27,14 @@ public class Bot extends Player {
 			for(int j = 0; j < getGameRef().getBoard().getSize(); j++)
 			{
 				QuadPoint quadPoint = new QuadPoint(j,i);
-				if(getGameRef().getBoard().getSquares()[j][i] == Globals.FREE_SQUARE)
+				if(getGameRef().getBoard().getSquares()[j][i] == Config.FREE_SQUARE)
 				{
 					int evalCase = evaluateMoveBrave(quadPoint);
 					if(max < evalCase)
 					{
 						point = quadPoint;
 						max = evalCase;
-						if(max == getGameRef().getNotCurrent().getNumberSquare() || max == Globals.BRAVE_MAX_CASE_EARN) break;
+						if(max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN) break;
 					}
 				}
 			}

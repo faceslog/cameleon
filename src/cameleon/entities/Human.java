@@ -28,6 +28,6 @@ public class Human extends Player {
 
     private boolean checkMove(int x, int y, Board board)
     {
-        return board.doesSquareExist(x, y) && board.getSquares()[x][y] == Globals.FREE_SQUARE;
+        return board.doesSquareExist(x, y) && board.getSquares()[x][y] == Config.FREE_SQUARE;
     }
 }

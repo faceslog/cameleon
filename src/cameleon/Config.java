@@ -1,6 +1,6 @@
 package cameleon;
 
-public class Globals
+public class Config
 {
     public static String GetANSI(int playerId)
     {
@@ -25,4 +25,6 @@ public class Globals
     public static final int FREE_SQUARE = 0;
     public static final int BRAVE_MAX_CASE_EARN = 8;
     public static final int ZONE_SIZE = 3; // CANNOT BE EQUAL TO 0 !!!
+
+    public static final int RKL_SUB_ZONE_TO_EARN = 3; // Majorité ici 3 QuadTree.MAX_CAPACITY - 1
 }

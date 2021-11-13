@@ -55,10 +55,10 @@ public class Game {
 
 		while (!board.isFull())
 		{
-			System.out.println(Globals.GetANSI(current.getPlayerId()) + "########################## PlayerId: " + current.getPlayerId() + " ##########################" + Globals.ANSI_RESET);
+			System.out.println(Config.GetANSI(current.getPlayerId()) + "########################## PlayerId: " + current.getPlayerId() + " ##########################" + Config.ANSI_RESET);
 			current.move();
 			board.showGrid();
-			System.out.println(Globals.GetANSI(current.getPlayerId()) + "COULEUR : "  + current.getNumberSquare() + Globals.ANSI_RESET);
+			System.out.println(Config.GetANSI(current.getPlayerId()) + "COULEUR : "  + current.getNumberSquare() + Config.ANSI_RESET);
 			System.out.println("TOTAL : "  + (current.getNumberSquare() + getNotCurrent().getNumberSquare()));
 			changeCurrent();
 			System.out.println();
@@ -70,9 +70,9 @@ public class Game {
 	public void stop()
 	{
 		if(Player1.getNumberSquare() > Player2.getNumberSquare())
-			System.out.printf(Globals.GetANSI(Player1.getPlayerId()) + "Player %s wins! ", Player1.getPlayerId() + Globals.ANSI_RESET);
+			System.out.printf(Config.GetANSI(Player1.getPlayerId()) + "Player %s wins! ", Player1.getPlayerId() + Config.ANSI_RESET);
 		else if (Player1.getNumberSquare() < Player2.getNumberSquare())
-			System.out.printf(Globals.GetANSI(Player2.getPlayerId())+ "Player %s wins! ", Player2.getPlayerId() + Globals.ANSI_RESET);
+			System.out.printf(Config.GetANSI(Player2.getPlayerId())+ "Player %s wins! ", Player2.getPlayerId() + Config.ANSI_RESET);
 		else
 			System.out.println("NO WINNER");
 	}
@@ -138,7 +138,7 @@ public class Game {
 						squares[j][i] = Player2.getPlayerId();
 						Player2.increaseNbSquare();
 					}
-					default -> squares[j][i] = Globals.FREE_SQUARE;
+					default -> squares[j][i] = Config.FREE_SQUARE;
 				}
 			}
 			i++;
