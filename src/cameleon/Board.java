@@ -86,6 +86,16 @@ public class Board {
 		}
 	}
 
+	public Player getCurrentPlayer()
+	{
+		return gameRef.getCurrent();
+	}
+
+	public Player getNotCurrentPlayer()
+	{
+		return gameRef.getNotCurrent();
+	}
+
 	// ----------------- BRAVE -----------------
 	private void updateColorBrave(int x, int y)
 	{
@@ -139,6 +149,16 @@ public class Board {
 		return new QuadPoint(x / Globals.ZONE_SIZE, y / Globals.ZONE_SIZE);
 	}
 
+	private void updateColorReckless(int x, int y)
+	{
+		Region region = regionQuadTree.search(getRegionPos(x, y)).getData();
+		updateColor(x,y, region);
+
+		region.increaseSquareTaken(); // will also check if the region is full
+
+		if(region.isOwnedBy() == getCurrentPlayer().getPlayerId())
+			checkRegionAcquired(getRegionPos(x, y), regionQuadTree);
+	}
 
 	// Non Recursive Version
 	private void updateColor(int x, int y, Region region)
@@ -173,52 +193,33 @@ public class Board {
 		}
 	}
 
-	private void updateColorReckless(int x, int y)
+	// ---------------------------- REGION COLOR MANAGEMENT ----------------------------
+	private void changeRegionColor(QuadTree<Region> quadTree)
 	{
-		Region region = regionQuadTree.search(getRegionPos(x, y)).getData();
-		region.increaseSquareTaken();
+		if(quadTree == null)
+			return;
 
-		updateColor(x,y, region);
-		
-		//si derniere case zone == acquise
-		if(region.isFull())
+		if(quadTree.getNodes() != null)
 		{
-			changeRegionColor(region);
+			for (QuadTree<Region> qt : quadTree.getNodes())
+				changeRegionColor(qt);
 
-			// on atteint la racine
-			if(colorRegionAcquired(getRegionPos(x, y), regionQuadTree))
-				CA_REND_FOU(regionQuadTree);
+			return;
+		}
+
+		if(quadTree.getData() != null)
+		{
+			if(quadTree.getData().isOwnedBy() != getCurrentPlayer().getPlayerId())
+				quadTree.getData().changeRegionColor();
 		}
 	}
 
-	public void changeRegionColor(Region region)
-	{
-		if(region == null) return;
-
-		for(int i = region.getTopLeft().getX(); i <= region.getBottomRight().getX(); i++)
-		{
-			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
-			{
-				//verif en fonction de la case a recolo
-				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId()) {
-					squares[i][j] = gameRef.getCurrent().getPlayerId();
-					gameRef.getNotCurrent().decreaseNbSquare();
-					gameRef.getCurrent().increaseNbSquare();
-				} else if (squares[i][j] == Globals.FREE_SQUARE) {
-					squares[i][j] = gameRef.getCurrent().getPlayerId();
-					gameRef.getCurrent().increaseNbSquare();
-					region.increaseSquareTaken();
-				}
-			}
-		}
-	}
-
-	private Region CA_REND_FOU_REGION_CREATOR(QuadTree<Region> qt)
+	private Region createUpperRegion(QuadTree<Region> qt)
 	{
 		if(qt.getNodes().get(QuadTree.TOP_LEFT).getData() == null || qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData() == null)
 		{
-			Region tL = CA_REND_FOU_REGION_CREATOR(qt.getNodes().get(QuadTree.TOP_LEFT));
-			Region bR = CA_REND_FOU_REGION_CREATOR(qt.getNodes().get(QuadTree.BOTTOM_RIGHT));
+			Region tL = createUpperRegion(qt.getNodes().get(QuadTree.TOP_LEFT));
+			Region bR = createUpperRegion(qt.getNodes().get(QuadTree.BOTTOM_RIGHT));
 			return new Region(tL.getTopLeft(), bR.getBottomRight(), this);
 		}
 		else
@@ -227,7 +228,7 @@ public class Board {
 		}
 	}
 
-	private boolean CA_REND_FOU(QuadTree<Region> qt)
+	private boolean colorRegion(QuadTree<Region> qt)
 	{
 		if(qt.isEmpty())
 			return false;
@@ -250,11 +251,12 @@ public class Board {
 		// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
 		if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
 		{
-			qt.setData(CA_REND_FOU_REGION_CREATOR(qt));
-			qt.getData().setSquareTaken(1000);
-			System.out.printf("BIG REGION TL: %s BR: %s\n", qt.getData().getTopLeft(), qt.getData().getBottomRight());
+			qt.setData(createUpperRegion(qt));
+			qt.getData().setSquareTaken(qt.getData().getMaxSquareInside());
+			System.out.printf("UPPER REGION TL: %s BR: %s\n", qt.getData().getTopLeft(), qt.getData().getBottomRight());
 
-			changeRegionColor(qt.getData());
+			//qt.getData().changeRegionColor();
+			changeRegionColor(qt);
 
 			return true;
 		}
@@ -262,8 +264,7 @@ public class Board {
 		return false;
 	}
 
-	// Si le point a modifier est nul alors on remonte sinon on doit chercher dans un niveau précédent
-	private boolean colorRegionAcquired(QuadPoint point, QuadTree<Region> qt)
+	private boolean checkRegionAcquired(QuadPoint point, QuadTree<Region> qt)
 	{
 		if(!qt.inBoundaries(point))
 			return false;
@@ -275,10 +276,8 @@ public class Board {
 		// If Region Node
 		if(qt.getNodes().get(index).getTopLeft() != null)
 		{
-			if(colorRegionAcquired(point, qt.getNodes().get(index)))
-			{
-				 return CA_REND_FOU(qt);
-			}
+			if(checkRegionAcquired(point, qt.getNodes().get(index)))
+				 return colorRegion(qt);
 
 			return false;
 		}
@@ -286,7 +285,7 @@ public class Board {
 		if(qt.getNodes().get(index).isEmpty())
 			return false;
 
-		return CA_REND_FOU(qt);
+		return colorRegion(qt);
 	}
 
 }

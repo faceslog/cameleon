@@ -10,6 +10,7 @@ public class Region
     private final Board boardRef;
 
 
+
     public Region(QuadPoint _topLeft, QuadPoint _bottomRight, Board _boardRef)
     {
         topLeft = _topLeft;
@@ -27,11 +28,48 @@ public class Region
         squareTaken = _squareTaken;
     }
 
-    public void increaseSquareTaken() {
-        this.squareTaken++;
+    public int getMaxSquareInside()
+    {
+        return ((bottomRight.getX() - topLeft.getX()) + 1) * ((bottomRight.getY() - topLeft.getY()) + 1);
     }
 
-    public boolean isFull() { return squareTaken >= Globals.ZONE_SIZE * Globals.ZONE_SIZE; }
+    public void increaseSquareTaken()
+    {
+        this.squareTaken++;
+
+        if(isFull())
+            changeRegionColor();
+    }
+
+    public void changeRegionColor()
+    {
+        int[][] squares = boardRef.getSquares();
+        Player current = boardRef.getCurrentPlayer();
+        Player notCurrent = boardRef.getNotCurrentPlayer();
+
+        for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
+        {
+            for(int j = topLeft.getY(); j <= bottomRight.getY(); j++)
+            {
+                squareTaken++;
+
+                if(squares[i][j] == notCurrent.getPlayerId())
+                {
+                    squares[i][j] = current.getPlayerId();
+                    notCurrent.decreaseNbSquare();
+                    current.increaseNbSquare();
+                }
+                else if (squares[i][j] == Globals.FREE_SQUARE)
+                {
+                    squares[i][j] = current.getPlayerId();
+                    current.increaseNbSquare();
+                    squareTaken++;
+                }
+            }
+        }
+    }
+
+    public boolean isFull() { return squareTaken >= ((bottomRight.getX() - topLeft.getX()) + 1) * ((bottomRight.getY() - topLeft.getY()) + 1); }
 
     public boolean isIn(int x, int y) {
         return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
@@ -40,7 +78,7 @@ public class Region
     public int isOwnedBy()
     {
         if(!isFull())
-            return Globals.FREE_SQUARE; // Possédez par personne
+            return Globals.FREE_SQUARE; // Possédée par personne
         else
             return boardRef.getSquares()[topLeft.getX()][topLeft.getY()];
     }
