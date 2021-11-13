@@ -206,7 +206,7 @@ public class QuadTree<T>
             return;
         }
         // If we are in a leaf
-        if(data != null)
+        if(pos != null)
         {
             // Check if the point is in the given range
             if(pos.getX() >= min.getX() && pos.getY() >= min.getY() && pos.getX() <= max.getX() && pos.getY() <= max.getY())
