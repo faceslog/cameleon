@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 public class QuadTree<T>
 {
+    static public final short TOP_LEFT = 0;
+    static public final short TOP_RIGHT = 1;
+    static public final short BOTTOM_RIGHT = 2;
+    static public final short BOTTOM_LEFT = 3;
+    static public final short MAX_CAPACITY = 4;
+
     // Region Tree
     public QuadTree(QuadPoint _topLeft, QuadPoint _bottomRight)
     {
@@ -159,13 +165,6 @@ public class QuadTree<T>
     }
 
     ////////////// PRIVATE MEMBERS //////////////
-
-    static private final short TOP_LEFT = 0;
-    static private final short TOP_RIGHT = 1;
-    static private final short BOTTOM_RIGHT = 2;
-    static private final short BOTTOM_LEFT = 3;
-    static private final short MAX_CAPACITY = 4;
-
     private final ArrayList<QuadTree<T>> nodes;
 
     // Region
@@ -207,7 +206,7 @@ public class QuadTree<T>
             return;
         }
         // If we are in a leaf
-        if(data != null)
+        if(pos != null)
         {
             // Check if the point is in the given range
             if(pos.getX() >= min.getX() && pos.getY() >= min.getY() && pos.getX() <= max.getX() && pos.getY() <= max.getY())

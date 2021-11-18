@@ -14,7 +14,7 @@ public class Board {
 
 	public Board(int n, Game _gameRef)
 	{
-		size = (int) (Globals.ZONE_SIZE * Math.pow(2, n));
+		size = (int) (Config.ZONE_SIZE * Math.pow(2, n));
 		squares = new int[size][size];
 		gameRef = _gameRef;
 		if(gameRef.getGameMode() == GameMode.RECKLESS)
@@ -51,9 +51,9 @@ public class Board {
 				int squareId = squares[j][i];
 
 				if(gameRef.getPlayer1().getPlayerId() == squareId)
-					System.out.print(Globals.ANSI_RED +"\tR\t" + Globals.ANSI_RESET);
+					System.out.print(Config.ANSI_RED +"\tR\t" + Config.ANSI_RESET);
 				else if(gameRef.getPlayer2().getPlayerId() == squareId)
-					System.out.print(Globals.ANSI_BLUE + "\tB\t" + Globals.ANSI_RESET);
+					System.out.print(Config.ANSI_BLUE + "\tB\t" + Config.ANSI_RESET);
 				else
 					System.out.print("\t⊡\t");
 			}
@@ -75,7 +75,7 @@ public class Board {
 	// TO FIX: Maybe move it to another class ?? We'll decide later
 	public void nextMove(int x, int y)//update color si la case est deja d'une couleur - check 8 cases autour
 	{
-		if (squares[x][y] == Globals.FREE_SQUARE)
+		if (squares[x][y] == Config.FREE_SQUARE)
 		{
 			squares[x][y] = gameRef.getCurrent().getPlayerId();
 			gameRef.getCurrent().increaseNbSquare();
@@ -84,6 +84,16 @@ public class Board {
 			else
 				updateColorBrave(x, y);
 		}
+	}
+
+	public Player getCurrentPlayer()
+	{
+		return gameRef.getCurrent();
+	}
+
+	public Player getNotCurrentPlayer()
+	{
+		return gameRef.getNotCurrent();
 	}
 
 	// ----------------- BRAVE -----------------
@@ -97,7 +107,7 @@ public class Board {
 			{
 				if(j < 0 || j >= size) continue;
 
-				if(squares[i][j] != Globals.FREE_SQUARE)
+				if(squares[i][j] != Config.FREE_SQUARE)
 				{
 					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
 					{
@@ -113,8 +123,8 @@ public class Board {
 	// ----------------- RECKLESS -----------------
 	private void initQuadTree()
 	{
-		regionQuadTree = new QuadTree<Region>( new QuadPoint(0,0), new QuadPoint(size-1,size-1));
-		int regionAmount = (size / Globals.ZONE_SIZE) - 1;
+		int regionAmount = (size / Config.ZONE_SIZE) - 1;
+		regionQuadTree = new QuadTree<>( new QuadPoint(0,0), new QuadPoint(regionAmount,regionAmount));
 		for(int i = 0; i <= regionAmount; i++)
 		{
 			for(int j = 0; j <= regionAmount; j++)
@@ -127,18 +137,28 @@ public class Board {
 
 	private Region createRegion(int i, int j)
 	{
-		int minX = i*Globals.ZONE_SIZE;
-		int minY = j*Globals.ZONE_SIZE;
+		int minX = i* Config.ZONE_SIZE;
+		int minY = j* Config.ZONE_SIZE;
 		return new Region(new QuadPoint(minX,minY),
-				new QuadPoint(minX + Globals.ZONE_SIZE - 1, minY + Globals.ZONE_SIZE - 1), this);
+				new QuadPoint(minX + Config.ZONE_SIZE - 1, minY + Config.ZONE_SIZE - 1), this);
 	}
 
 	// x et y correspondent à la position du point pour lequel on veut savoir la région
-	private QuadPoint getRegionPos(int x, int y)
+	private QuadPoint getRegionPosIncluding(int x, int y)
 	{
-		return new QuadPoint(x / Globals.ZONE_SIZE, y / Globals.ZONE_SIZE);
+		return new QuadPoint(x / Config.ZONE_SIZE, y / Config.ZONE_SIZE);
 	}
 
+	private void updateColorReckless(int x, int y)
+	{
+		Region region = regionQuadTree.search(getRegionPosIncluding(x, y)).getData();
+		updateColor(x,y, region);
+
+		region.increaseSquareTaken(); // will also check if the region is full
+
+		if(region.isOwnedBy() == getCurrentPlayer().getPlayerId())
+			checkRegionAcquired(getRegionPosIncluding(x, y), regionQuadTree);
+	}
 
 	// Non Recursive Version
 	private void updateColor(int x, int y, Region region)
@@ -151,16 +171,16 @@ public class Board {
 			{
 				if(j < 0 || j >= size) continue;
 
-				if(squares[i][j] != Globals.FREE_SQUARE)
+				if(squares[i][j] != Config.FREE_SQUARE)
 				{
 					if(squares[i][j] == gameRef.getNotCurrent().getPlayerId())
 					{
-						if(region.isIn(i,j)) {
+						if(region.include(i,j)) {
 							gameRef.getNotCurrent().decreaseNbSquare();
 							gameRef.getCurrent().increaseNbSquare();
 							squares[i][j] = gameRef.getCurrent().getPlayerId();
 						} else {
-							Region region1 = regionQuadTree.search(getRegionPos(i, j)).getData();
+							Region region1 = regionQuadTree.search(getRegionPosIncluding(i, j)).getData();
 							if(!region1.isFull()) {
 								gameRef.getNotCurrent().decreaseNbSquare();
 								gameRef.getCurrent().increaseNbSquare();
@@ -173,41 +193,86 @@ public class Board {
 		}
 	}
 
-	private void updateColorReckless(int x, int y)
+	// ---------------------------- REGION COLOR MANAGEMENT ----------------------------
+	private void changeRegionColor(QuadTree<Region> quadTree)
 	{
-		Region region = regionQuadTree.search(getRegionPos(x, y)).getData();
-		region.increaseSquareTaken();
+		if(quadTree == null)
+			return;
 
-		updateColor(x,y, region);
-		
-		//si derniere case zone == acquise
-		if(region.isFull())
+		if(quadTree.getNodes() != null)
 		{
-			changeRegionColor(region);
-			colorRegionAcquired(getRegionPos(x, y), regionQuadTree);
+			for (QuadTree<Region> qt : quadTree.getNodes())
+				changeRegionColor(qt);
+
+			return;
+		}
+
+		if(quadTree.getData() != null)
+		{
+			if(quadTree.getData().isOwnedBy() != getCurrentPlayer().getPlayerId())
+				quadTree.getData().changeRegionColor();
 		}
 	}
 
-	public void changeRegionColor(Region region) {
-		for(int i = region.getTopLeft().getX(); i <= region.getBottomRight().getX(); i++)
+	private Region createUpperRegion(QuadTree<Region> qt)
+	{
+		if(qt.getNodes().get(QuadTree.TOP_LEFT).getData() == null || qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData() == null)
 		{
-			for(int j = region.getTopLeft().getY(); j <= region.getBottomRight().getY(); j++)
+			Region tL = createUpperRegion(qt.getNodes().get(QuadTree.TOP_LEFT));
+			Region bR = createUpperRegion(qt.getNodes().get(QuadTree.BOTTOM_RIGHT));
+			return new Region(tL.getTopLeft(), bR.getBottomRight(), this);
+		}
+		else
+		{
+			return new Region(qt.getNodes().get(QuadTree.TOP_LEFT).getData().getTopLeft(), qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData().getBottomRight(), this);
+		}
+	}
+
+	private boolean isLastSubZone(int countAcquiredByPlayer, int countAcquired)
+	{
+		// 2 = (QuadTree.MAX_CAPACITY / 2)
+		return (countAcquiredByPlayer >= 2 && countAcquired >= QuadTree.MAX_CAPACITY);
+	}
+
+	private boolean colorRegion(QuadTree<Region> qt)
+	{
+		if(qt.isEmpty())
+			return false;
+
+		int countAcquired = 0;
+		int countAcquiredByPlayer = 0;
+
+		for(QuadTree<Region> nodes : qt.getNodes())
+		{
+			if(nodes.getData() != null)
 			{
-				//verif en fonction de la case a recolo
-				if(squares[i][j] == gameRef.getNotCurrent().getPlayerId() || squares[i][j] == Globals.FREE_SQUARE) {
-					squares[i][j] = gameRef.getCurrent().getPlayerId();
-					gameRef.getNotCurrent().decreaseNbSquare();
-					gameRef.getCurrent().increaseNbSquare();
-				}
+				if(nodes.getData().isFull())
+					countAcquired++;
+				if(nodes.getData().isOwnedBy() == gameRef.getCurrent().getPlayerId())
+					countAcquiredByPlayer++;
 			}
 		}
+
+		System.out.printf("Acquired: %d Acquired By The Player: %d\n", countAcquired, countAcquiredByPlayer);
+
+		if(isLastSubZone(countAcquiredByPlayer, countAcquired)|| countAcquiredByPlayer >= Config.RKL_SUB_ZONE_TO_EARN)
+		{
+			qt.setData(createUpperRegion(qt));
+			qt.getData().setSquareTaken(qt.getData().getMaxSquareInside());
+			System.out.printf("Upper Region tL: %s bR: %s\n", qt.getData().getTopLeft(), qt.getData().getBottomRight());
+
+			changeRegionColor(qt);
+
+			return true;
+		}
+
+		return false;
 	}
 
-	// Si le point a modifier est nul alors on remonte sinon on doit chercher dans un niveau précédent
-	private void colorRegionAcquired(QuadPoint point, QuadTree<Region> qt)
+	private boolean checkRegionAcquired(QuadPoint point, QuadTree<Region> qt)
 	{
 		if(!qt.inBoundaries(point))
-			return;
+			return false;
 
 		int xOffset = (qt.getTopLeft().getX() + qt.getBottomRight().getX()) >> 1;
 		int yOffset = (qt.getTopLeft().getY() + qt.getBottomRight().getY()) >> 1;
@@ -216,33 +281,16 @@ public class Board {
 		// If Region Node
 		if(qt.getNodes().get(index).getTopLeft() != null)
 		{
-			colorRegionAcquired(point, qt.getNodes().get(index));
-			return;
+			if(checkRegionAcquired(point, qt.getNodes().get(index)))
+				 return colorRegion(qt);
+
+			return false;
 		}
 
 		if(qt.getNodes().get(index).isEmpty())
-			return;
+			return false;
 
-		if(point.compare(qt.getNodes().get(index).getPos()))
-		{
-			int countAcquired = 0;
-			int countAcquiredByPlayer = 0;
-
-			for(QuadTree<Region> nodes : qt.getNodes())
-			{
-				if(nodes.getData().isFull())
-					countAcquired++;
-				if(nodes.getData().isOwnedBy() == gameRef.getCurrent().getPlayerId())
-					countAcquiredByPlayer++;
-			}
-
-			// Si 4 alors ça veut dire qu'il y a 2/2 sinon il gagne tout avec 3
-			if((countAcquiredByPlayer >= 2 && countAcquired >= 4) || countAcquiredByPlayer >= 3)
-			{
-				for(QuadTree<Region> nodes : qt.getNodes())
-					changeRegionColor(nodes.getData());
-			}
-		}
+		return colorRegion(qt);
 	}
 
 }

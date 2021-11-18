@@ -26,20 +26,58 @@ public class Region
         squareTaken = _squareTaken;
     }
 
-    public void increaseSquareTaken() {
-        this.squareTaken++;
+    public int getMaxSquareInside()
+    {
+        return ((bottomRight.getX() - topLeft.getX()) + 1) * ((bottomRight.getY() - topLeft.getY()) + 1);
     }
 
-    public boolean isFull() { return squareTaken == Globals.ZONE_SIZE * Globals.ZONE_SIZE; }
+    public void increaseSquareTaken()
+    {
+        this.squareTaken++;
 
-    public boolean isIn(int x, int y) {
+        if(isFull())
+            changeRegionColor();
+    }
+
+    public void changeRegionColor()
+    {
+        int[][] squares = boardRef.getSquares();
+        Player current = boardRef.getCurrentPlayer();
+        Player notCurrent = boardRef.getNotCurrentPlayer();
+
+        for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
+        {
+            for(int j = topLeft.getY(); j <= bottomRight.getY(); j++)
+            {
+                if(squares[i][j] == notCurrent.getPlayerId())
+                {
+                    squares[i][j] = current.getPlayerId();
+                    notCurrent.decreaseNbSquare();
+                    current.increaseNbSquare();
+                }
+                else if (squares[i][j] == Config.FREE_SQUARE)
+                {
+                    squares[i][j] = current.getPlayerId();
+                    current.increaseNbSquare();
+                    squareTaken++;
+                }
+            }
+        }
+    }
+
+    public boolean isFull() { return squareTaken >= ((bottomRight.getX() - topLeft.getX()) + 1) * ((bottomRight.getY() - topLeft.getY()) + 1); }
+
+    public boolean include(int x, int y) {
         return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
     }
 
     public int isOwnedBy()
     {
+        // Si une case est pleine alors sa couleur est automatiquement changé par la personne ayant placé le dernier pion
+        // par conséquent n'importe quelle case de cette région devrait être de la couleur la personne possédant la région
+        // ici on prend la case du coin gauche par soucis de facilité.
         if(!isFull())
-            return Globals.FREE_SQUARE; // Possédez par personne
+            return Config.FREE_SQUARE; // Personne ne possède la région
         else
             return boardRef.getSquares()[topLeft.getX()][topLeft.getY()];
     }
