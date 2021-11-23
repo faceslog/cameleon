@@ -14,11 +14,11 @@ public class Bot extends Player {
 
 	@Override
 	public void move() {
-		ChaserPlayStyleBrave();
+		GluttonPlayStyleBrave();
 	}
 
 	// TO DO: FIX Complexité en regardant les cas ou l'on peut break
-	private void ChaserPlayStyleBrave() {
+	private void GluttonPlayStyleBrave() {
 		QuadPoint point = null;
 		int max = 0;
 
@@ -68,17 +68,27 @@ public class Bot extends Player {
 		return ret;
 	}
 
-	/* Reckless game mode
-	private void ChaserPlayStyleReckless() {
+	//  1 - Check s'il peut obtenir une région ? Si oui check si pas meilleure région et on stocke en S1 combien cela rapporte de pts puis --->  2)
+	// 2 - Pendant les check régions si une région possède moins de cases prises que RegionSize - 1 regarder combien de cases il peut voler en plaçant un point dans cette dernière & stocker la valeur en S2
+	// 3 - Comparer S1 et S2 et choisir celle qui rapporte le + de points
+	private void GluttonPlayStyleReckless()
+	{
 		// TODO - implement Bot.jouerGloutonTéméraire
 		throw new UnsupportedOperationException();
 	}
+
+	// 1) Ne jamais être avant-dernier à placer un point dans une zone.
+	// 2) Essayer de gagner toujours une zone en plaçant le pion en dernier
+	// 3) Jouer les zones et ne pas laisser un adversaire gagner 3 zones.
+	// 4) Pour jouer les zones placer ses points dans les zones les plus remplies sauf si cas 1)
 	private void SmartPlayStyleReckless() {
 		// TODO - implement Bot.jouerIATéméraire
 		throw new UnsupportedOperationException();
 	}
+
+	// Idem updateColor en comptant le nombre de cases prises.
 	private void evaluateMoveReckless() {
 		// TODO - implement Bot.evalCaseTéméraire
 		throw new UnsupportedOperationException();
-	}*/
+	}
 }
