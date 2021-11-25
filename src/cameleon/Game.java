@@ -1,5 +1,7 @@
 package cameleon;
 
+import cameleon.boardmodes.BBrave;
+import cameleon.boardmodes.BReckless;
 import cameleon.entities.Bot;
 import cameleon.entities.Human;
 import cameleon.enums.GameMode;
@@ -91,13 +93,17 @@ public class Game {
 
 		if(isUsingFile)
 		{
-			board = loadBoardFromFile("./docs/test.txt");
+			loadBoardFromFile("./docs/test.txt");
 		}
 		else
 		{
 			System.out.println("Taille de la grid (n) : ");
 			int size = scanner.nextInt();
-			board = new Board(size, this);
+
+			if(gameMode == GameMode.BRAVE)
+				board = new BBrave(size, this);
+			else
+				board = new BReckless(size, this);
 		}
 	}
 
@@ -106,7 +112,7 @@ public class Game {
 		current = getNotCurrent();
 	}
 
-	private Board loadBoardFromFile(String path)
+	private void loadBoardFromFile(String path)
 	{
 		File file;
 		Scanner sc;
@@ -144,6 +150,9 @@ public class Game {
 			i++;
 		}
 
-		return new Board(size, squares, this);
+		if(gameMode == GameMode.BRAVE)
+			board = new BBrave(size, squares, this);
+		else
+			board = new BReckless(size, squares, this);
 	}
 }
