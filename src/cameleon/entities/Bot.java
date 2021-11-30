@@ -3,6 +3,7 @@ package cameleon.entities;
 import cameleon.Config;
 import cameleon.Game;
 import cameleon.Player;
+import cameleon.boardmodes.BReckless;
 import core.datastruct.QuadPoint;
 
 public class Bot extends Player {
@@ -41,7 +42,10 @@ public class Bot extends Player {
 		}
 
 		if(point != null)
+		{
+			evaluateMoveReckless(point.getX(), point.getY());
 			getGameRef().getBoard().nextMove(point.getX(), point.getY());
+		}
 		else
 			throw new NullPointerException("Point cannot be NULL");
 	}
@@ -87,8 +91,8 @@ public class Bot extends Player {
 	}
 
 	// Idem updateColor en comptant le nombre de cases prises.
-	private void evaluateMoveReckless() {
-		// TODO - implement Bot.evalCaseTéméraire
-		throw new UnsupportedOperationException();
+	private void evaluateMoveReckless(int x, int y)
+	{
+		System.out.printf("Point évalué: %d %d, gain: %d\n", x, y, ((BReckless) getGameRef().getBoard()).countColorRK(x, y));
 	}
 }

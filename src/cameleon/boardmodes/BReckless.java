@@ -163,4 +163,133 @@ public class BReckless extends Board
 
         return colorRegion(qt);
     }
+
+    //
+    // HELP ME
+    // IM GONNA
+    // DIE FROM THIS
+    // SHIT
+    // :(
+
+    public int countColorRK(int x, int y)
+    {
+        int inside = 0;
+        int around = 0;
+
+        Region region = getRegionQuadTree().search(getRegionPosIncluding(x, y)).getData();
+
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            if(i < 0 || i >= getSize()) continue;
+            for (int j = y - 1; j <= y+ 1; j++)
+            {
+                if(j < 0 || j >= getSize()) continue;
+
+                if(getSquares()[i][j] != Config.FREE_SQUARE)
+                {
+                    if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
+                    {
+                        if(region.include(i,j))
+                            inside++;
+                        else
+                        {
+                            Region regionBis = getRegionQuadTree().search(getRegionPosIncluding(i, j)).getData();
+                            if(!regionBis.isFull())
+                                around++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Si la région devient pleine
+        if((region.getSquareTaken() + 1) == region.getMaxSquareInside())
+        {
+            int a = countRegionAcquired(getRegionPosIncluding(x, y), getRegionQuadTree());
+            int b = region.countChangeRegionColor();
+
+            return Math.max(a, b) + around; // le point du joueur est inclus dans la zone à acquérir
+        }
+        else
+            return (inside + around) + 1; // + 1 car on compte le point du joueur en plus dans ce cas
+    }
+
+    private int countChangeRegionColor(QuadTree<Region> quadTree)
+    {
+        if(quadTree == null)
+            return 0;
+
+        if(quadTree.getNodes() != null)
+        {
+            int count = 0;
+            for (QuadTree<Region> qt : quadTree.getNodes())
+                count +=  countChangeRegionColor(qt);
+
+            return count;
+        }
+
+        if(quadTree.getData() != null)
+        {
+            if(quadTree.getData().isOwnedBy() != getCurrentPlayer().getPlayerId())
+                return quadTree.getData().countChangeRegionColor();
+        }
+
+        return  0;
+    }
+
+    private int countRegion(QuadTree<Region> qt)
+    {
+        if(qt.isEmpty())
+            return 0;
+
+        int countAcquired = 1; // Initialisé à "1" car on part du principe qu'une zone appartient deja au joueur, mais ses données n'ont pas été changé on ne regarde donc que les 3 autres restantes
+        int countAcquiredByPlayer = 1;
+
+        for(QuadTree<Region> nodes : qt.getNodes())
+        {
+            if(nodes.getData() != null)
+            {
+                if(nodes.getData().isFull())
+                    countAcquired++;
+                if(nodes.getData().isOwnedBy() == getGameRef().getCurrent().getPlayerId())
+                    countAcquiredByPlayer++;
+            }
+        }
+
+        if(isLastSubZone(countAcquiredByPlayer, countAcquired)|| (countAcquiredByPlayer >= Config.RKL_SUB_ZONE_TO_EARN))
+        {
+            int count = 0;
+            count += countChangeRegionColor(qt);
+
+            return count;
+        }
+
+        return 0;
+    }
+
+    private int countRegionAcquired(QuadPoint point, QuadTree<Region> qt)
+    {
+        if(!qt.inBoundaries(point))
+            return 0;
+
+        int xOffset = (qt.getTopLeft().getX() + qt.getBottomRight().getX()) >> 1;
+        int yOffset = (qt.getTopLeft().getY() + qt.getBottomRight().getY()) >> 1;
+        short index = getRegionQuadTree().getRegionIndex(point, new QuadPoint(xOffset, yOffset));
+
+        // If Region Node
+        if(qt.getNodes().get(index).getTopLeft() != null)
+        {
+            int count = countRegionAcquired(point, qt.getNodes().get(index));
+            if(count > 0)
+                return Math.max(count, countRegion(qt));
+
+            return 0;
+        }
+
+        if(qt.getNodes().get(index).isEmpty())
+            return 0;
+
+        // Si dans la feuille
+        return countRegion(qt);
+    }
 }

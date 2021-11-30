@@ -26,6 +26,8 @@ public class Region
         squareTaken = _squareTaken;
     }
 
+    public int getSquareTaken() { return squareTaken; }
+
     public int getMaxSquareInside()
     {
         return ((bottomRight.getX() - topLeft.getX()) + 1) * ((bottomRight.getY() - topLeft.getY()) + 1);
@@ -65,7 +67,25 @@ public class Region
         }
     }
 
-    public boolean isFull() { return squareTaken >= ((bottomRight.getX() - topLeft.getX()) + 1) * ((bottomRight.getY() - topLeft.getY()) + 1); }
+    public int countChangeRegionColor()
+    {
+        int[][] squares = boardRef.getSquares();
+        Player enemy = boardRef.getNotCurrentPlayer();
+        int count = 0;
+
+        for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
+        {
+            for(int j = topLeft.getY(); j <= bottomRight.getY(); j++)
+            {
+                if(squares[i][j] == enemy.getPlayerId() || squares[i][j] == Config.FREE_SQUARE)
+                    count++;
+            }
+        }
+
+        return count;
+    }
+
+    public boolean isFull() { return squareTaken >= getMaxSquareInside(); }
 
     public boolean include(int x, int y) {
         return x >= topLeft.getX() && x <= bottomRight.getX() && y >= topLeft.getY() && y <= bottomRight.getY();
