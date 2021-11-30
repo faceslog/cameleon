@@ -42,10 +42,7 @@ public class Bot extends Player {
 		}
 
 		if(point != null)
-		{
-			evaluateMoveReckless(point.getX(), point.getY());
 			getGameRef().getBoard().nextMove(point.getX(), point.getY());
-		}
 		else
 			throw new NullPointerException("Point cannot be NULL");
 	}
@@ -72,13 +69,39 @@ public class Bot extends Player {
 		return ret;
 	}
 
-	//  1 - Check s'il peut obtenir une région ? Si oui check si pas meilleure région et on stocke en S1 combien cela rapporte de pts puis --->  2)
+	// 1 - Check s'il peut obtenir une région ? Si oui check si pas meilleure région et on stocke en S1 combien cela rapporte de pts puis --->  2)
 	// 2 - Pendant les check régions si une région possède moins de cases prises que RegionSize - 1 regarder combien de cases il peut voler en plaçant un point dans cette dernière & stocker la valeur en S2
 	// 3 - Comparer S1 et S2 et choisir celle qui rapporte le + de points
 	private void GluttonPlayStyleReckless()
 	{
-		// TODO - implement Bot.jouerGloutonTéméraire
-		throw new UnsupportedOperationException();
+		QuadPoint point = null;
+		int max = 0;
+
+		for(int i = 0; i < getGameRef().getBoard().getSize(); i++)
+		{
+			for(int j = 0; j < getGameRef().getBoard().getSize(); j++)
+			{
+				QuadPoint quadPoint = new QuadPoint(j,i);
+				if(getGameRef().getBoard().getSquares()[j][i] == Config.FREE_SQUARE)
+				{
+					int evalCase = evaluateMoveReckless(quadPoint);
+					if(max < evalCase)
+					{
+						point = quadPoint;
+						max = evalCase;
+						if(max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN) break;
+					}
+				}
+			}
+		}
+
+		if(point != null)
+		{
+			System.out.printf("Point évalué: %d %d, gain: %d\n", point.getX(), point.getY(), max);
+			getGameRef().getBoard().nextMove(point.getX(), point.getY());
+		}
+		else
+			throw new NullPointerException("Point cannot be NULL");
 	}
 
 	// 1) Ne jamais être avant-dernier à placer un point dans une zone.
@@ -91,8 +114,8 @@ public class Bot extends Player {
 	}
 
 	// Idem updateColor en comptant le nombre de cases prises.
-	private void evaluateMoveReckless(int x, int y)
+	private int evaluateMoveReckless(QuadPoint point)
 	{
-		System.out.printf("Point évalué: %d %d, gain: %d\n", x, y, ((BReckless) getGameRef().getBoard()).countColorRK(x, y));
+		return ((BReckless) getGameRef().getBoard()).countColorRK(point.getX(), point.getY());
 	}
 }
