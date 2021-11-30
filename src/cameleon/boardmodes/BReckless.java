@@ -205,13 +205,20 @@ public class BReckless extends Board
         // Si la région devient pleine
         if((region.getSquareTaken() + 1) == region.getMaxSquareInside())
         {
-            int a = countRegionAcquired(getRegionPosIncluding(x, y), getRegionQuadTree());
-            int b = region.countChangeRegionColor();
+            // le point du joueur est inclus dans la zone que l'on vient de capturer
+            int upperRegion = countRegionAcquired(getRegionPosIncluding(x, y), getRegionQuadTree()); // grande zone A forcément supérieur a B
+            int smallRegion = region.countChangeRegionColor();
 
-            return Math.max(a, b) + around; // le point du joueur est inclus dans la zone à acquérir
+            if(upperRegion > 0)
+                return upperRegion + around; // On a capturé la grande zone (la grande region inclus la petite)
+            else
+                return smallRegion + around; // On a seulement capturé la petite zone
         }
         else
+        {
+            // On a seulement capturé la petite zone
             return (inside + around) + 1; // + 1 car on compte le point du joueur en plus dans ce cas
+        }
     }
 
     private int countChangeRegionColor(QuadTree<Region> quadTree)
