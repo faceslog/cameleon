@@ -34,9 +34,13 @@ public class QuadPoint
     //https://medium.com/codelog/overriding-hashcode-method-effective-java-notes-723c1fedf51c
     @Override
     public int hashCode() {
+
+        final int prime = 31;
         int result = 3;
-        result = 31 * result + getX();
-        result = 31 * result + getY();
+
+        result = prime * result + getX() + 1; // we use +1 to create a different hashcode between (0, 1) and (1, 0)
+        result = prime * result + getY();
+
         return result;
     }
 
