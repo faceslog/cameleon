@@ -3,6 +3,7 @@ package cameleon.entities;
 import java.util.Scanner;
 
 import cameleon.*;
+import core.datastruct.QuadPoint;
 
 public class Human extends Player {
 
@@ -22,7 +23,7 @@ public class Human extends Player {
             y = scanner.nextInt();
         } while (!checkMove(x,y, getGameRef().getBoard()));
 
-        System.out.println("X : " + x + " - Y : " + y);
+        getListPoints().add(new QuadPoint(x,y));
         getGameRef().getBoard().nextMove(x,y);
     }
 

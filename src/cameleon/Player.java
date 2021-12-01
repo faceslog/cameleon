@@ -1,10 +1,15 @@
 package cameleon;
 
+import core.datastruct.DataManager;
+import core.datastruct.QuadPoint;
+
 public abstract class Player {
 
 	private final int playerId;
 	private final Game gameRef;
 	private int numberSquare;
+
+	private DataManager<QuadPoint> listPoints;
 
 	// TO DO: throw if id = Config.FREE_SQUARE
 	public Player(int _playerId, Game _game)
@@ -12,6 +17,7 @@ public abstract class Player {
 		playerId = _playerId;
 		gameRef = _game;
 		numberSquare = 0;
+		listPoints = new DataManager<>();
 	}
 
 	public abstract void move();
@@ -34,5 +40,18 @@ public abstract class Player {
 	public boolean equals(Player player)
 	{
 		return playerId == player.getPlayerId();
+	}
+
+	public DataManager<QuadPoint> getListPoints() {
+		return listPoints;
+	}
+
+	public QuadPoint getPointCoord(int x, int y) {
+		for(QuadPoint point : getListPoints().getList()) {
+			if(point.getX() == x && point.getY() == y) {
+				return point;
+			}
+		}
+		return null;
 	}
 }

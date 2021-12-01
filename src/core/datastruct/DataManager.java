@@ -22,10 +22,12 @@ public class DataManager<T> {
     // A Theta(1) function to add an element to DataManager
     public void add(T x)
     {
+        System.out.println("DM : " + x);
         // If element is already present, then nothing to do
         if (hash.get(x) != null)
             return;
 
+        System.out.println("TEST");
         // Else put element at the end of arrayList
         int s = list.size();
         list.add(x);
@@ -73,5 +75,9 @@ public class DataManager<T> {
     public Integer search(T x)
     {
         return hash.get(x);
+    }
+
+    public ArrayList<T> getList() {
+        return list;
     }
 }
