@@ -115,7 +115,7 @@ public class QuadTree<T>
         if(nodes.get(index).isEmpty())
             return new QuadTree<>(); // empty node
 
-        if(point.compare(nodes.get(index).getPos()))
+        if(point.equals(nodes.get(index).getPos()))
             return nodes.get(index);
 
         return new QuadTree<>(); // empty node

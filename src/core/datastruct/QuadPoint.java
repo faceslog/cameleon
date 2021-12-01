@@ -19,12 +19,25 @@ public class QuadPoint
         return y;
     }
 
-    public boolean compare(QuadPoint point)
+    @Override
+    public boolean equals(Object obj)
     {
-        if(point == null)
+        if(obj == null)
             return  false;
 
+        if(!(obj instanceof final QuadPoint point))
+            return false;
+
         return (x == point.getX() && y == point.getY());
+    }
+
+    //https://medium.com/codelog/overriding-hashcode-method-effective-java-notes-723c1fedf51c
+    @Override
+    public int hashCode() {
+        int result = 3;
+        result = 31 * result + getX();
+        result = 31 * result + getY();
+        return result;
     }
 
     @Override
