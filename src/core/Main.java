@@ -23,5 +23,8 @@ public class Main {
         System.out.println(ds.search(point));
 
         System.out.println(ds.getRandom());
+
+        Game party = new Game();
+        party.start();
     }
 }

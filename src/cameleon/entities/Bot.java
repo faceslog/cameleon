@@ -4,6 +4,7 @@ import cameleon.Config;
 import cameleon.Game;
 import cameleon.Player;
 import cameleon.boardmodes.BReckless;
+import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 
 public class Bot extends Player {
@@ -14,8 +15,12 @@ public class Bot extends Player {
 	}
 
 	@Override
-	public void move() {
-		GluttonPlayStyleBrave();
+	public void move()
+	{
+		if(getGameRef().getGameMode() == GameMode.BRAVE)
+			GluttonPlayStyleBrave();
+		else
+			GluttonPlayStyleReckless();
 	}
 
 	// TO DO: FIX Complexité en regardant les cas ou l'on peut break
@@ -49,7 +54,6 @@ public class Bot extends Player {
 
 	private int evaluateMoveBrave(QuadPoint point)
 	{
-
 		int ret = 1;
 		int[][] tmp = getGameRef().getBoard().getSquares();
 
@@ -89,7 +93,6 @@ public class Bot extends Player {
 					{
 						point = quadPoint;
 						max = evalCase;
-						if(max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN) break;
 					}
 				}
 			}
@@ -116,6 +119,6 @@ public class Bot extends Player {
 	// Idem updateColor en comptant le nombre de cases prises.
 	private int evaluateMoveReckless(QuadPoint point)
 	{
-		return ((BReckless) getGameRef().getBoard()).countColorRK(point.getX(), point.getY());
+		return ((BReckless) getGameRef().getBoard()).countColorReckless(point.getX(), point.getY());
 	}
 }

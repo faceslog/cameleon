@@ -87,6 +87,9 @@ public class BReckless extends Board
 
     private Region createUpperRegion(QuadTree<Region> qt)
     {
+        if (qt == null)
+            throw new NullPointerException("qt parameter cannot be null !");
+
         if(qt.getNodes().get(QuadTree.TOP_LEFT).getData() == null || qt.getNodes().get(QuadTree.BOTTOM_RIGHT).getData() == null)
         {
             Region tL = createUpperRegion(qt.getNodes().get(QuadTree.TOP_LEFT));
@@ -107,6 +110,9 @@ public class BReckless extends Board
 
     private boolean colorRegion(QuadTree<Region> qt)
     {
+        if(qt == null)
+            return false;
+
         if(qt.isEmpty())
             return false;
 
@@ -142,6 +148,9 @@ public class BReckless extends Board
 
     private boolean checkRegionAcquired(QuadPoint point, QuadTree<Region> qt)
     {
+        if(qt == null)
+            return false;
+
         if(!qt.inBoundaries(point))
             return false;
 
@@ -164,14 +173,11 @@ public class BReckless extends Board
         return colorRegion(qt);
     }
 
-    //
-    // HELP ME
-    // IM GONNA
-    // DIE FROM THIS
-    // SHIT
-    // :(
+    // ---------------------------- REGION COUNTER ----------------------------
+    // Pour des raisons de lisibilité nous avons décidé de ne pas fusionner les fonctions d'update et de comptage
+    // bien que cela pourrait être simplement accompli à l'aide d'un booléen isUpdating.
 
-    public int countColorRK(int x, int y)
+    public int countColorReckless(int x, int y)
     {
         int inside = 0;
         int around = 0;
@@ -181,7 +187,7 @@ public class BReckless extends Board
         for (int i = x - 1; i <= x + 1; i++)
         {
             if(i < 0 || i >= getSize()) continue;
-            for (int j = y - 1; j <= y+ 1; j++)
+            for (int j = y - 1; j <= y + 1; j++)
             {
                 if(j < 0 || j >= getSize()) continue;
 
@@ -216,7 +222,7 @@ public class BReckless extends Board
         }
         else
         {
-            // On a seulement capturé la petite zone
+            // On aura capturé aucune zone
             return (inside + around) + 1; // + 1 car on compte le point du joueur en plus dans ce cas
         }
     }
@@ -246,6 +252,9 @@ public class BReckless extends Board
 
     private int countRegion(QuadTree<Region> qt)
     {
+        if(qt == null)
+            return 0;
+
         if(qt.isEmpty())
             return 0;
 
@@ -276,6 +285,9 @@ public class BReckless extends Board
 
     private int countRegionAcquired(QuadPoint point, QuadTree<Region> qt)
     {
+        if(qt == null)
+            return 0;
+
         if(!qt.inBoundaries(point))
             return 0;
 
