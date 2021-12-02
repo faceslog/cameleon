@@ -34,30 +34,15 @@ public class BBrave extends Board
                     {
                         //check 8 case autour si pas de case vide on ajoute pas (pas la mais rappel)
                         //get le quad point a la position
-                        System.out.println("POINT :");
-                        System.out.println(i);
-                        System.out.println(j);
                         QuadPoint point = new QuadPoint(i, j);
-                        System.out.println(point);
-                        System.out.println();
 
-                        System.out.println("REMOVE :");
-                        System.out.println(getGameRef().getNotCurrent().getPlayerId() + " :" + getGameRef().getNotCurrent().getListPoints().getList());
                         getGameRef().getNotCurrent().decreaseNbSquare();
                         //remove point de la liste
                         getGameRef().getNotCurrent().getListPoints().remove(point);
-                        System.out.println(getGameRef().getNotCurrent().getPlayerId() + " :" + getGameRef().getNotCurrent().getListPoints().getList());
-                        System.out.println();
-                        System.out.println();
 
-                        System.out.println("ADD :");
-                        System.out.println(getGameRef().getCurrent().getPlayerId() + " :" + getGameRef().getCurrent().getListPoints().getList());
                         getGameRef().getCurrent().increaseNbSquare();
                         //add le point a la liste
                         getGameRef().getCurrent().getListPoints().add(point);
-                        System.out.println(getGameRef().getCurrent().getPlayerId() + " :" + getGameRef().getCurrent().getListPoints().getList());
-                        System.out.println();
-
 
                         getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
                     }

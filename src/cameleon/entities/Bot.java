@@ -7,6 +7,8 @@ import cameleon.boardmodes.BReckless;
 import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 
+import java.util.ArrayList;
+
 public class Bot extends Player {
 
 	public Bot(int _playerId, Game _gameRef)
@@ -52,11 +54,13 @@ public class Bot extends Player {
 //			throw new NullPointerException("Point cannot be NULL");
 //	}
 	private void GluttonPlayStyleBrave() {
+		ArrayList<QuadPoint> deletePoint = new ArrayList<>();
 		int max = 0;
 		QuadPoint quadPoint = null;
 		boolean freeSquare = false;
 		//parcours point de la liste
 		for (QuadPoint point : getGameRef().getNotCurrent().getListPoints().getList()) {
+			freeSquare = false;
 			//regarde les cases libre autour
 			for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
 				if (i < 0 || i >= getGameRef().getBoard().getSize()) continue;
@@ -83,14 +87,20 @@ public class Bot extends Player {
 			}
 			//si pas de case libre delete le point
 			if(!freeSquare) {
-				getGameRef().getNotCurrent().getListPoints().remove(point);
+				deletePoint.add(point);
 			}
 		}
+
+		for(QuadPoint point: deletePoint) {
+			getGameRef().getNotCurrent().getListPoints().remove(point);
+		}
+
 		if(quadPoint != null) {
 			getListPoints().add(quadPoint);
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 		} else {
-			throw new NullPointerException("Point cannot be NULL");
+			getListPoints().add(new QuadPoint(0, 0));
+			getGameRef().getBoard().nextMove(0, 0);
 		}
 	}
 
