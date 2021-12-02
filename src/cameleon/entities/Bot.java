@@ -3,7 +3,7 @@ package cameleon.entities;
 import cameleon.Config;
 import cameleon.Game;
 import cameleon.Player;
-import cameleon.boardmodes.BReckless;
+import cameleon.boards.BReckless;
 import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 

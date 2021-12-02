@@ -37,7 +37,7 @@ public class QuadPoint
 
         final int prime = 31;
         int result = 17;
-
+        // use the toString to avoid problem with combination like (1, 0) (0, 1) etc ...
         result = prime * result + toString().hashCode();
 
         return result;

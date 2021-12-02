@@ -1,4 +1,4 @@
-package cameleon.boardmodes;
+package cameleon.boards;
 
 import cameleon.Board;
 import cameleon.Config;

@@ -1,7 +1,7 @@
 package cameleon;
 
-import cameleon.boardmodes.BBrave;
-import cameleon.boardmodes.BReckless;
+import cameleon.boards.BBrave;
+import cameleon.boards.BReckless;
 import cameleon.entities.Bot;
 import cameleon.entities.Human;
 import cameleon.enums.GameMode;

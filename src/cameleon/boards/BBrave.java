@@ -1,4 +1,4 @@
-package cameleon.boardmodes;
+package cameleon.boards;
 
 import cameleon.Board;
 import cameleon.Config;
@@ -36,7 +36,7 @@ public class BBrave extends Board
                     getFreePoints().remove(point);
                     if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
                     {
-                        //check 8 case autour si pas de case vide on ajoute pas (pas la mais rappel)
+                        //check 8 case autour si pas de case vide on n'ajoute pas (pas la mais rappel)
                         getGameRef().getNotCurrent().decreaseNbSquare();
                         getGameRef().getCurrent().increaseNbSquare();
                         getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
