@@ -1,21 +1,16 @@
 package cameleon;
 
-import core.datastruct.DataManager;
-import core.datastruct.QuadPoint;
-
 abstract public class Board {
 
 	private final int size;
 	private final int[][] squares;
 	private final Game gameRef;
-	private final DataManager<QuadPoint> freePoints;
 
 	public Board(int n, Game _gameRef)
 	{
 		size = (int) (Config.ZONE_SIZE * Math.pow(2, n));
 		squares = new int[size][size];
 		gameRef = _gameRef;
-		freePoints = new DataManager<>();
 	}
 
 	public Board(int _size, int[][] _squares, Game _gameRef)
@@ -23,7 +18,6 @@ abstract public class Board {
 		size = _size;
 		squares = _squares;
 		gameRef = _gameRef;
-		freePoints = new DataManager<>();
 	}
 
 	public boolean isFull()
@@ -88,10 +82,6 @@ abstract public class Board {
 	public Player getNotCurrentPlayer()
 	{
 		return gameRef.getNotCurrent();
-	}
-
-	public DataManager<QuadPoint> getFreePoints() {
-		return freePoints;
 	}
 
 	abstract public void updateColor(int x, int y);

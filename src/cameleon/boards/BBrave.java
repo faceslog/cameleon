@@ -3,6 +3,7 @@ package cameleon.boards;
 import cameleon.Board;
 import cameleon.Config;
 import cameleon.Game;
+import cameleon.entities.Bot;
 import core.datastruct.QuadPoint;
 
 public class BBrave extends Board
@@ -32,18 +33,25 @@ public class BBrave extends Board
 
                 if(getSquares()[i][j] != Config.FREE_SQUARE)
                 {
-                    //remove le point s'il existe dans la liste
-                    getFreePoints().remove(point);
-                    if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
+                    //remove le point s'il existe dans la liste d'un des joueurs
+                    if(getCurrentPlayer() instanceof Bot current)
+                        current.getFreePoints().remove(point);
+
+                    if(getNotCurrentPlayer() instanceof Bot enemy)
+                        enemy.getFreePoints().remove(point);
+
+                    if(getSquares()[i][j] == getNotCurrentPlayer().getPlayerId())
                     {
                         //check 8 case autour si pas de case vide on n'ajoute pas (pas la mais rappel)
-                        getGameRef().getNotCurrent().decreaseNbSquare();
-                        getGameRef().getCurrent().increaseNbSquare();
+                        getNotCurrentPlayer().decreaseNbSquare();
+                        getCurrentPlayer().increaseNbSquare();
                         getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
                     }
-                } else {
-                    //ajoute le point si case vide
-                    getGameRef().getBoard().getFreePoints().add(point);
+                }
+                else
+                {
+                    if(getNotCurrentPlayer() instanceof Bot enemy)
+                        enemy.getFreePoints().add(point);
                 }
             }
         }

@@ -5,13 +5,21 @@ import cameleon.Game;
 import cameleon.Player;
 import cameleon.boards.BReckless;
 import cameleon.enums.GameMode;
+import core.datastruct.DataManager;
 import core.datastruct.QuadPoint;
 
 public class Bot extends Player {
 
+	private final DataManager<QuadPoint> freePoints;
+
 	public Bot(int _playerId, Game _gameRef)
 	{
 		super(_playerId, _gameRef);
+		freePoints = new DataManager<>();
+	}
+
+	public DataManager<QuadPoint> getFreePoints() {
+		return freePoints;
 	}
 
 	@Override
@@ -27,7 +35,7 @@ public class Bot extends Player {
 		int max = 0;
 		QuadPoint quadPoint = null;
 		//parcours point de la liste
-		for (QuadPoint point : getGameRef().getBoard().getFreePoints().getList()) {
+		for (QuadPoint point : freePoints.getList()) {
 			int evalCase = evaluateMoveBrave(point);
 			//garde le point avec la plus grande valeur
 			if (max < evalCase) {
