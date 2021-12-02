@@ -28,24 +28,22 @@ public class BBrave extends Board
             {
                 if(j < 0 || j >= getSize()) continue;
 
+                QuadPoint point = new QuadPoint(i, j);
+
                 if(getSquares()[i][j] != Config.FREE_SQUARE)
                 {
+                    //remove le point s'il existe dans la liste
+                    getFreePoints().remove(point);
                     if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
                     {
                         //check 8 case autour si pas de case vide on ajoute pas (pas la mais rappel)
-                        //get le quad point a la position
-                        QuadPoint point = new QuadPoint(i, j);
-
                         getGameRef().getNotCurrent().decreaseNbSquare();
-                        //remove point de la liste
-                        getGameRef().getNotCurrent().getListPoints().remove(point);
-
                         getGameRef().getCurrent().increaseNbSquare();
-                        //add le point a la liste
-                        getGameRef().getCurrent().getListPoints().add(point);
-
                         getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
                     }
+                } else {
+                    //ajoute le point si case vide
+                    getGameRef().getBoard().getFreePoints().add(point);
                 }
             }
         }

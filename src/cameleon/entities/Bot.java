@@ -25,81 +25,27 @@ public class Bot extends Player {
 			GluttonPlayStyleReckless();
 	}
 
-	// TO DO: FIX Complexité en regardant les cas ou l'on peut break
-//	private void GluttonPlayStyleBrave() {
-//		QuadPoint point = null;
-//		int max = 0;
-//
-//		for(int i = 0; i < getGameRef().getBoard().getSize(); i++)
-//		{
-//			for(int j = 0; j < getGameRef().getBoard().getSize(); j++)
-//			{
-//				QuadPoint quadPoint = new QuadPoint(j,i);
-//				if(getGameRef().getBoard().getSquares()[j][i] == Config.FREE_SQUARE)
-//				{
-//					int evalCase = evaluateMoveBrave(quadPoint);
-//					if(max < evalCase)
-//					{
-//						point = quadPoint;
-//						max = evalCase;
-//						if(max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN) break;
-//					}
-//				}
-//			}
-//		}
-//
-//		if(point != null)
-//			getGameRef().getBoard().nextMove(point.getX(), point.getY());
-//		else
-//			throw new NullPointerException("Point cannot be NULL");
-//	}
 	private void GluttonPlayStyleBrave() {
-		ArrayList<QuadPoint> deletePoint = new ArrayList<>();
 		int max = 0;
 		QuadPoint quadPoint = null;
-		boolean freeSquare = false;
 		//parcours point de la liste
-		for (QuadPoint point : getGameRef().getNotCurrent().getListPoints().getList()) {
-			freeSquare = false;
-			//regarde les cases libre autour
-			for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
-				if (i < 0 || i >= getGameRef().getBoard().getSize()) continue;
-				for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
-					if (j < 0 || j >= getGameRef().getBoard().getSize()) continue;
+		for (QuadPoint point : getGameRef().getBoard().getFreePoints().getList()) {
+			int evalCase = evaluateMoveBrave(point);
 
-					//si une case libre
-					if (getGameRef().getBoard().getSquares()[i][j] == Config.FREE_SQUARE) {
-
-						//evaluate le move du point
-						QuadPoint tmp = new QuadPoint(i,j);
-						freeSquare = true;
-						int evalCase = evaluateMoveBrave(tmp);
-
-						//garde le point avec la plus grande valeur
-						if (max < evalCase) {
-							quadPoint = tmp;
-							max = evalCase;
-							if (max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN)
-								break;
-						}
-					}
-				}
-			}
-			//si pas de case libre delete le point
-			if(!freeSquare) {
-				deletePoint.add(point);
+			//garde le point avec la plus grande valeur
+//			System.out.println(" Max : " + max + " --- " + evalCase + " - " + point);
+			if (max < evalCase) {
+				quadPoint = point;
+				max = evalCase;
+//				if (max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN)
+//					break;
 			}
 		}
-
-		for(QuadPoint point: deletePoint) {
-			getGameRef().getNotCurrent().getListPoints().remove(point);
-		}
-
-		if(quadPoint != null) {
-			getListPoints().add(quadPoint);
+		if (quadPoint != null) {
+			getGameRef().getBoard().getFreePoints().add(quadPoint);
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 		} else {
-			getListPoints().add(new QuadPoint(0, 0));
+			getGameRef().getBoard().getFreePoints().add(new QuadPoint(0, 0));
 			getGameRef().getBoard().nextMove(0, 0);
 		}
 	}

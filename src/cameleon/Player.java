@@ -9,7 +9,6 @@ public abstract class Player {
 	private final Game gameRef;
 	private int numberSquare;
 
-	private DataManager<QuadPoint> listPoints;
 
 	// TO DO: throw if id = Config.FREE_SQUARE
 	public Player(int _playerId, Game _game)
@@ -17,7 +16,6 @@ public abstract class Player {
 		playerId = _playerId;
 		gameRef = _game;
 		numberSquare = 0;
-		listPoints = new DataManager<>();
 	}
 
 	public abstract void move();
@@ -42,7 +40,4 @@ public abstract class Player {
 		return playerId == player.getPlayerId();
 	}
 
-	public DataManager<QuadPoint> getListPoints() {
-		return listPoints;
-	}
 }

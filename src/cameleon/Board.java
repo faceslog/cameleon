@@ -1,5 +1,6 @@
 package cameleon;
 
+import core.datastruct.DataManager;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 
@@ -10,11 +11,14 @@ abstract public class Board {
 	private QuadTree<Region> regionQuadTree;
 	private final Game gameRef;
 
+	private DataManager<QuadPoint> freePoints;
+
 	public Board(int n, Game _gameRef)
 	{
 		size = (int) (Config.ZONE_SIZE * Math.pow(2, n));
 		squares = new int[size][size];
 		gameRef = _gameRef;
+		freePoints = new DataManager<>();
 		initQuadTree();
 	}
 
@@ -23,6 +27,7 @@ abstract public class Board {
 		size = _size;
 		squares = _squares;
 		gameRef = _gameRef;
+		freePoints = new DataManager<>();
 		initQuadTree();
 	}
 
@@ -90,6 +95,10 @@ abstract public class Board {
 	public Player getNotCurrentPlayer()
 	{
 		return gameRef.getNotCurrent();
+	}
+
+	public DataManager<QuadPoint> getFreePoints() {
+		return freePoints;
 	}
 
 	// ------ QUADTREE ------

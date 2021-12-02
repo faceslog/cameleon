@@ -23,7 +23,6 @@ public class Human extends Player {
             y = scanner.nextInt();
         } while (!checkMove(x,y, getGameRef().getBoard()));
 
-        getListPoints().add(new QuadPoint(x,y));
         getGameRef().getBoard().nextMove(x,y);
     }
 
