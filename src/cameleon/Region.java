@@ -1,5 +1,6 @@
 package cameleon;
 
+import cameleon.entities.Bot;
 import core.datastruct.QuadPoint;
 
 public class Region
@@ -59,6 +60,12 @@ public class Region
                 }
                 else if (squares[i][j] == Config.FREE_SQUARE)
                 {
+                    if(current instanceof Bot player)
+                        player.getFreePoints().remove(new QuadPoint(i, j));
+
+                    if(notCurrent instanceof Bot enemy)
+                        enemy.getFreePoints().remove(new QuadPoint(i, j));
+
                     squares[i][j] = current.getPlayerId();
                     current.increaseNbSquare();
                     squareTaken++;

@@ -75,39 +75,29 @@ public class Bot extends Player {
 		}
 		return ret;
 	}
-
-	// 1 - Check s'il peut obtenir une région ? Si oui check si pas meilleure région et on stocke en S1 combien cela rapporte de pts puis --->  2)
-	// 2 - Pendant les check régions si une région possède moins de cases prises que RegionSize - 1 regarder combien de cases il peut voler en plaçant un point dans cette dernière & stocker la valeur en S2
-	// 3 - Comparer S1 et S2 et choisir celle qui rapporte le + de points
+	
 	private void GluttonPlayStyleReckless()
 	{
-		QuadPoint point = null;
 		int max = 0;
-
-		for(int i = 0; i < getGameRef().getBoard().getSize(); i++)
-		{
-			for(int j = 0; j < getGameRef().getBoard().getSize(); j++)
-			{
-				QuadPoint quadPoint = new QuadPoint(j,i);
-				if(getGameRef().getBoard().getSquares()[j][i] == Config.FREE_SQUARE)
-				{
-					int evalCase = evaluateMoveReckless(quadPoint);
-					if(max < evalCase)
-					{
-						point = quadPoint;
-						max = evalCase;
-					}
-				}
+		QuadPoint quadPoint = null;
+		//parcours point de la liste
+		for (QuadPoint point : freePoints.getList()) {
+			int evalCase = evaluateMoveReckless(point);
+			//garde le point avec la plus grande valeur
+			if (max < evalCase) {
+				quadPoint = point;
+				max = evalCase;
 			}
 		}
 
-		if(point != null)
+		if (quadPoint != null)
 		{
-			System.out.printf("Point évalué: %d %d, gain: %d\n", point.getX(), point.getY(), max);
-			getGameRef().getBoard().nextMove(point.getX(), point.getY());
+			System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
+			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
+			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 		}
 		else
-			throw new NullPointerException("Point cannot be NULL");
+			getGameRef().getBoard().nextMove(0, 0);
 	}
 
 	/* 1) Ne jamais être avant-dernier à placer un point dans une zone.

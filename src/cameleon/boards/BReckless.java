@@ -4,6 +4,7 @@ import cameleon.Board;
 import cameleon.Config;
 import cameleon.Game;
 import cameleon.Region;
+import cameleon.entities.Bot;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 
@@ -127,19 +128,27 @@ public class BReckless extends Board
                 {
                     if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
                     {
-                        if(region.include(i,j)) {
-                            getGameRef().getNotCurrent().decreaseNbSquare();
-                            getGameRef().getCurrent().increaseNbSquare();
-                            getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
-                        } else {
+                        if(region.include(i,j))
+                        {
+                            getNotCurrentPlayer().decreaseNbSquare();
+                            getCurrentPlayer().increaseNbSquare();
+                            getSquares()[i][j] = getCurrentPlayer().getPlayerId();
+                        }
+                        else
+                        {
                             Region region1 = regionQuadTree.search(getRegionPosIncluding(i, j)).getData();
                             if(!region1.isFull()) {
-                                getGameRef().getNotCurrent().decreaseNbSquare();
-                                getGameRef().getCurrent().increaseNbSquare();
-                                getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
+                                getNotCurrentPlayer().decreaseNbSquare();
+                                getCurrentPlayer().increaseNbSquare();
+                                getSquares()[i][j] = getCurrentPlayer().getPlayerId();
                             }
                         }
                     }
+                }
+                else
+                {
+                    if(getNotCurrentPlayer() instanceof Bot enemy)
+                        enemy.getFreePoints().add(new QuadPoint(i, j));
                 }
             }
         }
