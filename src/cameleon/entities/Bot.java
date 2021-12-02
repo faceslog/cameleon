@@ -47,7 +47,10 @@ public class Bot extends Player {
 		}
 		
 		if (quadPoint != null)
+		{
+			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+		}
 		else
 			getGameRef().getBoard().nextMove(0, 0);
 	}

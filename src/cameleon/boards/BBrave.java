@@ -33,13 +33,6 @@ public class BBrave extends Board
 
                 if(getSquares()[i][j] != Config.FREE_SQUARE)
                 {
-                    //remove le point s'il existe dans la liste d'un des joueurs
-                    if(getCurrentPlayer() instanceof Bot current)
-                        current.getFreePoints().remove(point);
-
-                    if(getNotCurrentPlayer() instanceof Bot enemy)
-                        enemy.getFreePoints().remove(point);
-
                     if(getSquares()[i][j] == getNotCurrentPlayer().getPlayerId())
                     {
                         //check 8 case autour si pas de case vide on n'ajoute pas (pas la mais rappel)

@@ -1,5 +1,8 @@
 package cameleon;
 
+import cameleon.entities.Bot;
+import core.datastruct.QuadPoint;
+
 abstract public class Board {
 
 	private final int size;
@@ -70,6 +73,11 @@ abstract public class Board {
 		{
 			squares[x][y] = gameRef.getCurrent().getPlayerId();
 			gameRef.getCurrent().increaseNbSquare();
+
+			// Si ce point faisait partie de la liste des points libre pour l'ennemi également
+			if(getNotCurrentPlayer() instanceof Bot enemy)
+				enemy.getFreePoints().remove(new QuadPoint(x, y));
+
 			updateColor(x, y);
 		}
 	}
