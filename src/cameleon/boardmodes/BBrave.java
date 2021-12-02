@@ -18,7 +18,7 @@ public class BBrave extends Board
     }
 
     @Override
-    protected void updateColor(int x, int y)
+    public void updateColor(int x, int y)
     {
         for (int i = x - 1; i <= x + 1; i++)
         {

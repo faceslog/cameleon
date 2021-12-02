@@ -2,16 +2,13 @@ package cameleon;
 
 import core.datastruct.DataManager;
 import core.datastruct.QuadPoint;
-import core.datastruct.QuadTree;
 
 abstract public class Board {
 
 	private final int size;
 	private final int[][] squares;
-	private QuadTree<Region> regionQuadTree;
 	private final Game gameRef;
-
-	private DataManager<QuadPoint> freePoints;
+	private final DataManager<QuadPoint> freePoints;
 
 	public Board(int n, Game _gameRef)
 	{
@@ -19,7 +16,6 @@ abstract public class Board {
 		squares = new int[size][size];
 		gameRef = _gameRef;
 		freePoints = new DataManager<>();
-		initQuadTree();
 	}
 
 	public Board(int _size, int[][] _squares, Game _gameRef)
@@ -28,7 +24,6 @@ abstract public class Board {
 		squares = _squares;
 		gameRef = _gameRef;
 		freePoints = new DataManager<>();
-		initQuadTree();
 	}
 
 	public boolean isFull()
@@ -68,8 +63,6 @@ abstract public class Board {
 
 	public int[][] getSquares() {	return squares;	}
 
-	public QuadTree<Region> getRegionQuadTree() { return regionQuadTree; }
-
 	public Game getGameRef() { return gameRef; }
 
 	public boolean doesSquareExist(int x, int y)
@@ -101,35 +94,6 @@ abstract public class Board {
 		return freePoints;
 	}
 
-	// ------ QUADTREE ------
-	private void initQuadTree()
-	{
-		int regionAmount = (size / Config.ZONE_SIZE) - 1;
-		regionQuadTree = new QuadTree<>( new QuadPoint(0,0), new QuadPoint(regionAmount,regionAmount));
-		for(int i = 0; i <= regionAmount; i++)
-		{
-			for(int j = 0; j <= regionAmount; j++)
-			{
-				QuadPoint pos = new QuadPoint(i, j);
-				regionQuadTree.insert(pos, createRegion(i, j));
-			}
-		}
-	}
-
-	private Region createRegion(int i, int j)
-	{
-		int minX = i* Config.ZONE_SIZE;
-		int minY = j* Config.ZONE_SIZE;
-		return new Region(new QuadPoint(minX,minY),
-				new QuadPoint(minX + Config.ZONE_SIZE - 1, minY + Config.ZONE_SIZE - 1), this);
-	}
-
-	// x et y correspondent à la position du point pour lequel on veut savoir la région
-	protected QuadPoint getRegionPosIncluding(int x, int y)
-	{
-		return new QuadPoint(x / Config.ZONE_SIZE, y / Config.ZONE_SIZE);
-	}
-
-	abstract protected void updateColor(int x, int y);
+	abstract public void updateColor(int x, int y);
 
 }

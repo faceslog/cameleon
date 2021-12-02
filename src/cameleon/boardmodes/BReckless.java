@@ -9,9 +9,12 @@ import core.datastruct.QuadTree;
 
 public class BReckless extends Board
 {
+    private QuadTree<Region> regionQuadTree;
+
     public BReckless(int n, Game _gameRef)
     {
         super(n, _gameRef);
+        initQuadTree();
     }
 
     public BReckless(int _size, int[][] _squares, Game _gameRef)
@@ -20,15 +23,93 @@ public class BReckless extends Board
     }
 
     @Override
-    protected void updateColor(int x, int y)
+    public void updateColor(int x, int y)
     {
-        Region region = getRegionQuadTree().search(getRegionPosIncluding(x, y)).getData();
+        Region region = regionQuadTree.search(getRegionPosIncluding(x, y)).getData();
         updateColorReckless(x,y, region);
 
         region.increaseSquareTaken(); // will also check if the region is full
 
         if(region.isOwnedBy() == getCurrentPlayer().getPlayerId())
-            checkRegionAcquired(getRegionPosIncluding(x, y), getRegionQuadTree());
+            checkRegionAcquired(getRegionPosIncluding(x, y), regionQuadTree);
+    }
+
+    public int countColorReckless(int x, int y)
+    {
+        int inside = 0;
+        int around = 0;
+
+        Region region = regionQuadTree.search(getRegionPosIncluding(x, y)).getData();
+
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            if(i < 0 || i >= getSize()) continue;
+            for (int j = y - 1; j <= y + 1; j++)
+            {
+                if(j < 0 || j >= getSize()) continue;
+
+                if(getSquares()[i][j] != Config.FREE_SQUARE)
+                {
+                    if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
+                    {
+                        if(region.include(i,j))
+                            inside++;
+                        else
+                        {
+                            Region regionBis = regionQuadTree.search(getRegionPosIncluding(i, j)).getData();
+                            if(!regionBis.isFull())
+                                around++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Si la région devient pleine
+        if((region.getSquareTaken() + 1) == region.getMaxSquareInside())
+        {
+            // le point du joueur est inclus dans la zone que l'on vient de capturer
+            int upperRegion = countRegionAcquired(getRegionPosIncluding(x, y), regionQuadTree); // grande zone A forcément supérieur a B
+            int smallRegion = region.countChangeRegionColor();
+
+            if(upperRegion > 0)
+                return upperRegion + around; // On a capturé la grande zone (la grande region inclus la petite)
+            else
+                return smallRegion + around; // On a seulement capturé la petite zone
+        }
+        else
+        {
+            // On aura capturé aucune zone
+            return (inside + around) + 1; // + 1, car on compte le point du joueur en plus dans ce cas
+        }
+    }
+
+    // x et y correspondent à la position du point pour lequel on veut savoir la région
+    public QuadPoint getRegionPosIncluding(int x, int y)
+    {
+        return new QuadPoint(x / Config.ZONE_SIZE, y / Config.ZONE_SIZE);
+    }
+
+    private void initQuadTree()
+    {
+        int regionAmount = (getSize() / Config.ZONE_SIZE) - 1;
+        regionQuadTree = new QuadTree<>( new QuadPoint(0,0), new QuadPoint(regionAmount,regionAmount));
+        for(int i = 0; i <= regionAmount; i++)
+        {
+            for(int j = 0; j <= regionAmount; j++)
+            {
+                QuadPoint pos = new QuadPoint(i, j);
+                regionQuadTree.insert(pos, createRegion(i, j));
+            }
+        }
+    }
+
+    private Region createRegion(int i, int j)
+    {
+        int minX = i* Config.ZONE_SIZE;
+        int minY = j* Config.ZONE_SIZE;
+        return new Region(new QuadPoint(minX,minY),
+                new QuadPoint(minX + Config.ZONE_SIZE - 1, minY + Config.ZONE_SIZE - 1), this);
     }
 
     // Non Recursive Version
@@ -51,7 +132,7 @@ public class BReckless extends Board
                             getGameRef().getCurrent().increaseNbSquare();
                             getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
                         } else {
-                            Region region1 = getRegionQuadTree().search(getRegionPosIncluding(i, j)).getData();
+                            Region region1 = regionQuadTree.search(getRegionPosIncluding(i, j)).getData();
                             if(!region1.isFull()) {
                                 getGameRef().getNotCurrent().decreaseNbSquare();
                                 getGameRef().getCurrent().increaseNbSquare();
@@ -156,7 +237,7 @@ public class BReckless extends Board
 
         int xOffset = (qt.getTopLeft().getX() + qt.getBottomRight().getX()) >> 1;
         int yOffset = (qt.getTopLeft().getY() + qt.getBottomRight().getY()) >> 1;
-        short index = getRegionQuadTree().getRegionIndex(point, new QuadPoint(xOffset, yOffset));
+        short index = regionQuadTree.getRegionIndex(point, new QuadPoint(xOffset, yOffset));
 
         // If Region Node
         if(qt.getNodes().get(index).getTopLeft() != null)
@@ -174,58 +255,8 @@ public class BReckless extends Board
     }
 
     // ---------------------------- REGION COUNTER ----------------------------
-    // Pour des raisons de lisibilité nous avons décidé de ne pas fusionner les fonctions d'update et de comptage
+    // Pour des raisons de lisibilité, nous avons décidé de ne pas fusionner les fonctions update et de comptage
     // bien que cela pourrait être simplement accompli à l'aide d'un booléen isUpdating.
-
-    public int countColorReckless(int x, int y)
-    {
-        int inside = 0;
-        int around = 0;
-
-        Region region = getRegionQuadTree().search(getRegionPosIncluding(x, y)).getData();
-
-        for (int i = x - 1; i <= x + 1; i++)
-        {
-            if(i < 0 || i >= getSize()) continue;
-            for (int j = y - 1; j <= y + 1; j++)
-            {
-                if(j < 0 || j >= getSize()) continue;
-
-                if(getSquares()[i][j] != Config.FREE_SQUARE)
-                {
-                    if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
-                    {
-                        if(region.include(i,j))
-                            inside++;
-                        else
-                        {
-                            Region regionBis = getRegionQuadTree().search(getRegionPosIncluding(i, j)).getData();
-                            if(!regionBis.isFull())
-                                around++;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Si la région devient pleine
-        if((region.getSquareTaken() + 1) == region.getMaxSquareInside())
-        {
-            // le point du joueur est inclus dans la zone que l'on vient de capturer
-            int upperRegion = countRegionAcquired(getRegionPosIncluding(x, y), getRegionQuadTree()); // grande zone A forcément supérieur a B
-            int smallRegion = region.countChangeRegionColor();
-
-            if(upperRegion > 0)
-                return upperRegion + around; // On a capturé la grande zone (la grande region inclus la petite)
-            else
-                return smallRegion + around; // On a seulement capturé la petite zone
-        }
-        else
-        {
-            // On aura capturé aucune zone
-            return (inside + around) + 1; // + 1 car on compte le point du joueur en plus dans ce cas
-        }
-    }
 
     private int countChangeRegionColor(QuadTree<Region> quadTree)
     {
@@ -293,7 +324,7 @@ public class BReckless extends Board
 
         int xOffset = (qt.getTopLeft().getX() + qt.getBottomRight().getX()) >> 1;
         int yOffset = (qt.getTopLeft().getY() + qt.getBottomRight().getY()) >> 1;
-        short index = getRegionQuadTree().getRegionIndex(point, new QuadPoint(xOffset, yOffset));
+        short index = regionQuadTree.getRegionIndex(point, new QuadPoint(xOffset, yOffset));
 
         // If Region Node
         if(qt.getNodes().get(index).getTopLeft() != null)
