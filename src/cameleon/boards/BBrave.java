@@ -4,7 +4,6 @@ import cameleon.Board;
 import cameleon.Config;
 import cameleon.Game;
 import cameleon.entities.Bot;
-import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 
 import java.util.ArrayList;

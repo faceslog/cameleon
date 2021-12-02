@@ -1,8 +1,5 @@
 package cameleon;
 
-import core.datastruct.DataManager;
-import core.datastruct.QuadPoint;
-
 public abstract class Player {
 
 	private final int playerId;

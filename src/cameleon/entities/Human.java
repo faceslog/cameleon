@@ -3,7 +3,6 @@ package cameleon.entities;
 import java.util.Scanner;
 
 import cameleon.*;
-import core.datastruct.QuadPoint;
 
 public class Human extends Player {
 

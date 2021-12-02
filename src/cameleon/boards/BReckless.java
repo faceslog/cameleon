@@ -5,7 +5,6 @@ import cameleon.Config;
 import cameleon.Game;
 import cameleon.Region;
 import cameleon.entities.Bot;
-import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
 
