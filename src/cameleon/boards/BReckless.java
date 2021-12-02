@@ -147,6 +147,11 @@ public class BReckless extends Board
                 }
                 else
                 {
+                    // Cette case libre peut très bien permettre de récupérer une région en entière par la suite nous
+                    // devons donc la stocker pour le current également
+                    if(getCurrentPlayer() instanceof Bot current)
+                        current.getFreePoints().add(new QuadPoint(i, j));
+
                     if(getNotCurrentPlayer() instanceof Bot enemy)
                         enemy.getFreePoints().add(new QuadPoint(i, j));
                 }
