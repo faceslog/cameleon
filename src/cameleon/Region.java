@@ -42,6 +42,11 @@ public class Region
             changeRegionColor();
     }
 
+    public void increaseSquareTakenOnly()
+    {
+        this.squareTaken++;
+    }
+
     public void changeRegionColor()
     {
         int[][] squares = boardRef.getSquares();

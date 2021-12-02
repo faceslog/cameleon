@@ -5,9 +5,11 @@ import cameleon.boards.BReckless;
 import cameleon.entities.Bot;
 import cameleon.entities.Human;
 import cameleon.enums.GameMode;
+import core.datastruct.QuadPoint;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
@@ -50,6 +52,11 @@ public class Game {
 		return Player2;
 	}
 
+	public boolean isThereBotPlayers()
+	{
+		return (Player1 instanceof Bot) || (Player2 instanceof Bot);
+	}
+
 	public void start()
 	{
 		board.showGrid();
@@ -82,7 +89,7 @@ public class Game {
 	// Private methods
 	private void init()
 	{
-		gameMode = GameMode.RECKLESS;
+		gameMode = GameMode.BRAVE;
 		Player1 = new Human(1, this);
 		Player2 = new Bot(2, this);
 		current = Player1;
@@ -126,6 +133,7 @@ public class Game {
 
 		int size = Integer.parseInt(sc.nextLine());
 		int[][] squares = new int[size][size];
+		ArrayList<QuadPoint> taken = new ArrayList<>();
 
 		int i = 0;
 		while (sc.hasNextLine())
@@ -139,10 +147,12 @@ public class Game {
 					case 'R' -> {
 						squares[j][i] = Player1.getPlayerId();
 						Player1.increaseNbSquare();
+						taken.add(new QuadPoint(j, i));
 					}
 					case 'B' -> {
 						squares[j][i] = Player2.getPlayerId();
 						Player2.increaseNbSquare();
+						taken.add(new QuadPoint(j, i));
 					}
 					default -> squares[j][i] = Config.FREE_SQUARE;
 				}
@@ -151,8 +161,8 @@ public class Game {
 		}
 
 		if(gameMode == GameMode.BRAVE)
-			board = new BBrave(size, squares, this);
+			board = new BBrave(size, squares, this, taken);
 		else
-			board = new BReckless(size, squares, this);
+			board = new BReckless(size, squares, this, taken);
 	}
 }

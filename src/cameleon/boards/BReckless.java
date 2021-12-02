@@ -5,8 +5,11 @@ import cameleon.Config;
 import cameleon.Game;
 import cameleon.Region;
 import cameleon.entities.Bot;
+import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
+
+import java.util.ArrayList;
 
 public class BReckless extends Board
 {
@@ -18,9 +21,42 @@ public class BReckless extends Board
         initQuadTree();
     }
 
-    public BReckless(int _size, int[][] _squares, Game _gameRef)
+    public BReckless(int _size, int[][] _squares, Game _gameRef, ArrayList<QuadPoint> taken)
     {
         super(_size, _squares, _gameRef);
+        initQuadTree();
+
+        if(_gameRef.isThereBotPlayers())
+        {
+            for(QuadPoint point : taken)
+            {
+                // On actualise la région contenant ce point
+                Region region = regionQuadTree.search(getRegionPosIncluding(point.getX(), point.getY())).getData();
+                region.increaseSquareTakenOnly();
+
+                // Pour chaque point pris on évalue les points libres autours
+                for (int i = point.getX() - 1; i <= point.getX() + 1; i++)
+                {
+                    if (i < 0 || i >= getSize())
+                        continue;
+
+                    for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
+
+                        if (j < 0 || j >= getSize())
+                            continue;
+
+                        if(getSquares()[i][j] == Config.FREE_SQUARE)
+                        {
+                            if(getGameRef().getPlayer1() instanceof Bot player1)
+                                player1.getFreePoints().add(new QuadPoint(i, j));
+
+                            if(getGameRef().getPlayer2() instanceof Bot player2)
+                                player2.getFreePoints().add(new QuadPoint(i, j));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
