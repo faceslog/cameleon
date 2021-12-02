@@ -23,7 +23,7 @@ public class DataManager<T> {
     public void add(T x)
     {
         // If element is already present, then nothing to do
-        if (hash.get(x) != null)
+        if (hash.containsKey(x))
             return;
 
         // Else put element at the end of arrayList
@@ -42,6 +42,7 @@ public class DataManager<T> {
         if (index == null)
             return;
 
+
         // If present, then remove element from hash
         hash.remove(x);
 
@@ -54,8 +55,9 @@ public class DataManager<T> {
         // Remove last element (This is O(1))
         list.remove(size-1);
 
-        // Update hash table for new index of last element
-        hash.put(last, index);
+        // Update hash table for new index of last element if its not the same element
+        if(!last.equals(x))
+            hash.put(last, index);
     }
 
     // Returns a random element

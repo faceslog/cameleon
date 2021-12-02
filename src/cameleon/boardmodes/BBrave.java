@@ -37,7 +37,7 @@ public class BBrave extends Board
                         System.out.println("POINT :");
                         System.out.println(i);
                         System.out.println(j);
-                        QuadPoint point = getGameRef().getNotCurrent().getPointCoord(i,j);
+                        QuadPoint point = new QuadPoint(i, j);
                         System.out.println(point);
                         System.out.println();
 

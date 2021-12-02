@@ -36,18 +36,16 @@ public class QuadPoint
     public int hashCode() {
 
         final int prime = 31;
-        int result = 3;
+        int result = 17;
 
-        result = prime * result + getX() + 1; // we use +1 to create a different hashcode between (0, 1) and (1, 0)
-        result = prime * result + getY();
+        result = prime * result + toString().hashCode();
 
         return result;
     }
 
     @Override
     public String toString() {
-        return "QuadPoint{" +
-                "x=" + x +
+        return "{x=" + x +
                 ", y=" + y +
                 '}';
     }

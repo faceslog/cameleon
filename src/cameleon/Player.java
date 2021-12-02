@@ -45,13 +45,4 @@ public abstract class Player {
 	public DataManager<QuadPoint> getListPoints() {
 		return listPoints;
 	}
-
-	public QuadPoint getPointCoord(int x, int y) {
-		for(QuadPoint point : getListPoints().getList()) {
-			if(point.getX() == x && point.getY() == y) {
-				return point;
-			}
-		}
-		return null;
-	}
 }
