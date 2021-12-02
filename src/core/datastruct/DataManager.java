@@ -3,7 +3,6 @@ package core.datastruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
 
 // The object T will have to implement its own T.equals(Object obj) and T.hashCode() methods
 public class DataManager<T> {
@@ -38,7 +37,7 @@ public class DataManager<T> {
     public void remove(T x)
     {
         // Check if element is present
-        Integer index = hash.get(x);
+        Integer index = search(x);
         if (index == null)
             return;
 
@@ -55,20 +54,9 @@ public class DataManager<T> {
         // Remove last element (This is O(1))
         list.remove(size-1);
 
-        // Update hash table for new index of last element if its not the same element
+        // Update hash table for new index of last element if it's not the same element
         if(!last.equals(x))
             hash.put(last, index);
-    }
-
-    // Returns a random element
-    public T getRandom()
-    {
-        // Find a random index from 0 to size - 1
-        Random rand = new Random();  // Choose a different seed
-        int index = rand.nextInt(list.size());
-
-        // Return element at randomly picked index
-        return list.get(index);
     }
 
     // Returns index of element if element is present, otherwise null

@@ -7,8 +7,6 @@ import cameleon.boardmodes.BReckless;
 import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 
-import java.util.ArrayList;
-
 public class Bot extends Player {
 
 	public Bot(int _playerId, Game _gameRef)
@@ -31,25 +29,20 @@ public class Bot extends Player {
 		//parcours point de la liste
 		for (QuadPoint point : getGameRef().getBoard().getFreePoints().getList()) {
 			int evalCase = evaluateMoveBrave(point);
-
 			//garde le point avec la plus grande valeur
-//			System.out.println(" Max : " + max + " --- " + evalCase + " - " + point);
 			if (max < evalCase) {
 				quadPoint = point;
 				max = evalCase;
-//				if (max == getGameRef().getNotCurrent().getNumberSquare() || max == Config.BRAVE_MAX_CASE_EARN)
-//					break;
+				if (max == Config.BRAVE_MAX_CASE_EARN)
+					break;
 			}
 		}
-		if (quadPoint != null) {
-			getGameRef().getBoard().getFreePoints().add(quadPoint);
+		
+		if (quadPoint != null)
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
-		} else {
-			getGameRef().getBoard().getFreePoints().add(new QuadPoint(0, 0));
+		else
 			getGameRef().getBoard().nextMove(0, 0);
-		}
 	}
-
 
 	private int evaluateMoveBrave(QuadPoint point)
 	{
@@ -106,14 +99,14 @@ public class Bot extends Player {
 			throw new NullPointerException("Point cannot be NULL");
 	}
 
-	// 1) Ne jamais être avant-dernier à placer un point dans une zone.
+	/* 1) Ne jamais être avant-dernier à placer un point dans une zone.
 	// 2) Essayer de gagner toujours une zone en plaçant le pion en dernier
 	// 3) Jouer les zones et ne pas laisser un adversaire gagner 3 zones.
 	// 4) Pour jouer les zones placer ses points dans les zones les plus remplies sauf si cas 1)
 	private void SmartPlayStyleReckless() {
 		// TODO - implement Bot.jouerIATéméraire
 		throw new UnsupportedOperationException();
-	}
+	}*/
 
 	// Idem updateColor en comptant le nombre de cases prises.
 	private int evaluateMoveReckless(QuadPoint point)
