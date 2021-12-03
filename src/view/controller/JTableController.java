@@ -3,6 +3,7 @@ package view.controller;
 import cameleon.Board;
 import cameleon.Config;
 import cameleon.Game;
+import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 import view.utils.FrameUtils;
 import view.ui.BoardFrame;
@@ -26,48 +27,64 @@ public class JTableController extends MouseAdapter {
         this.bf = bf;
     }
 
-    @Override public void mouseClicked(MouseEvent e) {
+    @Override public void mousePressed(MouseEvent e) {
         int row = table.getSelectedRow();
         int column = table.getSelectedColumn();
 
         if (checkMove(column, row, game.getBoard())) {
             //CURRENT
             game.getBoard().nextMove(column, row);
-
-            System.out.println(column);
-            System.out.println(row);
-            repaintCell(column, row);
-
-            //BOT
-            game.changeCurrent();
-            QuadPoint point = game.getCurrent().move();
-
-            repaintCell(point.getX(), point.getY());
-
-            //RE CURRENT
-            game.changeCurrent();
+            if(game.getGameMode() == GameMode.BRAVE) {
+                repaintCell(column, row);
+            } else  if(game.getGameMode() == GameMode.RECKLESS) {
+                bf.getTable().repaint();
+            }
 
             //update menu
-            bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrentPlayer().getNumberSquare());
-            bf.getScoreP2().setText("Score P2 : " + game.getBoard().getNotCurrentPlayer().getNumberSquare());
-            changeLogoImg();
-            bf.menu.updateUI();
+//            bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrentPlayer().getNumberSquare());
+//            bf.getScoreP2().setText("Score P2 : " + game.getBoard().getNotCurrentPlayer().getNumberSquare());
+//            changeLogoImg();
+//            bf.menu.updateUI();
 
         } else {
             JOptionPane.showMessageDialog(null, "Movement not valid!");
         }
 
+        checkFull();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //BOT
+        game.changeCurrent();
+        QuadPoint point = game.getCurrent().move();
+
+        repaintCell(point.getX(), point.getY());
+
+        //RE CURRENT
+        game.changeCurrent();
+
+        //update menu
+        bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrentPlayer().getNumberSquare());
+        bf.getScoreP2().setText("Score P2 : " + game.getBoard().getNotCurrentPlayer().getNumberSquare());
+        changeLogoImg();
+        bf.menu.updateUI();
+
+        checkFull();
+    }
+
+    private boolean checkMove(int x, int y, Board board)
+    {
+        return board.getSquares()[x][y] == Config.FREE_SQUARE;
+    }
+
+    private void checkFull() {
         if (game.getBoard().isFull()) {
             if (game.getWinner() != null)
                 JOptionPane.showMessageDialog(null, "Player " + game.getWinner().getPlayerId() + " wins!"); //retour accueil + autre affichage
             else
                 JOptionPane.showMessageDialog(null, "NO WINNER");
         }
-    }
-
-    private boolean checkMove(int x, int y, Board board)
-    {
-        return board.getSquares()[x][y] == Config.FREE_SQUARE;
     }
 
     private void changeLogoImg() {

@@ -5,10 +5,10 @@ import view.utils.FrameUtils;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class  GridModel extends AbstractTableModel {
 
-    private static final String PATH = "images/";
     private int noOfRows, noOfCols;
     private int[][] grid;
     private int size;
@@ -34,29 +34,22 @@ public class  GridModel extends AbstractTableModel {
         Object result;
         int square = grid[columnIndex][rowIndex];
 
-        String squareFree = "tmpEmpty.png";
-        String squareP1 = "pionR.png";
-        String squareP2 = "pionB.png";
-
-        ImageIcon p1 = new ImageIcon(PATH + squareP1);
-        ImageIcon p2 = new ImageIcon(PATH + squareP2);
-        ImageIcon free = new ImageIcon(PATH + squareFree);
-
         if (square == 1)
-            result = FrameUtils.resizeIcon(p1, size, size);
-        else if(square == 2)
-            result = FrameUtils.resizeIcon(p2, size, size);
-        else
-            result = FrameUtils.resizeIcon(free, size, size);
-
-//        if (square == 1)
-//            result = new ImageIcon(PATH + squareP1);
-//         else if (square == 2)
-//            result = new ImageIcon(PATH + squareP2);
-//         else
-//             result = new ImageIcon(PATH + squareFree);
+            result = createImageIcon(FrameUtils.colorP1(), size, size);
+         else if (square == 2)
+            result = createImageIcon(FrameUtils.colorP2(), size, size);
+         else
+            result = createImageIcon(Color.WHITE, size, size);
 
          return result;
+    }
+
+    public static ImageIcon createImageIcon(Color color, int width, int height) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = image.createGraphics();
+        graphics.setPaint(color);
+        graphics.fillRect (0, 0, width, height);
+        return new ImageIcon(image);
     }
 
     /**
