@@ -1,8 +1,9 @@
 package view.utils;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class FrameUtils {
 
@@ -19,23 +20,69 @@ public class FrameUtils {
     // This method take a JFrame and set its size depending on the screen resolution
     public static void setFrameSizeFromScreenResolution(JFrame jf) {
         if(jf == null) return;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension dim = getDimension();
         // Width is approx 4/6 of the actual screen resolution and height is 2/3
-        jf.setBounds(0,0, (screenSize.width / 6) * 4, (screenSize.height / 3) * 2);
+        jf.setBounds(0,0, dim.width, dim.height);
     }
 
-    // This method take a JFrame and an image to display as the JFrame Background
-    public static void setFrameImgBg(JFrame jf, Image img) {
+    public static Dimension getDimension() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return new Dimension((screenSize.width / 6) * 4, (screenSize.height / 4) * 3);
+    }
 
-        if(jf == null) return;
+    public static Dimension frameSizeWithoutBorder(JFrame frame) {
+        return new Dimension((int)frame.getContentPane().getSize().getWidth(),
+                (int)frame.getContentPane().getSize().getHeight());
+    }
 
-        jf.setContentPane(new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g)
-            {
-                if(img != null)
-                    g.drawImage(img, 0, 0, jf.getWidth(), jf.getHeight(), jf);
-            }
-        });
+    public static Icon resizeIcon(ImageIcon icon, int resizedWidth, int resizedHeight) {
+        Image img = icon.getImage();
+        Image resizedImage = img.getScaledInstance(resizedWidth, resizedHeight,  java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
+    }
+
+    public static ImageIcon resizeIconPercentage(ImageIcon icon, double resizedWidth, double resizedHeight) {
+        Image img = icon.getImage();
+
+        return (ImageIcon) resizeIcon(new ImageIcon(img),
+                (int) (img.getWidth(null) * resizedWidth),
+                (int) (img.getHeight(null) * resizedHeight));
+    }
+
+    public static JButton createButton(String path, double size) {
+
+        ImageIcon buttonIcon = resizeIconPercentage(new ImageIcon(path), size, size);
+        JButton button = new JButton(buttonIcon);
+
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+
+        return button;
+    }
+
+    public static Font customFont() {
+        try {
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font/retro_computer_personal_use.ttf")).deriveFont(50f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+            return customFont;
+        } catch (IOException |FontFormatException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Color colorText() {
+        return Color.decode("#182426");
+    }
+
+    public static Color colorP1() {
+        return Color.decode("#930029");
+    }
+
+    public static Color colorP2() {
+        return Color.decode("#003c90");
     }
 }

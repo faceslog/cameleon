@@ -3,6 +3,7 @@ package cameleon.entities;
 import java.util.Scanner;
 
 import cameleon.*;
+import core.datastruct.QuadPoint;
 
 public class Human extends Player {
 
@@ -11,7 +12,7 @@ public class Human extends Player {
     }
 
     @Override
-    public void move()
+    public QuadPoint move()
     {
         int x,y;
         Scanner scanner = new Scanner(System.in);
@@ -23,6 +24,7 @@ public class Human extends Player {
         } while (!checkMove(x,y, getGameRef().getBoard()));
 
         getGameRef().getBoard().nextMove(x,y);
+        return new QuadPoint(x, y);
     }
 
     private boolean checkMove(int x, int y, Board board)

@@ -1,11 +1,12 @@
 package cameleon;
 
+import core.datastruct.QuadPoint;
+
 public abstract class Player {
 
 	private final int playerId;
 	private final Game gameRef;
 	private int numberSquare;
-
 
 	// TO DO: throw if id = Config.FREE_SQUARE
 	public Player(int _playerId, Game _game)
@@ -15,7 +16,7 @@ public abstract class Player {
 		numberSquare = 0;
 	}
 
-	public abstract void move();
+	public abstract QuadPoint move();
 
 	public int getNumberSquare() {
 		return numberSquare;

@@ -24,17 +24,17 @@ public class Bot extends Player {
 	}
 
 	@Override
-	public void move()
+	public QuadPoint move()
 	{
 		if(getGameRef().getGameMode() == GameMode.BRAVE)
-			GluttonPlayStyleBrave();
+			return GluttonPlayStyleBrave();
 		else
-			SmartPlayStyleReckless();
+			return SmartPlayStyleReckless();
 	}
 
-	private void GluttonPlayStyleBrave() {
+	private QuadPoint GluttonPlayStyleBrave() {
 		int max = 0;
-		QuadPoint quadPoint = null;
+		QuadPoint quadPoint = new QuadPoint(0,0);
 		//parcours point de la liste
 		for (QuadPoint point : freePoints.getList()) {
 			int evalCase = evaluateMoveBrave(point);
@@ -46,14 +46,10 @@ public class Bot extends Player {
 					break;
 			}
 		}
-		
-		if (quadPoint != null)
-		{
-			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
-			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
-		}
-		else
-			getGameRef().getBoard().nextMove(0, 0);
+
+		freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
+		getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+		return quadPoint;
 	}
 
 	private int evaluateMoveBrave(QuadPoint point)
@@ -77,10 +73,10 @@ public class Bot extends Player {
 		return ret;
 	}
 	
-	private void GluttonPlayStyleReckless()
+	private QuadPoint GluttonPlayStyleReckless()
 	{
 		int max = 0;
-		QuadPoint quadPoint = null;
+		QuadPoint quadPoint = new QuadPoint(0,0);
 		//parcours point de la liste
 		for (QuadPoint point : freePoints.getList()) {
 			int evalCase = evaluateMoveReckless(point);
@@ -91,19 +87,15 @@ public class Bot extends Player {
 			}
 		}
 
-		if (quadPoint != null)
-		{
-			System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
-			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
-			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
-		}
-		else
-			getGameRef().getBoard().nextMove(0, 0);
+		System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
+		freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
+		getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+		return quadPoint;
 	}
 
 	// 1) Ne jamais être avant-dernier à placer un point dans une zone.
 	// 2) Essayer de gagner toujours une zone en plaçant le pion en dernier
-	private void SmartPlayStyleReckless()
+	private QuadPoint SmartPlayStyleReckless()
 	{
 		int max = 0;
 		QuadPoint quadPoint = null;
@@ -135,9 +127,11 @@ public class Bot extends Player {
 			System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
 			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+			return quadPoint;
 		}
-		else
-			getGameRef().getBoard().nextMove(lastHope.getX(), lastHope.getY());
+
+		getGameRef().getBoard().nextMove(lastHope.getX(), lastHope.getY());
+		return lastHope;
 	}
 
 	// Idem updateColor en comptant le nombre de cases prises.

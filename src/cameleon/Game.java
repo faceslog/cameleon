@@ -14,15 +14,32 @@ import java.util.Scanner;
 
 public class Game {
 
-	private Player Player1;
-	private Player Player2;
+	private final Player Player1;
+	private final Player Player2;
+	private final GameMode gameMode;
+
 	private Player current;
 	private Board board;
-	private GameMode gameMode;
 
-	public Game()
+	public Game(int size, GameMode _gameMode)
 	{
-		init();
+		Player1 = new Human(1, this);
+		Player2 = new Bot(2, this);
+		current = Player1;
+		gameMode = _gameMode;
+		if(gameMode == GameMode.BRAVE)
+			board = new BBrave(size, this);
+		else
+			board = new BReckless(size, this);
+	}
+
+	public Game(String path, GameMode _gameMode)
+	{
+		Player1 = new Human(1, this);
+		Player2 = new Bot(2, this);
+		current = Player1;
+		gameMode = _gameMode;
+		loadBoardFromFile(path);
 	}
 
 	public Player getCurrent() {
@@ -65,7 +82,6 @@ public class Game {
 		return gameMode;
 	}
 
-
 	public boolean isThereBotPlayers()
 	{
 		return (Player1 instanceof Bot) || (Player2 instanceof Bot);
@@ -92,42 +108,25 @@ public class Game {
 
 	public void stop()
 	{
-		if(Player1.getNumberSquare() > Player2.getNumberSquare())
+		Player winner = getWinner();
+
+		if(winner.equals(Player1))
 			System.out.printf(Config.GetANSI(Player1.getPlayerId()) + "Player %s wins! ", Player1.getPlayerId() + Config.ANSI_RESET);
-		else if (Player1.getNumberSquare() < Player2.getNumberSquare())
+		else if (winner.equals(Player2))
 			System.out.printf(Config.GetANSI(Player2.getPlayerId())+ "Player %s wins! ", Player2.getPlayerId() + Config.ANSI_RESET);
 		else
 			System.out.println("NO WINNER");
 	}
 
-	// Private methods
-	private void init()
-	{
-		gameMode = GameMode.RECKLESS;
-		Player1 = new Human(1, this);
-		Player2 = new Bot(2, this);
-		current = Player1;
-
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Use file ? : ");
-		boolean isUsingFile = scanner.nextBoolean(); //true or false dans la saisie
-
-		if(isUsingFile)
-		{
-			loadBoardFromFile("./docs/test.txt");
-		}
+	public Player getWinner() {
+		if(Player1.getNumberSquare() > Player2.getNumberSquare())
+			return Player1;
+		else if (Player1.getNumberSquare() < Player2.getNumberSquare())
+			return Player2;
 		else
-		{
-			System.out.println("Taille de la grid (n) : ");
-			int size = scanner.nextInt();
-
-			if(gameMode == GameMode.BRAVE)
-				board = new BBrave(size, this);
-			else
-				board = new BReckless(size, this);
-		}
+			return null;
 	}
-	
+
 	private void loadBoardFromFile(String path)
 	{
 		File file;
