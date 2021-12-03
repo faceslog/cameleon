@@ -34,14 +34,6 @@ public class Game {
 		return current.equals(Player1) ? Player2 : Player1;
 	}
 
-	public Board getBoard() {
-		return board;
-	}
-
-	public GameMode getGameMode() {
-		return gameMode;
-	}
-
 	public Player getPlayer1()
 	{
 		return Player1;
@@ -51,6 +43,23 @@ public class Game {
 	{
 		return Player2;
 	}
+
+	public void setCurrent(int playerId) {
+
+		if(playerId == Player1.getPlayerId())
+			current = Player1;
+		else
+			current = Player2;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public GameMode getGameMode() {
+		return gameMode;
+	}
+
 
 	public boolean isThereBotPlayers()
 	{
@@ -89,7 +98,7 @@ public class Game {
 	// Private methods
 	private void init()
 	{
-		gameMode = GameMode.BRAVE;
+		gameMode = GameMode.RECKLESS;
 		Player1 = new Human(1, this);
 		Player2 = new Bot(2, this);
 		current = Player1;

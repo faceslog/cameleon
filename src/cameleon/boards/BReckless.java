@@ -1,9 +1,6 @@
 package cameleon.boards;
 
-import cameleon.Board;
-import cameleon.Config;
-import cameleon.Game;
-import cameleon.Region;
+import cameleon.*;
 import cameleon.entities.Bot;
 import core.datastruct.QuadPoint;
 import core.datastruct.QuadTree;
@@ -53,6 +50,12 @@ public class BReckless extends Board
                                 player2.getFreePoints().add(new QuadPoint(i, j));
                         }
                     }
+                }
+
+                if(region.isFull())
+                {
+                    _gameRef.setCurrent(getSquares()[point.getX()][point.getY()]);
+                    checkRegionAcquired(getRegionPosIncluding(point.getX(), point.getY()), regionQuadTree);
                 }
             }
         }
