@@ -100,7 +100,6 @@ public class Game {
 			System.out.println("NO WINNER");
 	}
 
-
 	// Private methods
 	private void init()
 	{
@@ -150,21 +149,23 @@ public class Game {
 		{
 			String str = sc.nextLine();
 			char[] ch = str.toCharArray();
-
-			for(int j = 0; j < size; j++) {
-				switch (ch[j])
-				{
-					case 'R' -> {
-						squares[j][i] = Player1.getPlayerId();
-						Player1.increaseNbSquare();
-						taken.add(new QuadPoint(j, i));
+			if (ch.length > 0)
+			{
+				for(int j = 0; j < size; j++) {
+					switch (ch[j])
+					{
+						case 'R' -> {
+							squares[j][i] = Player1.getPlayerId();
+							Player1.increaseNbSquare();
+							taken.add(new QuadPoint(j, i));
+						}
+						case 'B' -> {
+							squares[j][i] = Player2.getPlayerId();
+							Player2.increaseNbSquare();
+							taken.add(new QuadPoint(j, i));
+						}
+						default -> squares[j][i] = Config.FREE_SQUARE;
 					}
-					case 'B' -> {
-						squares[j][i] = Player2.getPlayerId();
-						Player2.increaseNbSquare();
-						taken.add(new QuadPoint(j, i));
-					}
-					default -> squares[j][i] = Config.FREE_SQUARE;
 				}
 			}
 			i++;
