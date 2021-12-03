@@ -130,6 +130,10 @@ public class BReckless extends Board
         return new QuadPoint(x / Config.ZONE_SIZE, y / Config.ZONE_SIZE);
     }
 
+    public Region getRegionOfPoint(int x, int y) {
+        return regionQuadTree.search(getRegionPosIncluding(x, y)).getData();
+    }
+
     private void initQuadTree()
     {
         int regionAmount = (getSize() / Config.ZONE_SIZE) - 1;
