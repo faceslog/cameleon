@@ -56,6 +56,7 @@ public class BReckless extends Board
                 {
                     _gameRef.setCurrent(getSquares()[point.getX()][point.getY()]);
                     checkRegionAcquired(getRegionPosIncluding(point.getX(), point.getY()), regionQuadTree);
+                    _gameRef.changeCurrent();
                 }
             }
         }

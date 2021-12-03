@@ -52,6 +52,11 @@ public class Game {
 			current = Player2;
 	}
 
+	public void changeCurrent()
+	{
+		current = getNotCurrent();
+	}
+
 	public Board getBoard() {
 		return board;
 	}
@@ -95,6 +100,7 @@ public class Game {
 			System.out.println("NO WINNER");
 	}
 
+
 	// Private methods
 	private void init()
 	{
@@ -122,12 +128,7 @@ public class Game {
 				board = new BReckless(size, this);
 		}
 	}
-
-	private void changeCurrent()
-	{
-		current = getNotCurrent();
-	}
-
+	
 	private void loadBoardFromFile(String path)
 	{
 		File file;
