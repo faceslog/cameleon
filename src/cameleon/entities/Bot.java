@@ -28,6 +28,8 @@ public class Bot extends Player {
 	{
 		if(getGameRef().getGameMode() == GameMode.BRAVE)
 			return GluttonPlayStyleBrave();
+		else if(getGameRef().getGameMode() == GameMode.RECKLESS)
+			return GluttonPlayStyleReckless();
 		else
 			return SmartPlayStyleReckless();
 	}
@@ -52,7 +54,7 @@ public class Bot extends Player {
 		return quadPoint;
 	}
 
-	private int evaluateMoveBrave(QuadPoint point)
+	public int evaluateMoveBrave(QuadPoint point)
 	{
 		int ret = 1;
 		int[][] tmp = getGameRef().getBoard().getSquares();
@@ -124,7 +126,7 @@ public class Bot extends Player {
 
 		if (quadPoint != null)
 		{
-			System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
+			//System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
 			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 			return quadPoint;
@@ -135,7 +137,7 @@ public class Bot extends Player {
 	}
 
 	// Idem updateColor en comptant le nombre de cases prises.
-	private int evaluateMoveReckless(QuadPoint point)
+	public int evaluateMoveReckless(QuadPoint point)
 	{
 		return ((BReckless) getGameRef().getBoard()).countColorReckless(point.getX(), point.getY());
 	}
