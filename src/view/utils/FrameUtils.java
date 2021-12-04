@@ -22,7 +22,7 @@ public class FrameUtils {
         if(jf == null) return;
         Dimension dim = getDimension();
         // Width is approx 4/6 of the actual screen resolution and height is 2/3
-        jf.setBounds(0,0, dim.width/2, dim.height);
+        jf.setBounds(0,0, dim.width, dim.height);
     }
 
     public static Dimension getDimension() {

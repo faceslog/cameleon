@@ -128,7 +128,7 @@ public class Game {
 	}
 
 	public int getScore() {
-		return current.getNumberSquare() + getEnemy().getNumberSquare();
+		return Player1.getNumberSquare() + Player2.getNumberSquare();
 	}
 
 	private void loadBoardFromFile(String path)

@@ -71,8 +71,8 @@ abstract public class Board {
 	{
 		if (squares[x][y] == Config.FREE_SQUARE)
 		{
-			squares[x][y] = gameRef.getCurrent().getPlayerId();
-			gameRef.getCurrent().increaseNbSquare();
+			squares[x][y] = getCurrent().getPlayerId();
+			getCurrent().increaseNbSquare();
 
 			// Si ce point faisait partie de la liste des points libre pour l'ennemi également
 			if(getEnemy() instanceof Bot enemy)
