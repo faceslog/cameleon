@@ -51,9 +51,18 @@ public class InitGameController implements ActionListener {
             ig.getBrave().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/brave-activate.png"), 1.25, 1.25));
             ig.getReckless().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/reckless-disactivate.png"), 1.25, 1.25));
         } else if (e.getSource() == ig.getReckless()) {
-            gameMode = GameMode.RECKLESS;
             ig.getBrave().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/brave-disactivate.png"), 1.25, 1.25));
             ig.getReckless().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/reckless-activate.png"), 1.25, 1.25));
+
+            String[] recklessMode = new String[]{"Glutton", "Smart"};
+            int x = JOptionPane.showOptionDialog(null, "Choose Reckless Mode", "Mode",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, recklessMode, recklessMode[0]);
+            if(x == 0) {
+                gameMode = GameMode.RECKLESS;
+            } else {
+                gameMode = GameMode.RECKLESS_SMART;
+            }
+
         } else if (e.getSource() == ig.getArrowL()) {
             size--;
             if(size < 1) {

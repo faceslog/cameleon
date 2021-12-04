@@ -23,6 +23,10 @@ public class BoardFrame {
     private void init() {
         logo = new JLabel(FrameUtils.resizeIconPercentage(new ImageIcon("images/logoR.png"),0.5,0.5));
 
+        score = new JLabel("Score : 0 ", SwingConstants.CENTER);
+        score.setFont(FrameUtils.customFont());
+        score.setForeground(FrameUtils.colorText());
+
         scoreP1 = new JLabel("Score P1 : 0 ", SwingConstants.CENTER);
         scoreP1.setFont(FrameUtils.customFont());
         scoreP1.setForeground(FrameUtils.colorP1());
@@ -63,9 +67,11 @@ public class BoardFrame {
         p.add(logo, BorderLayout.NORTH);
         p.add(exit,BorderLayout.SOUTH);
 
-        JPanel panel = new JPanel(new GridLayout(5,1));
+        JPanel panel = new JPanel(new GridLayout(7,1));
         panel.setPreferredSize(new Dimension(width, (int) (frameSizeWithoutBorder.height * 0.80)));
 
+        panel.add(new JLabel());
+        panel.add(score);
         panel.add(new JLabel());
         panel.add(scoreP1);
         panel.add(new JLabel());
@@ -111,6 +117,10 @@ public class BoardFrame {
         }
     }
 
+    public JLabel getScore() {
+        return score;
+    }
+
     public JLabel getScoreP1() {
         return scoreP1;
     }
@@ -141,6 +151,7 @@ public class BoardFrame {
     private JLabel logo;
     private JLabel scoreP1;
     private JLabel scoreP2;
+    private JLabel score;
     private JButton exit;
 
     public JPanel menu;

@@ -3,6 +3,7 @@ package view.controller;
 import cameleon.Board;
 import cameleon.Config;
 import cameleon.Game;
+import cameleon.entities.Bot;
 import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 import view.utils.FrameUtils;
@@ -34,22 +35,14 @@ public class JTableController extends MouseAdapter {
         if (checkMove(column, row, game.getBoard())) {
             //CURRENT
             game.getBoard().nextMove(column, row);
-            if(game.getGameMode() == GameMode.BRAVE) {
+            if (game.getGameMode() == GameMode.BRAVE) {
                 repaintCell(column, row);
-            } else  if(game.getGameMode() == GameMode.RECKLESS) {
+            } else if (game.getGameMode() == GameMode.RECKLESS) {
                 bf.getTable().repaint();
             }
-
-            //update menu
-//            bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrentPlayer().getNumberSquare());
-//            bf.getScoreP2().setText("Score P2 : " + game.getBoard().getNotCurrentPlayer().getNumberSquare());
-//            changeLogoImg();
-//            bf.menu.updateUI();
-
         } else {
             JOptionPane.showMessageDialog(null, "Movement not valid!");
         }
-
         checkFull();
     }
 
@@ -67,6 +60,7 @@ public class JTableController extends MouseAdapter {
         //update menu
         bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrent().getNumberSquare());
         bf.getScoreP2().setText("Score P2 : " + game.getBoard().getEnemy().getNumberSquare());
+        bf.getScore().setText("Score : " + game.getScore());
         changeLogoImg();
         bf.menu.updateUI();
 

@@ -98,7 +98,7 @@ public class Game {
 			current.move();
 			board.showGrid();
 			System.out.println(Config.GetANSI(current.getPlayerId()) + "COULEUR : "  + current.getNumberSquare() + Config.ANSI_RESET);
-			System.out.println("TOTAL : "  + (current.getNumberSquare() + getEnemy().getNumberSquare()));
+			System.out.println("TOTAL : "  + getScore());
 			changeCurrent();
 			System.out.println();
 		}
@@ -125,6 +125,10 @@ public class Game {
 			return Player2;
 		else
 			return null;
+	}
+
+	public int getScore() {
+		return current.getNumberSquare() + getEnemy().getNumberSquare();
 	}
 
 	private void loadBoardFromFile(String path)
