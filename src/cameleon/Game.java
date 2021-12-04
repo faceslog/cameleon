@@ -46,7 +46,7 @@ public class Game {
 		return current;
 	}
 
-	public Player getNotCurrent()
+	public Player getEnemy()
 	{
 		return current.equals(Player1) ? Player2 : Player1;
 	}
@@ -71,7 +71,7 @@ public class Game {
 
 	public void changeCurrent()
 	{
-		current = getNotCurrent();
+		current = getEnemy();
 	}
 
 	public Board getBoard() {
@@ -98,7 +98,7 @@ public class Game {
 			current.move();
 			board.showGrid();
 			System.out.println(Config.GetANSI(current.getPlayerId()) + "COULEUR : "  + current.getNumberSquare() + Config.ANSI_RESET);
-			System.out.println("TOTAL : "  + (current.getNumberSquare() + getNotCurrent().getNumberSquare()));
+			System.out.println("TOTAL : "  + (current.getNumberSquare() + getEnemy().getNumberSquare()));
 			changeCurrent();
 			System.out.println();
 		}

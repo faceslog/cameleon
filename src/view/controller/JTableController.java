@@ -65,8 +65,8 @@ public class JTableController extends MouseAdapter {
         game.changeCurrent();
 
         //update menu
-        bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrentPlayer().getNumberSquare());
-        bf.getScoreP2().setText("Score P2 : " + game.getBoard().getNotCurrentPlayer().getNumberSquare());
+        bf.getScoreP1().setText("Score P1 : " + game.getBoard().getCurrent().getNumberSquare());
+        bf.getScoreP2().setText("Score P2 : " + game.getBoard().getEnemy().getNumberSquare());
         changeLogoImg();
         bf.menu.updateUI();
 
@@ -88,9 +88,9 @@ public class JTableController extends MouseAdapter {
     }
 
     private void changeLogoImg() {
-        if(game.getBoard().getCurrentPlayer().getNumberSquare() > game.getBoard().getNotCurrentPlayer().getNumberSquare())
+        if(game.getBoard().getCurrent().getNumberSquare() > game.getBoard().getEnemy().getNumberSquare())
             bf.getLogo().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/logoR.png"),0.5,0.5));
-        else if (game.getBoard().getCurrentPlayer().getNumberSquare() < game.getBoard().getNotCurrentPlayer().getNumberSquare())
+        else if (game.getBoard().getCurrent().getNumberSquare() < game.getBoard().getEnemy().getNumberSquare())
             bf.getLogo().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/logoB.png"),0.5,0.5));
     }
 

@@ -62,7 +62,7 @@ public class BBrave extends Board
         {
             if(i < 0 || i >= getSize()) continue;
 
-            for (int j = y - 1; j <= y+ 1; j++)
+            for (int j = y - 1; j <= y + 1; j++)
             {
                 if(j < 0 || j >= getSize()) continue;
 
@@ -70,17 +70,17 @@ public class BBrave extends Board
 
                 if(getSquares()[i][j] != Config.FREE_SQUARE)
                 {
-                    if(getSquares()[i][j] == getNotCurrentPlayer().getPlayerId())
+                    if(getSquares()[i][j] == getEnemy().getPlayerId())
                     {
                         //check 8 case autour si pas de case vide on n'ajoute pas (pas la mais rappel)
-                        getNotCurrentPlayer().decreaseNbSquare();
-                        getCurrentPlayer().increaseNbSquare();
+                        getEnemy().decreaseNbSquare();
+                        getCurrent().increaseNbSquare();
                         getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
                     }
                 }
                 else
                 {
-                    if(getNotCurrentPlayer() instanceof Bot enemy)
+                    if(getEnemy() instanceof Bot enemy)
                         enemy.getFreePoints().add(point);
                 }
             }

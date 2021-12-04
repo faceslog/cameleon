@@ -70,7 +70,7 @@ public class BReckless extends Board
 
         region.increaseSquareTaken(); // will also check if the region is full
 
-        if(region.isOwnedBy() == getCurrentPlayer().getPlayerId())
+        if(region.isOwnedBy() == getCurrent().getPlayerId())
             checkRegionAcquired(getRegionPosIncluding(x, y), regionQuadTree);
     }
 
@@ -90,7 +90,7 @@ public class BReckless extends Board
 
                 if(getSquares()[i][j] != Config.FREE_SQUARE)
                 {
-                    if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
+                    if(getSquares()[i][j] == getEnemy().getPlayerId())
                     {
                         if(region.include(i,j))
                             inside++;
@@ -169,21 +169,21 @@ public class BReckless extends Board
 
                 if(getSquares()[i][j] != Config.FREE_SQUARE)
                 {
-                    if(getSquares()[i][j] == getGameRef().getNotCurrent().getPlayerId())
+                    if(getSquares()[i][j] == getEnemy().getPlayerId())
                     {
                         if(region.include(i,j))
                         {
-                            getNotCurrentPlayer().decreaseNbSquare();
-                            getCurrentPlayer().increaseNbSquare();
-                            getSquares()[i][j] = getCurrentPlayer().getPlayerId();
+                            getEnemy().decreaseNbSquare();
+                            getCurrent().increaseNbSquare();
+                            getSquares()[i][j] = getCurrent().getPlayerId();
                         }
                         else
                         {
                             Region region1 = regionQuadTree.search(getRegionPosIncluding(i, j)).getData();
                             if(!region1.isFull()) {
-                                getNotCurrentPlayer().decreaseNbSquare();
-                                getCurrentPlayer().increaseNbSquare();
-                                getSquares()[i][j] = getCurrentPlayer().getPlayerId();
+                                getEnemy().decreaseNbSquare();
+                                getCurrent().increaseNbSquare();
+                                getSquares()[i][j] = getCurrent().getPlayerId();
                             }
                         }
                     }
@@ -192,10 +192,10 @@ public class BReckless extends Board
                 {
                     // Cette case libre peut très bien permettre de récupérer une région en entière par la suite nous
                     // devons donc la stocker pour le current également
-                    if(getCurrentPlayer() instanceof Bot current)
+                    if(getCurrent() instanceof Bot current)
                         current.getFreePoints().add(new QuadPoint(i, j));
 
-                    if(getNotCurrentPlayer() instanceof Bot enemy)
+                    if(getEnemy() instanceof Bot enemy)
                         enemy.getFreePoints().add(new QuadPoint(i, j));
                 }
             }
@@ -218,7 +218,7 @@ public class BReckless extends Board
 
         if(quadTree.getData() != null)
         {
-            if(quadTree.getData().isOwnedBy() != getCurrentPlayer().getPlayerId())
+            if(quadTree.getData().isOwnedBy() != getCurrent().getPlayerId())
                 quadTree.getData().changeRegionColor();
         }
     }
@@ -331,7 +331,7 @@ public class BReckless extends Board
 
         if(quadTree.getData() != null)
         {
-            if(quadTree.getData().isOwnedBy() != getCurrentPlayer().getPlayerId())
+            if(quadTree.getData().isOwnedBy() != getCurrent().getPlayerId())
                 return quadTree.getData().countChangeRegionColor();
         }
 

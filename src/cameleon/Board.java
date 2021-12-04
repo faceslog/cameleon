@@ -75,21 +75,21 @@ abstract public class Board {
 			gameRef.getCurrent().increaseNbSquare();
 
 			// Si ce point faisait partie de la liste des points libre pour l'ennemi également
-			if(getNotCurrentPlayer() instanceof Bot enemy)
+			if(getEnemy() instanceof Bot enemy)
 				enemy.getFreePoints().remove(new QuadPoint(x, y));
 
 			updateColor(x, y);
 		}
 	}
 
-	public Player getCurrentPlayer()
+	public Player getCurrent()
 	{
 		return gameRef.getCurrent();
 	}
 
-	public Player getNotCurrentPlayer()
+	public Player getEnemy()
 	{
-		return gameRef.getNotCurrent();
+		return gameRef.getEnemy();
 	}
 
 	abstract public void updateColor(int x, int y);

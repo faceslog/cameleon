@@ -68,7 +68,7 @@ public class Bot extends Player {
 			{
 				if (j < 0 || j >= getGameRef().getBoard().getSize()) continue;
 
-				if(tmp[i][j] == getGameRef().getNotCurrent().getPlayerId())
+				if(tmp[i][j] == getGameRef().getEnemy().getPlayerId())
 					ret++;
 			}
 		}

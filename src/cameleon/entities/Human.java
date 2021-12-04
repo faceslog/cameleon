@@ -30,7 +30,7 @@ public class Human extends Player {
                     yEval = scanner.nextInt();
                 } while (!checkMove(xEval,yEval, getGameRef().getBoard()));
 
-                if(getGameRef().getBoard().getNotCurrentPlayer() instanceof Bot bot) {
+                if(getGameRef().getBoard().getEnemy() instanceof Bot bot) {
                     int eval;
                     if(getGameRef().getGameMode() == GameMode.BRAVE) {
                         eval = bot.evaluateMoveBrave(new QuadPoint(xEval,yEval));

@@ -50,8 +50,8 @@ public class Region
     public void changeRegionColor()
     {
         int[][] squares = boardRef.getSquares();
-        Player current = boardRef.getCurrentPlayer();
-        Player notCurrent = boardRef.getNotCurrentPlayer();
+        Player current = boardRef.getCurrent();
+        Player notCurrent = boardRef.getEnemy();
 
         for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
         {
@@ -82,7 +82,7 @@ public class Region
     public int countChangeRegionColor()
     {
         int[][] squares = boardRef.getSquares();
-        Player enemy = boardRef.getNotCurrentPlayer();
+        Player enemy = boardRef.getEnemy();
         int count = 0;
 
         for(int i = topLeft.getX(); i <= bottomRight.getX(); i++)
