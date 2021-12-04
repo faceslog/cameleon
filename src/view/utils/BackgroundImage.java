@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BackgroundImage extends JPanel {
-    Image fond;
+
+    private final Image fond;
 
     public BackgroundImage(int i) {
         fond = getToolkit().getImage(image(i));

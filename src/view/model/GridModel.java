@@ -9,9 +9,10 @@ import java.awt.image.BufferedImage;
 
 public class  GridModel extends AbstractTableModel {
 
-    private int noOfRows, noOfCols;
-    private int[][] grid;
-    private int size;
+    private final int noOfRows;
+    private final int noOfCols;
+    private final int[][] grid;
+    private final int size;
 
     public GridModel(int[][] grid, int size) {
         this.grid = grid;

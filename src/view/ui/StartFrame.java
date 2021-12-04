@@ -9,18 +9,22 @@ import java.awt.*;
 
 public class StartFrame {
 
+    private JButton play;
+    private JButton rules;
+    private JButton exit;
+    private JLabel title;
+
     public StartFrame() {
         init();
     }
-
 
     private void init() {
         Image textLogo = new ImageIcon("images/Sans titre-1.png").getImage();
         title = new JLabel(FrameUtils.resizeIconPercentage(new ImageIcon(textLogo), 0.75, 0.75));
 
-        play = FrameUtils.createButton(PATH + "start.png", 1.25);
-        rules = FrameUtils.createButton(PATH + "rules.png", 1.25);
-        exit = FrameUtils.createButton(PATH + "exit.png", 1.25);
+        play = FrameUtils.createButton("images/button/start.png", 1.25);
+        rules = FrameUtils.createButton("images/button/rules.png", 1.25);
+        exit = FrameUtils.createButton("images/button/exit.png", 1.25);
 
         StartController sc = new StartController(this);
         play.addActionListener(sc);
@@ -84,11 +88,4 @@ public class StartFrame {
     public JButton getExit() {
         return exit;
     }
-
-    private JButton play;
-    private JButton rules;
-    private JButton exit;
-    private JLabel title;
-
-    private final String PATH = "images/bouton/";
 }

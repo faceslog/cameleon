@@ -14,8 +14,8 @@ import java.awt.event.ActionListener;
 
 public class InitGameController implements ActionListener {
 
-    private StartFrame sf;
-    private InitGameFrame ig;
+    private final StartFrame sf;
+    private final InitGameFrame ig;
     private GameMode gameMode = GameMode.BRAVE;
     private int size = 1;
 
@@ -48,11 +48,11 @@ public class InitGameController implements ActionListener {
             }
         } else if (e.getSource() == ig.getBrave()) {
             gameMode = GameMode.BRAVE;
-            ig.getBrave().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/brave-activate.png"), 1.25, 1.25));
-            ig.getReckless().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/reckless-disactivate.png"), 1.25, 1.25));
+            ig.getBrave().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/button/brave-activate.png"), 1.25, 1.25));
+            ig.getReckless().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/button/reckless-deactivate.png"), 1.25, 1.25));
         } else if (e.getSource() == ig.getReckless()) {
-            ig.getBrave().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/brave-disactivate.png"), 1.25, 1.25));
-            ig.getReckless().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/bouton/reckless-activate.png"), 1.25, 1.25));
+            ig.getBrave().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/button/brave-deactivate.png"), 1.25, 1.25));
+            ig.getReckless().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/button/reckless-activate.png"), 1.25, 1.25));
 
             String[] recklessMode = new String[]{"Glutton", "Smart"};
             int x = JOptionPane.showOptionDialog(null, "Choose Reckless Mode", "Mode",

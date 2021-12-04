@@ -22,6 +22,7 @@ public abstract class Player {
 	}
 
 	public void increaseNbSquare() { numberSquare++; }
+
 	public void decreaseNbSquare() { numberSquare--; }
 
 	public int getPlayerId() {

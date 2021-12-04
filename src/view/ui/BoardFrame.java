@@ -12,6 +12,22 @@ import java.awt.*;
 
 public class BoardFrame {
 
+    private JTable table;
+    private GridModel gridModel;
+
+    private JLabel logo;
+    private JLabel scoreP1;
+    private JLabel scoreP2;
+    private JLabel score;
+    private JButton exit;
+
+    public JPanel menu;
+
+    private final int squareSize;
+    private final Game game;
+    private final StartFrame sf;
+    private final Dimension frameSizeWithoutBorder;
+
     public BoardFrame(StartFrame sf, Game game) {
         this.sf = sf;
         this.game = game;
@@ -35,7 +51,7 @@ public class BoardFrame {
         scoreP2.setFont(FrameUtils.customFont());
         scoreP2.setForeground(FrameUtils.colorP2());
 
-        exit = FrameUtils.createButton("images/bouton/exit.png", 1.25);
+        exit = FrameUtils.createButton("images/button/exit.png", 1.25);
 
         BoardFrameController bfc = new BoardFrameController(sf, this);
         exit.addActionListener(bfc);
@@ -96,7 +112,7 @@ public class BoardFrame {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         changeSize(squareSize, squareSize);
 
-        JTableController jtc = new JTableController(this, sf, table, game);
+        JTableController jtc = new JTableController(this, table, game);
         table.addMouseListener(jtc);
 
         JPanel p = new JPanel();
@@ -144,20 +160,4 @@ public class BoardFrame {
     public GridModel getGridModel() {
         return gridModel;
     }
-
-    private JTable table;
-    private GridModel gridModel;
-
-    private JLabel logo;
-    private JLabel scoreP1;
-    private JLabel scoreP2;
-    private JLabel score;
-    private JButton exit;
-
-    public JPanel menu;
-
-    private int squareSize;
-    private Game game;
-    private StartFrame sf;
-    private Dimension frameSizeWithoutBorder;
 }

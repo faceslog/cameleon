@@ -17,18 +17,17 @@ import java.awt.event.MouseEvent;
 public class JTableController extends MouseAdapter {
 
     private final JTable table;
-    private Game game;
-    private StartFrame sf;
-    private BoardFrame bf;
+    private final Game game;
+    private final BoardFrame bf;
 
-    public JTableController(BoardFrame bf, StartFrame sf, JTable table, Game game) {
+    public JTableController(BoardFrame bf, JTable table, Game game) {
         this.table = table;
         this.game = game;
-        this.sf = sf;
         this.bf = bf;
     }
 
-    @Override public void mousePressed(MouseEvent e) {
+    @Override
+    public void mousePressed(MouseEvent e) {
         int row = table.getSelectedRow();
         int column = table.getSelectedColumn();
 
@@ -87,7 +86,6 @@ public class JTableController extends MouseAdapter {
         else if (game.getBoard().getCurrent().getNumberSquare() < game.getBoard().getEnemy().getNumberSquare())
             bf.getLogo().setIcon(FrameUtils.resizeIconPercentage(new ImageIcon("images/logoB.png"),0.5,0.5));
     }
-
 
     private void repaintCell(int x, int y) {
         for (int i = x - 1; i <= x + 1; i++)
