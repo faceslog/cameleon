@@ -1,6 +1,5 @@
 package core;
 
-import cameleon.Config;
 import cameleon.Game;
 import cameleon.enums.GameMode;
 import view.ui.StartFrame;
@@ -38,6 +37,7 @@ public class Main {
             boolean file = scanner.nextBoolean();
             if(file) {
                 System.out.println("File path : ");
+                scanner.nextLine();
                 String path = scanner.nextLine();
                 party = new Game(path, gameMode);
             } else {
