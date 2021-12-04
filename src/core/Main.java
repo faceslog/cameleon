@@ -36,8 +36,8 @@ public class Main {
             System.out.println("\nUse file ? ");
             boolean file = scanner.nextBoolean();
             if(file) {
-                System.out.println("File path : ");
                 scanner.nextLine();
+                System.out.println("File path : ");
                 String path = scanner.nextLine();
                 party = new Game(path, gameMode);
             } else {
@@ -46,7 +46,6 @@ public class Main {
                     System.out.println("\nSize : ");
                     size = scanner.nextInt();
                 } while (size <= 0);
-                System.out.println(size);
                 party = new Game(size, gameMode);
             }
 

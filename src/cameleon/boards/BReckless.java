@@ -156,7 +156,6 @@ public class BReckless extends Board
                 new QuadPoint(minX + Config.ZONE_SIZE - 1, minY + Config.ZONE_SIZE - 1), this);
     }
 
-    // Non Recursive Version
     private void updateColorReckless(int x, int y, Region region)
     {
         for (int i = x - 1; i <= x + 1; i++)
@@ -268,14 +267,10 @@ public class BReckless extends Board
             }
         }
 
-        System.out.printf("Acquired: %d Acquired By The Player: %d\n", countAcquired, countAcquiredByPlayer);
-
         if(isLastSubZone(countAcquiredByPlayer, countAcquired)|| countAcquiredByPlayer >= Config.RKL_SUB_ZONE_TO_EARN)
         {
             qt.setData(createUpperRegion(qt));
             qt.getData().setSquareTaken(qt.getData().getMaxSquareInside());
-            System.out.printf("Upper Region tL: %s bR: %s\n", qt.getData().getTopLeft(), qt.getData().getBottomRight());
-
             changeRegionColor(qt);
 
             return true;

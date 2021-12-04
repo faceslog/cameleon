@@ -72,7 +72,6 @@ public class BBrave extends Board
                 {
                     if(getSquares()[i][j] == getEnemy().getPlayerId())
                     {
-                        //check 8 case autour si pas de case vide on n'ajoute pas (pas la mais rappel)
                         getEnemy().decreaseNbSquare();
                         getCurrent().increaseNbSquare();
                         getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();

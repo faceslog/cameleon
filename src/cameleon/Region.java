@@ -113,13 +113,4 @@ public class Region
         else
             return boardRef.getSquares()[topLeft.getX()][topLeft.getY()];
     }
-
-    @Override
-    public String toString() {
-        return "Region{" +
-                "squareTaken=" + squareTaken +
-                ", topLeft=" + topLeft +
-                ", bottomRight=" + bottomRight +
-                '}';
-    }
 }

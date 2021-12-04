@@ -88,8 +88,6 @@ public class Bot extends Player {
 				max = evalCase;
 			}
 		}
-
-		System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
 		freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
 		getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 		return quadPoint;
@@ -126,7 +124,6 @@ public class Bot extends Player {
 
 		if (quadPoint != null)
 		{
-			//System.out.printf("Point évalué: %s, gain: %d\n", quadPoint, max);
 			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
 			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 			return quadPoint;

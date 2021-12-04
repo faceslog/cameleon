@@ -14,8 +14,8 @@ import java.util.Scanner;
 
 public class Game {
 
-	private final Player Player1;
-	private final Player Player2;
+	private final Player player1;
+	private final Player player2;
 	private final GameMode gameMode;
 
 	private Player current;
@@ -23,9 +23,9 @@ public class Game {
 
 	public Game(int size, GameMode _gameMode)
 	{
-		Player1 = new Human(1, this);
-		Player2 = new Bot(2, this);
-		current = Player1;
+		player1 = new Human(1, this);
+		player2 = new Bot(2, this);
+		current = player1;
 		gameMode = _gameMode;
 		if(gameMode == GameMode.BRAVE)
 			board = new BBrave(size, this);
@@ -35,9 +35,9 @@ public class Game {
 
 	public Game(String path, GameMode _gameMode)
 	{
-		Player1 = new Human(1, this);
-		Player2 = new Bot(2, this);
-		current = Player1;
+		player1 = new Human(1, this);
+		player2 = new Bot(2, this);
+		current = player1;
 		gameMode = _gameMode;
 		loadBoardFromFile(path);
 	}
@@ -48,25 +48,25 @@ public class Game {
 
 	public Player getEnemy()
 	{
-		return current.equals(Player1) ? Player2 : Player1;
+		return current.equals(player1) ? player2 : player1;
 	}
 
 	public Player getPlayer1()
 	{
-		return Player1;
+		return player1;
 	}
 
 	public Player getPlayer2()
 	{
-		return Player2;
+		return player2;
 	}
 
 	public void setCurrent(int playerId) {
 
-		if(playerId == Player1.getPlayerId())
-			current = Player1;
+		if(playerId == player1.getPlayerId())
+			current = player1;
 		else
-			current = Player2;
+			current = player2;
 	}
 
 	public void changeCurrent()
@@ -84,7 +84,7 @@ public class Game {
 
 	public boolean isThereBotPlayers()
 	{
-		return (Player1 instanceof Bot) || (Player2 instanceof Bot);
+		return (player1 instanceof Bot) || (player2 instanceof Bot);
 	}
 
 	public void start()
@@ -110,25 +110,25 @@ public class Game {
 	{
 		Player winner = getWinner();
 
-		if(winner.equals(Player1))
-			System.out.printf(Config.GetANSI(Player1.getPlayerId()) + "Player %s wins! ", Player1.getPlayerId() + Config.ANSI_RESET);
-		else if (winner.equals(Player2))
-			System.out.printf(Config.GetANSI(Player2.getPlayerId())+ "Player %s wins! ", Player2.getPlayerId() + Config.ANSI_RESET);
+		if(winner.equals(player1))
+			System.out.printf(Config.GetANSI(player1.getPlayerId()) + "Player %s wins! ", player1.getPlayerId() + Config.ANSI_RESET);
+		else if (winner.equals(player2))
+			System.out.printf(Config.GetANSI(player2.getPlayerId())+ "Player %s wins! ", player2.getPlayerId() + Config.ANSI_RESET);
 		else
 			System.out.println("NO WINNER");
 	}
 
 	public Player getWinner() {
-		if(Player1.getNumberSquare() > Player2.getNumberSquare())
-			return Player1;
-		else if (Player1.getNumberSquare() < Player2.getNumberSquare())
-			return Player2;
+		if(player1.getNumberSquare() > player2.getNumberSquare())
+			return player1;
+		else if (player1.getNumberSquare() < player2.getNumberSquare())
+			return player2;
 		else
 			return null;
 	}
 
 	public int getScore() {
-		return Player1.getNumberSquare() + Player2.getNumberSquare();
+		return player1.getNumberSquare() + player2.getNumberSquare();
 	}
 
 	private void loadBoardFromFile(String path)
@@ -158,13 +158,13 @@ public class Game {
 					switch (ch[j])
 					{
 						case 'R' -> {
-							squares[j][i] = Player1.getPlayerId();
-							Player1.increaseNbSquare();
+							squares[j][i] = player1.getPlayerId();
+							player1.increaseNbSquare();
 							taken.add(new QuadPoint(j, i));
 						}
 						case 'B' -> {
-							squares[j][i] = Player2.getPlayerId();
-							Player2.increaseNbSquare();
+							squares[j][i] = player2.getPlayerId();
+							player2.increaseNbSquare();
 							taken.add(new QuadPoint(j, i));
 						}
 						default -> squares[j][i] = Config.FREE_SQUARE;
