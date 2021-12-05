@@ -18,7 +18,7 @@ public class Human extends Player {
         int x,y = -1;
         Scanner scanner = new Scanner(System.in);
         do {
-            System.out.println("Coords x : ( < 0 ==> evaluateMove)");
+            System.out.println("Coords x : (-1 to evaluate move)");
             x = scanner.nextInt();
 
             if(x < 0)
