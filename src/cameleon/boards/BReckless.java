@@ -350,7 +350,7 @@ public class BReckless extends Board
             {
                 if(nodes.getData().isFull())
                     countAcquired++;
-                if(nodes.getData().isOwnedBy() == getGameRef().getCurrent().getPlayerId())
+                if(nodes.getData().isOwnedBy() == getCurrent().getPlayerId())
                     countAcquiredByPlayer++;
             }
         }

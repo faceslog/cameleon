@@ -50,23 +50,23 @@ public class Bot extends Player {
 		}
 
 		freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
-		getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+		getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 		return quadPoint;
 	}
 
 	public int evaluateMoveBrave(QuadPoint point)
 	{
 		int ret = 1;
-		int[][] tmp = getGameRef().getBoard().getSquares();
+		int[][] tmp = getBoard().getSquares();
 
 		//parcours les cases autour
 		for (int i = point.getX() - 1; i <= point.getX() + 1; i++)
 		{
-			if (i < 0 || i >= getGameRef().getBoard().getSize()) continue;
+			if (i < 0 || i >= getBoard().getSize()) continue;
 
 			for (int j = point.getY() - 1; j <= point.getY() + 1; j++)
 			{
-				if (j < 0 || j >= getGameRef().getBoard().getSize()) continue;
+				if (j < 0 || j >= getBoard().getSize()) continue;
 
 				if(tmp[i][j] == getGameRef().getEnemy().getPlayerId())
 					ret++;
@@ -89,7 +89,7 @@ public class Bot extends Player {
 			}
 		}
 		freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
-		getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+		getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 		return quadPoint;
 	}
 
@@ -125,18 +125,18 @@ public class Bot extends Player {
 		if (quadPoint != null)
 		{
 			freePoints.remove(quadPoint); // On supprime le point de la liste des points libre
-			getGameRef().getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
+			getBoard().nextMove(quadPoint.getX(), quadPoint.getY());
 			return quadPoint;
 		}
 
-		getGameRef().getBoard().nextMove(lastHope.getX(), lastHope.getY());
+		getBoard().nextMove(lastHope.getX(), lastHope.getY());
 		return lastHope;
 	}
 
 	// Idem updateColor en comptant le nombre de cases prises.
 	public int evaluateMoveReckless(QuadPoint point)
 	{
-		return ((BReckless) getGameRef().getBoard()).countColorReckless(point.getX(), point.getY());
+		return ((BReckless) getBoard()).countColorReckless(point.getX(), point.getY());
 	}
 
 }

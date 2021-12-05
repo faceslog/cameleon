@@ -74,7 +74,7 @@ public class BBrave extends Board
                     {
                         getEnemy().decreaseNbSquare();
                         getCurrent().increaseNbSquare();
-                        getSquares()[i][j] = getGameRef().getCurrent().getPlayerId();
+                        getSquares()[i][j] = getCurrent().getPlayerId();
                     }
                 }
                 else

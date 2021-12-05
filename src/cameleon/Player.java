@@ -33,6 +33,8 @@ public abstract class Player {
 		return gameRef;
 	}
 
+	public Board getBoard() { return gameRef.getBoard(); }
+
 	public boolean equals(Player player)
 	{
 		return playerId == player.getPlayerId();
