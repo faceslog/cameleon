@@ -59,6 +59,11 @@ public class BReckless extends Board
                     _gameRef.changeCurrent();
                 }
             }
+
+            if(_gameRef.getCurrent().equals(_gameRef.getPlayer2()))
+            {
+                _gameRef.changeCurrent();
+            }
         }
     }
 

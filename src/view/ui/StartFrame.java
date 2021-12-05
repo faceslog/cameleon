@@ -10,9 +10,9 @@ import java.awt.*;
 public class StartFrame {
 
     private JButton play;
-    private JButton rules;
     private JButton exit;
     private JLabel title;
+    private final JFrame frame = new JFrame();
 
     public StartFrame() {
         init();
@@ -23,7 +23,6 @@ public class StartFrame {
         title = new JLabel(FrameUtils.resizeIconPercentage(new ImageIcon(textLogo), 0.75, 0.75));
 
         play = FrameUtils.createButton("images/button/start.png", 1.25);
-        rules = FrameUtils.createButton("images/button/rules.png", 1.25);
         exit = FrameUtils.createButton("images/button/exit.png", 1.25);
 
         StartController sc = new StartController(this);
@@ -71,18 +70,12 @@ public class StartFrame {
         return p;
     }
 
-    private JFrame frame = new JFrame();
-
     public JFrame getFrame() {
         return frame;
     }
 
     public JButton getPlay() {
         return play;
-    }
-
-    public JButton getRules() {
-        return rules;
     }
 
     public JButton getExit() {
