@@ -8,7 +8,6 @@ import cameleon.enums.GameMode;
 import core.datastruct.QuadPoint;
 import view.utils.FrameUtils;
 import view.ui.BoardFrame;
-import view.ui.StartFrame;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -19,30 +18,47 @@ public class JTableController extends MouseAdapter {
     private final JTable table;
     private final Game game;
     private final BoardFrame bf;
+    private final Board board;
 
     public JTableController(BoardFrame bf, JTable table, Game game) {
         this.table = table;
         this.game = game;
         this.bf = bf;
+        this.board = game.getBoard();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int row = table.getSelectedRow();
-        int column = table.getSelectedColumn();
+        if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+            int row = table.rowAtPoint(e.getPoint());
+            int column = table.columnAtPoint(e.getPoint());
 
-        if (checkMove(column, row, game.getBoard())) {
-            //CURRENT
-            game.getBoard().nextMove(column, row);
-            if (game.getGameMode() == GameMode.BRAVE) {
-                repaintCell(column, row);
-            } else if (game.getGameMode() == GameMode.RECKLESS) {
-                bf.getTable().repaint();
+            if (game.getEnemy() instanceof Bot bot) {
+                int eval;
+                if (game.getGameMode() == GameMode.BRAVE) {
+                    eval = bot.evaluateMoveBrave(new QuadPoint(column, row));
+                } else {
+                    eval = bot.evaluateMoveReckless(new QuadPoint(column, row));
+                }
+                JOptionPane.showMessageDialog(null, "EvaluateMove : " + eval);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Movement not valid!");
+            int row = table.getSelectedRow();
+            int column = table.getSelectedColumn();
+
+            if (checkMove(column, row)) {
+                //CURRENT
+                game.getBoard().nextMove(column, row);
+                if (game.getGameMode() == GameMode.BRAVE) {
+                    repaintCell(column, row);
+                } else if (game.getGameMode() == GameMode.RECKLESS) {
+                    bf.getTable().repaint();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Movement not valid!");
+            }
+            checkFull();
         }
-        checkFull();
     }
 
     @Override
@@ -66,7 +82,7 @@ public class JTableController extends MouseAdapter {
         checkFull();
     }
 
-    private boolean checkMove(int x, int y, Board board)
+    private boolean checkMove(int x, int y)
     {
         return board.getSquares()[x][y] == Config.FREE_SQUARE;
     }
