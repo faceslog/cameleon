@@ -19,7 +19,7 @@ public class StartFrame {
     }
 
     private void init() {
-        Image textLogo = new ImageIcon("images/Sans titre-1.png").getImage();
+        Image textLogo = new ImageIcon("images/title1.png").getImage();
         title = new JLabel(FrameUtils.resizeIconPercentage(new ImageIcon(textLogo), 0.75, 0.75));
 
         play = FrameUtils.createButton("images/button/start.png", 1.25);

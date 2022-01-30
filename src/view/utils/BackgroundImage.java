@@ -18,7 +18,7 @@ public class BackgroundImage extends JPanel {
 
     public String image(int i) {
         if(i == 1 ) {
-            return "images/karina-formanova-rainforest-animation.gif";
+            return "images/rainforest-animation.gif";
         } else if(i == 2) {
             return "images/fond-board.png";
         } else if(i == 3) {
